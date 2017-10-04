@@ -1,0 +1,8 @@
+﻿Write tests to enusure different color structures are equal (i.e. a ColorRgb 'red' color is equal to a ColorCmy 'red' color).
+Ensure equal colors in different structures return the same hash codes since they are supposed to be implicitly equal.
+Write a test for a color starting in one structure, then switching between structures, stays equal. That is, if it goes from ColorRgb to ColorCmy, then to ColorHcy and back to ColorRgb, the initial and final ColorRgb structures should be equal.
+Write tests that for all of the blending options.
+
+Write tests for the pixel format structures. Ensure System.Drawing.Color structs are assigned correctly, out of bounds errors are handles, and expected values are assigned.
+
+Write tests for the abstract tree. Perhaps design a tree of life and then look for usual things that require tree functions (enumerating, finding siblings, parents, etc.)
