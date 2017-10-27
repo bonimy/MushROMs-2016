@@ -17,15 +17,15 @@ namespace MushROMs.SNES
             (byte)'L',
             2 };
 
-        public static Palette InitializeEditor(byte[] data)
+        public static PaletteEditor InitializeEditor(byte[] data)
         {
             if (!IsValidData(data))
                 return null;
 
-            return new Palette(GetColors(data));
+            return new PaletteEditor(new Palette(GetColors(data)));
         }
 
-        public static byte[] SaveFileData(Palette editor)
+        public static byte[] SaveFileData(PaletteEditor editor)
         {
             return GetData(editor.GetColors());
         }
@@ -69,6 +69,7 @@ namespace MushROMs.SNES
             }
             return true;
         }
+
         public static int GetNumColorsFromSize(int length)
         {
             return (length - TPLHeader.Length) / Color15BppBgr.SizeOf;

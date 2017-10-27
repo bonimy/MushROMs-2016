@@ -19,6 +19,11 @@ namespace MushROMs.SNES
             private set;
         }
 
+        public Color15BppBgr[] GetColors()
+        {
+            return Palette.GetColors();
+        }
+
         public TileMap1D TileMap
         {
             get;
@@ -231,6 +236,7 @@ namespace MushROMs.SNES
             }
             WriteData(data);
         }
+
         public void VerticalGradient()
         {
             VerticalGradient(Selection);

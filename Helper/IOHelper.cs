@@ -13,7 +13,7 @@ namespace Helper
 
         public static bool IsValidPathChar(char c)
         {
-            return ((IList<char>)Path.GetInvalidPathChars()).Contains(c);
+            return !((IList<char>)Path.GetInvalidPathChars()).Contains(c);
         }
 
         public static bool IsValidPathName(string name)

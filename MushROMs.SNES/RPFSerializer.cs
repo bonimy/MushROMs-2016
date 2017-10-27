@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,7 +32,7 @@ namespace MushROMs.SNES
             }
             return true;
         }
-            
+
         public override int GetNumColorsFromSize(int length)
         {
             return length / Color15BppBgr.SizeOf;
@@ -44,3 +44,4 @@ namespace MushROMs.SNES
         }
     }
 }
+*/

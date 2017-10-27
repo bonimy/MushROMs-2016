@@ -69,12 +69,12 @@ namespace MushROMs.SNES
                 throw new ArgumentNullException(nameof(editor));
 
             var startIndex = Selection.StartIndex;
-            var length = PaletteEditor.GetIndexFromAddress(editor.GetData().Length);
+            var length = Palette.GetIndexFromAddress(editor.Palette.GetData().Length);
 
             unsafe
             {
                 fixed (int* indexes = Selection.TileMapSelection.GetSelectedIndexes())
-                fixed (byte* ptr = &editor.GetData()[Selection.StartAddress])
+                fixed (byte* ptr = &editor.Palette.GetData()[Selection.StartAddress])
                 fixed (Color15BppBgr* src = Data)
                 {
                     var dest = (Color15BppBgr*)ptr + startIndex;

@@ -11,15 +11,15 @@ namespace MushROMs.SNES
         public static readonly FileAssociation FileAssociation =
             new FileAssociation(DefaultExtension, InitializeEditor, SaveFileData_Internal, FileVisibilityFilters.Any);
 
-        public static Palette InitializeEditor(byte[] data)
+        public static PaletteEditor InitializeEditor(byte[] data)
         {
             if (!IsValidData(data))
                 return null;
 
-            return new Palette(GetColors(data));
+            return new PaletteEditor(new Palette(GetColors(data)));
         }
 
-        public static byte[] SaveFileData(Palette palette)
+        public static byte[] SaveFileData(PaletteEditor palette)
         {
             var colors = palette.GetColors();
             return GetData(colors);

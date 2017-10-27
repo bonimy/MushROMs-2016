@@ -38,14 +38,16 @@ namespace MushROMs.Editors
             get;
             set;
         }
+
         private Size[] ZoomedViewSizes
         {
             get;
             set;
         }
 
-        public PaletteForm() : this(new PaletteEditor())
+        public PaletteForm() : this(new PaletteEditor(new SNES.Palette(0x100)))
         { }
+
         public PaletteForm(PaletteEditor editor)
         {
             if (editor == null)
@@ -239,8 +241,8 @@ namespace MushROMs.Editors
             if (index >= TileMap.GridSize || index < 0)
                 return;
 
-            var address = Palette.GetAddressFromIndex(index);
-            var color = Palette.GetColorAtAddress(address);
+            var address = Palette.Palette.GetAddressFromIndex(index);
+            var color = Palette.Palette.GetColorAtAddress(address);
             estMain.ActiveColor = color;
         }
 
@@ -252,14 +254,14 @@ namespace MushROMs.Editors
         private void PaletteStatus_ZoomScaleChanged(object sender, EventArgs e)
         {
             ZoomedViewSizes[LastZoomScaleIndex] = TileMap.ViewSize;
-            
+
             var zoom = (int)estMain.PaletteZoomScale;
             TileMap.ZoomSize = new Size(zoom, zoom);
             TileMap.ViewSize = ZoomedViewSizes[estMain.PaletteZoomIndex];
 
             LastZoomScaleIndex = estMain.PaletteZoomIndex;
         }
-        
+
         private void PaletteForm_ResizeEnd(object sender, EventArgs e)
         {
             if (TileMap == null)

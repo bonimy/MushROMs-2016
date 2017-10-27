@@ -18,12 +18,12 @@ namespace MushROMs.Editors
                     return;
 
                 if (Editor != null)
-                    Editor.StartAddressChanged -= Editor_Redraw;
+                    Editor.Palette.StartAddressChanged -= Editor_Redraw;
 
                 base.Editor = value;
 
                 if (Editor != null)
-                    Editor.StartAddressChanged += Editor_Redraw;
+                    Editor.Palette.StartAddressChanged += Editor_Redraw;
             }
         }
 

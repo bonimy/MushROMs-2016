@@ -25,13 +25,13 @@ namespace MushROMs.Editors
             {
                 if (_defaultPalette == null)
                 {
-                    _defaultPalette = new PaletteEditor();
-                    _defaultPalette.InitializeData(PALFile.GetColors(Resources.DefaultPalette));
+                    _defaultPalette = new PaletteEditor(new SNES.Palette(PALFile.GetColors(Resources.DefaultPalette)));
                 }
 
                 return _defaultPalette;
             }
         }
+
         public new GFXControl TileMapControl
         {
             get { return (GFXControl)base.TileMapControl; }
@@ -70,6 +70,7 @@ namespace MushROMs.Editors
             get;
             set;
         }
+
         private Size[] ZoomedViewSizes
         {
             get;
@@ -96,7 +97,6 @@ namespace MushROMs.Editors
 
         private void BindFormSize()
         {
-
         }
 
         private void GFXForm_Load(object sender, EventArgs e)
@@ -155,7 +155,7 @@ namespace MushROMs.Editors
                 title += '*';
             Text = title;
         }
-        
+
         private void GFXStatus_ZoomScaleChanged(object sender, EventArgs e)
         {
             ZoomedViewSizes[LastZoomScaleIndex] = TileMap.ViewSize;

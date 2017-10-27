@@ -78,7 +78,7 @@ namespace MushROMs.Editors
             {
                 if (_colorSelection == null)
                     _colorSelection = new GFXColorSelection(
-                        Palette.StartAddress, Palette.TileMap.ZeroTile, GFXData.GraphicsFormat);
+                        Palette.Palette.StartAddress, Palette.TileMap.ZeroTile, GFXData.GraphicsFormat);
                 return _colorSelection;
             }
             set
@@ -95,7 +95,7 @@ namespace MushROMs.Editors
             get
             {
                 if (_paletteData == null)
-                    _paletteData = new PaletteData(Palette, ColorSelection);
+                    _paletteData = new PaletteData(Palette.Palette, ColorSelection);
                 return _paletteData;
             }
             set
@@ -138,7 +138,7 @@ namespace MushROMs.Editors
                         ColorSelection.StartAddress,
                         ColorSelection.StartIndex,
                         GFXData.GraphicsFormat);
-            PaletteData = new PaletteData(Palette, ColorSelection);
+            PaletteData = new PaletteData(Palette.Palette, ColorSelection);
             Invalidate();
         }
     }

@@ -51,8 +51,7 @@ namespace MushROMs.Editors
 
             if (options == PaletteOptions)
             {
-                var palette = new PaletteEditor();
-                palette.InitializeData(PaletteOptions.NumColors);
+                var palette = new PaletteEditor(new Palette(PaletteOptions.NumColors));
                 return palette;
             }
             return null;
@@ -101,10 +100,13 @@ namespace MushROMs.Editors
         {
             public Image Icon
             { get; set; }
+
             public string FileType
             { get; set; }
+
             public string FileDescription
             { get; set; }
+
             public UserControl Options
             { get; set; }
 
