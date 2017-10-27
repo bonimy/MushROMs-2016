@@ -21,6 +21,7 @@ namespace MushROMs.SNES
         private GraphicsFormat _graphicsFormat;
 
         public event EventHandler StartAddressChanged;
+
         public event EventHandler GraphicsFormatChanged;
 
         private byte[] Data
@@ -58,14 +59,17 @@ namespace MushROMs.SNES
                 OnGraphicsFormatChanged(EventArgs.Empty);
             }
         }
+
         public int TileDataSize
         {
             get { return GFXTile.GetTileDataSize(GraphicsFormat); }
         }
+
         public int BitsPerPixel
         {
             get { return GFXTile.GetBitsPerPixel(GraphicsFormat); }
         }
+
         public int ColorsPerPixel
         {
             get { return GFXTile.GetColorsPerPixel(GraphicsFormat); }
@@ -158,10 +162,12 @@ namespace MushROMs.SNES
         {
             return GetAddressFromIndex(index, StartAddress, GraphicsFormat);
         }
+
         public static int GetAddressFromIndex(int index, int startAddress, GraphicsFormat format)
         {
             return (index * GFXTile.GetTileDataSize(format)) + startAddress;
         }
+
         public static int GetIndexFromAddress(int address, GraphicsFormat format)
         {
             return address / GFXTile.GetTileDataSize(format);
@@ -208,17 +214,17 @@ namespace MushROMs.SNES
             var pixel = width * TileMap.ZoomHeight - TileMap.ZoomWidth;
 
             var normal = new Color32BppArgb[colors.Length];
-            for (int i = normal.Length; --i >= 0; )
+            for (int i = normal.Length; --i >= 0;)
             {
                 normal[i] = colors[i];
                 normal[i].Alpha = Byte.MaxValue;
             }
 
             var dark = new Color32BppArgb[normal.Length];
-            for (int i = dark.Length; --i >= 0; )
+            for (int i = dark.Length; --i >= 0;)
             {
                 dark[i].Alpha = normal[i].Alpha;
-                for (int j = 3; --j >= 0; )
+                for (int j = 3; --j >= 0;)
                     dark[i][j] = (byte)(normal[i][j] >> 1);
             }
 
@@ -231,7 +237,7 @@ namespace MushROMs.SNES
                     // Loop is already capped at data size, so no worry of exceeding array bounds.
                     for (int i = tiles; --i >= 0;)
                     {
-                        // Darken regions that are not in gated selections. 
+                        // Darken regions that are not in gated selections.
                         var colors32 = gateSelection != null && !gateSelection.ContainsIndex(i + TileMap.ZeroTile) ?
                             dark : normal;
 
@@ -241,7 +247,6 @@ namespace MushROMs.SNES
                             ((i / TileMap.ViewWidth) * TileMap.CellHeight * width);
 
                         tile.GetTileData(ptr, i, GraphicsFormat);
-                        tile.Rotate90();
 
                         var pixels = tile.UnsafeData;
 
@@ -251,7 +256,7 @@ namespace MushROMs.SNES
                             {
                                 var color = colors32[*pixels];
                                 for (int j = TileMap.ZoomHeight; --j >= 0; dest += width)
-                                    for (int k = TileMap.ZoomWidth; --k >= 0; )
+                                    for (int k = TileMap.ZoomWidth; --k >= 0;)
                                         dest[k] = color;
                             }
                         }
