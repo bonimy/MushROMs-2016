@@ -1,7 +1,6 @@
 ﻿using System;
 using Helper;
 using Helper.PixelFormats;
-using MushROMs;
 
 namespace MushROMs.SNES
 {
@@ -24,11 +23,17 @@ namespace MushROMs.SNES
 
         public int StartAddress
         {
-            get { return _startAddress; }
+            get
+            {
+                return _startAddress;
+            }
+
             private set
             {
                 if (StartAddress == value)
+                {
                     return;
+                }
 
                 _startAddress = value;
                 OnStartAddressChanged(EventArgs.Empty);
@@ -43,7 +48,9 @@ namespace MushROMs.SNES
         public Palette(Color15BppBgr[] colors)
         {
             if (colors == null)
+            {
                 throw new ArgumentNullException(nameof(colors));
+            }
 
             var data = new byte[colors.Length * Color15BppBgr.SizeOf];
             unsafe
@@ -52,8 +59,10 @@ namespace MushROMs.SNES
                 fixed (Color15BppBgr* src = colors)
                 {
                     var dest = (Color15BppBgr*)ptr;
-                    for (int i = colors.Length; --i >= 0;)
+                    for (var i = colors.Length; --i >= 0;)
+                    {
                         dest[i] = src[i];
+                    }
                 }
             }
 
@@ -73,13 +82,17 @@ namespace MushROMs.SNES
         public Color15BppBgr GetColorAtAddress(int address)
         {
             if (address < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(address),
                     SR.ErrorInvalidClosedLowerBound(nameof(address), address, 0));
+            }
 
             var max = Data.Length - Color15BppBgr.SizeOf;
             if (address > max)
+            {
                 throw new ArgumentOutOfRangeException(nameof(address),
                     SR.ErrorInvalidClosedUpperBound(nameof(address), address, max));
+            }
 
             unsafe
             {
@@ -97,10 +110,12 @@ namespace MushROMs.SNES
         {
             return GetAddressFromIndex(index, StartAddress);
         }
+
         public static int GetAddressFromIndex(int index, int startAddress)
         {
             return (index * Color15BppBgr.SizeOf) + startAddress;
         }
+
         public static int GetIndexFromAddress(int address)
         {
             return address / Color15BppBgr.SizeOf;

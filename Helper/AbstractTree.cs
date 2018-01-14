@@ -30,7 +30,10 @@ namespace Helper
             {
                 var root = this;
                 while (root.IsChildNode)
+                {
                     root = root.Parent;
+                }
+
                 return root;
             }
         }
@@ -41,7 +44,10 @@ namespace Helper
             {
                 var count = Children.Count;
                 foreach (var child in Children)
+                {
                     count += child.Count;
+                }
+
                 return count + 1;
             }
         }
@@ -55,26 +61,32 @@ namespace Helper
         {
             get { return Parent == null; }
         }
+
         public bool IsChildNode
         {
             get { return !IsRootNode; }
         }
+
         public bool IsLeaf
         {
             get { return Children.Count == 0; }
         }
+
         public bool IsExternalNode
         {
             get { return IsLeaf; }
         }
+
         public bool IsBranch
         {
             get { return !IsLeaf; }
         }
+
         public bool IsInternalNode
         {
             get { return !IsExternalNode; }
         }
+
         public int Level
         {
             get
@@ -89,6 +101,7 @@ namespace Helper
                 return level;
             }
         }
+
         public int Depth
         {
             get { return Level - 1; }
@@ -99,11 +112,16 @@ namespace Helper
             get
             {
                 if (IsLeaf)
+                {
                     return 0;
+                }
 
                 var height = 0;
                 foreach (var child in Children)
+                {
                     height = Math.Max(height, child.Height);
+                }
+
                 return 1 + height;
             }
         }
@@ -112,17 +130,23 @@ namespace Helper
         {
             Children = new List<AbstractTree>();
         }
+
         protected AbstractTree(AbstractTree tree)
         {
             if (tree == null)
+            {
                 throw new ArgumentNullException(nameof(tree));
+            }
 
             Children = tree.Children;
         }
+
         protected AbstractTree(ICollection<AbstractTree> children)
         {
             if (children == null)
+            {
                 throw new ArgumentNullException(nameof(children));
+            }
 
             Children = new List<AbstractTree>(children);
             Children.RemoveAll(node => node == null);
@@ -131,20 +155,34 @@ namespace Helper
         public bool IsSibling(AbstractTree sibling)
         {
             if (sibling == null)
+            {
                 throw new ArgumentNullException(nameof(sibling));
+            }
+
             if (IsRootNode)
+            {
                 return false;
+            }
+
             return Parent.Children.Contains(sibling);
         }
 
         public bool IsAncestor(AbstractTree ancestor)
         {
             if (ancestor == null)
+            {
                 throw new ArgumentNullException(nameof(ancestor));
+            }
+
             var root = this;
             while (root.IsChildNode)
+            {
                 if ((root = root.Parent) == ancestor)
+                {
                     return true;
+                }
+            }
+
             return false;
         }
 
@@ -156,17 +194,24 @@ namespace Helper
         public bool Contains(AbstractTree value)
         {
             if (value == null)
+            {
                 throw new ArgumentNullException(nameof(value));
+            }
 
             if (value.Root != Root)
+            {
                 return false;
+            }
+
             return value.Level < Level;
         }
 
         public void Add(AbstractTree value)
         {
             if (value == null)
+            {
                 throw new ArgumentNullException(nameof(value));
+            }
 
             Remove(value);
             Children.Add(value);
@@ -175,11 +220,19 @@ namespace Helper
         public bool Remove(AbstractTree value)
         {
             if (value == null)
+            {
                 return false;
+            }
+
             if (!Contains(value))
+            {
                 return false;
+            }
+
             if (!value.Parent.Children.Remove(value))
+            {
                 return false;
+            }
 
             return true;
         }
@@ -187,7 +240,10 @@ namespace Helper
         public void Clear()
         {
             foreach (var tree in Children)
+            {
                 tree.Clear();
+            }
+
             Children.Clear();
         }
 
@@ -199,13 +255,20 @@ namespace Helper
         public AbstractTree[] GetPath(AbstractTree descendant)
         {
             if (descendant == null)
+            {
                 throw new ArgumentNullException(nameof(descendant));
+            }
+
             if (!IsDescendant(descendant))
+            {
                 return null;
+            }
 
             var path = new List<AbstractTree>();
             do
+            {
                 path.Add(descendant);
+            }
             while ((descendant = descendant.Parent) != this);
             path.Add(this);
             return path.ToArray();
@@ -215,10 +278,12 @@ namespace Helper
         {
             return new Enumerator(this);
         }
+
         IEnumerator<AbstractTree> IEnumerable<AbstractTree>.GetEnumerator()
         {
             return GetEnumerator();
         }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
@@ -251,10 +316,7 @@ namespace Helper
 
             internal Enumerator(AbstractTree tree)
             {
-                if (tree == null)
-                    throw new ArgumentNullException(nameof(tree));
-
-                Tree = tree;
+                Tree = tree ?? throw new ArgumentNullException(nameof(tree));
                 Current = default(AbstractTree);
                 Stack = new Stack<Position>();
                 Reset();
@@ -263,12 +325,16 @@ namespace Helper
             public bool MoveNext()
             {
                 if (Stack.Count == 0)
+                {
                     return false;
+                }
 
                 var position = Stack.Pop();
                 Current = position.Tree;
                 if (Current.IsBranch)
+                {
                     PushNextChild(position);
+                }
                 else
                 {
                     while (Stack.Count > 0)
@@ -309,6 +375,7 @@ namespace Helper
                     get;
                     private set;
                 }
+
                 public int Index
                 {
                     get;

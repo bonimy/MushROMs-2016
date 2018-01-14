@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace Helper
 {
-
     public abstract class Node : IEnumerable<Node>
     {
         public Node Parent
@@ -25,7 +24,10 @@ namespace Helper
             {
                 var root = this;
                 while (root.IsChildNode)
+                {
                     root = root.Parent;
+                }
+
                 return root;
             }
         }
@@ -36,7 +38,10 @@ namespace Helper
             {
                 var count = Children.Count;
                 foreach (var node in Children)
+                {
                     count += node.Count;
+                }
+
                 return count + 1;
             }
         }
@@ -50,26 +55,32 @@ namespace Helper
         {
             get { return Parent == null; }
         }
+
         public bool IsChildNode
         {
             get { return !IsRootNode; }
         }
+
         public bool IsLeaf
         {
             get { return Children.Count == 0; }
         }
+
         public bool IsExternalNode
         {
             get { return IsLeaf; }
         }
+
         public bool IsBranch
         {
             get { return !IsLeaf; }
         }
+
         public bool IsInternalNode
         {
             get { return !IsExternalNode; }
         }
+
         public int Level
         {
             get
@@ -84,6 +95,7 @@ namespace Helper
                 return level;
             }
         }
+
         public int Depth
         {
             get { return Level - 1; }
@@ -94,11 +106,16 @@ namespace Helper
             get
             {
                 if (IsLeaf)
+                {
                     return 0;
+                }
 
                 var height = 0;
                 foreach (var node in Children)
+                {
                     height = Math.Max(height, node.Height);
+                }
+
                 return 1 + height;
             }
         }
@@ -107,17 +124,23 @@ namespace Helper
         {
             Children = new List<Node>();
         }
+
         protected Node(Node node)
         {
             if (node == null)
+            {
                 throw new ArgumentNullException(nameof(node));
+            }
 
             Children = node.Children;
         }
+
         protected Node(ICollection<Node> children)
         {
             if (children == null)
+            {
                 throw new ArgumentNullException(nameof(children));
+            }
 
             Children = new List<Node>(children);
         }
@@ -125,20 +148,34 @@ namespace Helper
         public bool IsSibling(Node sibling)
         {
             if (sibling == null)
+            {
                 throw new ArgumentNullException(nameof(sibling));
+            }
+
             if (IsRootNode)
+            {
                 return false;
+            }
+
             return Parent.Children.Contains(sibling);
         }
 
         public bool IsAncestor(Node ancestor)
         {
             if (ancestor == null)
+            {
                 throw new ArgumentNullException(nameof(ancestor));
+            }
+
             var root = this;
             while (root.IsChildNode)
+            {
                 if ((root = root.Parent) == ancestor)
+                {
                     return true;
+                }
+            }
+
             return false;
         }
 
@@ -150,19 +187,29 @@ namespace Helper
         public bool Contains(Node value)
         {
             if (value == null)
+            {
                 return false;
+            }
 
             if (value.Root != Root)
+            {
                 return false;
+            }
+
             return value.Level < Level;
         }
 
         public bool Remove(Node value)
         {
             if (!Contains(value))
+            {
                 return false;
+            }
+
             if (!value.Parent.Children.Remove(value))
+            {
                 return false;
+            }
 
             return true;
         }
@@ -170,7 +217,10 @@ namespace Helper
         public void Clear()
         {
             foreach (var node in Children)
+            {
                 node.Clear();
+            }
+
             Children.Clear();
         }
 
@@ -182,13 +232,20 @@ namespace Helper
         public Node[] GetPath(Node descendant)
         {
             if (descendant == null)
+            {
                 throw new ArgumentNullException(nameof(descendant));
+            }
+
             if (!IsDescendant(descendant))
+            {
                 return null;
+            }
 
             var path = new List<Node>();
             do
+            {
                 path.Add(descendant);
+            }
             while ((descendant = descendant.Parent) != this);
             path.Add(this);
             return path.ToArray();
@@ -198,10 +255,12 @@ namespace Helper
         {
             return new Enumerator(this);
         }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
+
         IEnumerator<Node> IEnumerable<Node>.GetEnumerator()
         {
             return GetEnumerator();
@@ -234,10 +293,7 @@ namespace Helper
 
             internal Enumerator(Node tree)
             {
-                if (tree == null)
-                    throw new ArgumentNullException(nameof(tree));
-
-                Tree = tree;
+                Tree = tree ?? throw new ArgumentNullException(nameof(tree));
                 Current = default(Node);
                 Stack = new Stack<Position>();
                 Reset();
@@ -246,12 +302,16 @@ namespace Helper
             public bool MoveNext()
             {
                 if (Stack.Count == 0)
+                {
                     return false;
+                }
 
                 var path = Stack.Pop();
                 Current = path.Node;
                 if (Current.IsBranch)
+                {
                     PushNextChild(path);
+                }
                 else
                 {
                     while (Stack.Count > 0)
@@ -292,6 +352,7 @@ namespace Helper
                     get;
                     private set;
                 }
+
                 public int Index
                 {
                     get;

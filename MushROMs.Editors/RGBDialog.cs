@@ -10,6 +10,7 @@ namespace MushROMs.Editors
         {
             get;
         }
+
         protected sealed override DialogForm BaseForm
         {
             get { return RGBForm; }
@@ -26,11 +27,13 @@ namespace MushROMs.Editors
             get { return RGBForm.Red; }
             set { RGBForm.Red = value; }
         }
+
         public float Green
         {
             get { return RGBForm.Green; }
             set { RGBForm.Green = value; }
         }
+
         public float Blue
         {
             get { return RGBForm.Blue; }

@@ -16,11 +16,13 @@ namespace Helper.ColorSpaces
             get;
             private set;
         }
+
         public float Green
         {
             get;
             private set;
         }
+
         public float Blue
         {
             get;
@@ -30,25 +32,41 @@ namespace Helper.ColorSpaces
         public ColorWeight(float red, float green, float blue)
         {
             if (Single.IsNaN(red))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(red)), nameof(red));
+            }
+
             if (Single.IsNaN(green))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(green)), nameof(green));
+            }
+
             if (Single.IsNaN(blue))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(blue)), nameof(blue));
+            }
 
             red = MathHelper.SnapToLimit(red, 0, Tolerance);
             green = MathHelper.SnapToLimit(green, 0, Tolerance);
             blue = MathHelper.SnapToLimit(blue, 0, Tolerance);
 
             if (red < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(red),
                     SR.ErrorInvalidClosedLowerBound(nameof(red), red, 0));
+            }
+
             if (green < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(green),
                     SR.ErrorInvalidClosedLowerBound(nameof(green), green, 0));
+            }
+
             if (blue < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(blue),
                     SR.ErrorInvalidClosedLowerBound(nameof(blue), blue, 0));
+            }
 
             var total = red + green + blue;
 
@@ -59,7 +77,9 @@ namespace Helper.ColorSpaces
                 Blue = blue / total;
             }
             else
+            {
                 this = Empty;
+            }
         }
 
         public static explicit operator ColorWeight(ColorRgb color)
@@ -73,6 +93,7 @@ namespace Helper.ColorSpaces
                 left.Green == right.Green &&
                 left.Blue == right.Blue;
         }
+
         public static bool operator !=(ColorWeight left, ColorWeight right)
         {
             return !(left == right);
@@ -81,14 +102,18 @@ namespace Helper.ColorSpaces
         public override bool Equals(object obj)
         {
             if (!(obj is ColorWeight))
+            {
                 return false;
+            }
 
             return (ColorWeight)obj == this;
         }
+
         public override int GetHashCode()
         {
             return Hash.Generate(Red, Green, Blue);
         }
+
         public override string ToString()
         {
             var sb = new StringBuilder();

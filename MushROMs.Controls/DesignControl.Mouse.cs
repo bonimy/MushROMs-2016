@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -16,6 +15,7 @@ namespace MushROMs.Controls
             get;
             private set;
         }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Point PreviousMousePosition
@@ -31,6 +31,7 @@ namespace MushROMs.Controls
             get;
             private set;
         }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public static MouseButtons PreviousMouseButtons
@@ -38,6 +39,7 @@ namespace MushROMs.Controls
             get;
             private set;
         }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public static MouseButtons ActiveMouseButtons

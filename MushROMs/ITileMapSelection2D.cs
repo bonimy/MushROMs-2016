@@ -10,6 +10,7 @@ namespace MushROMs
         {
             get;
         }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Num")]
         int NumTiles
         {
@@ -17,14 +18,19 @@ namespace MushROMs
         }
 
         void IterateIndexes(TileMethod2D method);
+
         Position[] GetSelectedIndexes();
+
         bool ContainsIndex(Position index);
 
         ITileMapSelection2D Copy(Position startIndex);
 
         ITileMapSelection2D LogicalAnd(ITileMapSelection2D value);
+
         ITileMapSelection2D LogicalOr(ITileMapSelection2D value);
+
         ITileMapSelection2D LogicalXor(ITileMapSelection2D value);
+
         ITileMapSelection2D LogicalNegate(ITileMapSelection2D value);
     }
 }

@@ -16,7 +16,11 @@
 
         public StartTime StartTime
         {
-            get { return (StartTime)(Value1 >> 6); }
+            get
+            {
+                return (StartTime)(Value1 >> 6);
+            }
+
             set
             {
                 Value1 &= unchecked((byte)~(3 << 6));
@@ -26,7 +30,11 @@
 
         public StartYPosition StartYPosition
         {
-            get { return (StartYPosition)((Value1 >> 3) & 7); }
+            get
+            {
+                return (StartYPosition)((Value1 >> 3) & 7);
+            }
+
             set
             {
                 Value1 &= unchecked((byte)~(7 << 3));
@@ -36,7 +44,11 @@
 
         public BackgroundType BackgroundType
         {
-            get { return (BackgroundType)(Value1 & 7); }
+            get
+            {
+                return (BackgroundType)(Value1 & 7);
+            }
+
             set
             {
                 Value1 &= unchecked((byte)~7);
@@ -46,7 +58,11 @@
 
         public ObjectMode ObjectMode
         {
-            get { return (ObjectMode)(Value2 >> 5); }
+            get
+            {
+                return (ObjectMode)(Value2 >> 5);
+            }
+
             set
             {
                 Value2 &= unchecked((byte)~(7 << 5));
@@ -56,7 +72,11 @@
 
         public SceneryType SceneryType
         {
-            get { return (SceneryType)((Value2 >> 4) & 3); }
+            get
+            {
+                return (SceneryType)((Value2 >> 4) & 3);
+            }
+
             set
             {
                 Value2 &= unchecked((byte)~(3 << 4));
@@ -66,7 +86,11 @@
 
         public TerrainMode TerrainMode
         {
-            get { return (TerrainMode)(Value2 & 0x0F); }
+            get
+            {
+                return (TerrainMode)(Value2 & 0x0F);
+            }
+
             set
             {
                 Value2 &= unchecked((byte)~0x0F);
@@ -95,6 +119,7 @@
             return left.Value1 == right.Value1 &&
                 left.Value2 == right.Value2;
         }
+
         public static bool operator !=(LevelHeader left, LevelHeader right)
         {
             return !(left == right);
@@ -103,7 +128,10 @@
         public override bool Equals(object obj)
         {
             if (!(obj is LevelHeader))
+            {
                 return false;
+            }
+
             return (LevelHeader)obj == this;
         }
 
@@ -114,7 +142,7 @@
 
         public override string ToString()
         {
-            return string.Format("{0} {1}", Value1.ToString("X2"), Value2.ToString("X2"));
+            return System.String.Format("{0} {1}", Value1.ToString("X2"), Value2.ToString("X2"));
         }
     }
 }

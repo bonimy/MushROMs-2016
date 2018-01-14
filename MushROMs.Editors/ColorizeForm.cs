@@ -1,6 +1,6 @@
 ﻿using System;
-using MushROMs.Controls;
 using Helper.ColorSpaces;
+using MushROMs.Controls;
 using MushROMs.Editors.Properties;
 
 namespace MushROMs.Editors
@@ -14,17 +14,20 @@ namespace MushROMs.Editors
             get
             {
                 if (DialogProxy != null)
+                {
                     return DialogProxy;
+                }
+
                 return base.ProxySender;
             }
         }
 
         public event EventHandler ColorValueChanged;
-        
+
         private static readonly HSL FallbackAdjust = new HSL(0, 0, 0);
         private static readonly HSL FallbackColorize = new HSL(0.25f, 0.50f, 0.50f);
         private const float FallbackEffectiveness = 1.00f;
-        
+
         private HSL SavedAdjust, SavedColorize;
         private bool RunEvent;
 
@@ -48,7 +51,11 @@ namespace MushROMs.Editors
 
         private HSL CurrentHSL
         {
-            get { return new HSL(Hue, Saturation, Lightness); }
+            get
+            {
+                return new HSL(Hue, Saturation, Lightness);
+            }
+
             set
             {
                 RunEvent = false;
@@ -109,8 +116,10 @@ namespace MushROMs.Editors
                 Weight = FallbackEffectiveness;
             }
             else
+            {
                 CurrentHSL = FallbackAdjust;
-            
+            }
+
             btnReset.Enabled = false;
         }
 
@@ -147,7 +156,9 @@ namespace MushROMs.Editors
         private void OnColorValueChanged(EventArgs e)
         {
             if (RunEvent)
+            {
                 ColorValueChanged?.Invoke(ProxySender, e);
+            }
         }
 
         private void Reset_Click(object sender, EventArgs e)
@@ -199,11 +210,13 @@ namespace MushROMs.Editors
                 get;
                 set;
             }
+
             public float Saturation
             {
                 get;
                 set;
             }
+
             public float Lightness
             {
                 get;

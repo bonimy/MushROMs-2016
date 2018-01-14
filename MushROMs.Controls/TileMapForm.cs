@@ -12,11 +12,17 @@ namespace MushROMs.Controls
 
         public TileMapControl TileMapControl
         {
-            get { return _mainTileMapControl; }
+            get
+            {
+                return _mainTileMapControl;
+            }
+
             set
             {
                 if (TileMapControl == value)
+                {
                     return;
+                }
 
                 _mainTileMapControl = value;
             }
@@ -28,8 +34,7 @@ namespace MushROMs.Controls
         {
             get
             {
-                return TileMapControl != null ?
-                  TileMapControl.TileMap : null;
+                return TileMapControl?.TileMap;
             }
         }
 
@@ -44,6 +49,7 @@ namespace MushROMs.Controls
         {
             get { return new Size(1, 1); }
         }
+
         protected virtual Size MaximumTileSize
         {
             get { return Size.Empty; }
@@ -53,22 +59,28 @@ namespace MushROMs.Controls
         {
             if (TileMapControl != null)
             {
-                var form =  WinAPIMethods.GetWindowRectangle(this);
+                var form = WinAPIMethods.GetWindowRectangle(this);
                 var child = WinAPIMethods.GetWindowRectangle(TileMapControl);
                 var client = WinAPIMethods.DeflateRectangle(child, TileMapControl.BorderPadding);
                 MainTileMapPadding = WinAPIMethods.GetPadding(form, client);
             }
             else
+            {
                 MainTileMapPadding = Padding.Empty;
+            }
         }
 
         protected virtual void SetSizeFromTileMapControl()
         {
             if (TileMapControl.TileMapResizeMode == TileMapResizeMode.ControlResize)
+            {
                 return;
+            }
 
             if (TileMapControl.TileMapResizeMode == TileMapResizeMode.None)
+            {
                 TileMapControl.TileMapResizeMode = TileMapResizeMode.ControlResize;
+            }
 
             var client = ClientSize;
             var dbg = WinAPIMethods.InflateSize(client, WindowPadding);
@@ -77,7 +89,9 @@ namespace MushROMs.Controls
             Size = window;
 
             if (TileMapControl.TileMapResizeMode == TileMapResizeMode.ControlResize)
+            {
                 TileMapControl.TileMapResizeMode = TileMapResizeMode.None;
+            }
         }
 
         private Rectangle GetTileMapRectangle(Size window)
@@ -89,7 +103,9 @@ namespace MushROMs.Controls
         {
             // Edge case for null rectangles
             if (window.Size == Size.Empty)
+            {
                 return Rectangle.Empty;
+            }
 
             // Remove the control padding from rect.
             var tilemap = WinAPIMethods.DeflateRectangle(window, MainTileMapPadding);
@@ -111,23 +127,36 @@ namespace MushROMs.Controls
             if (window.Left != parent.Left && window.Right == parent.Right)
             {
                 if (tilemap.Width >= TileMap.CellWidth)
+                {
                     tilemap.X += rWidth;
+                }
                 else
+                {
                     tilemap.X = client.X;
+                }
             }
             if (window.Top != parent.Top && window.Bottom == parent.Bottom)
             {
                 if (tilemap.Height >= TileMap.CellHeight)
+                {
                     tilemap.Y += rHeight;
+                }
                 else
+                {
                     tilemap.Y = client.Y;
+                }
             }
 
             // Ensure non-negative values.
             if (tilemap.Width <= 0)
+            {
                 tilemap.Width = TileMap.CellWidth;
+            }
+
             if (tilemap.Height <= 0)
+            {
                 tilemap.Height = TileMap.CellHeight;
+            }
 
             return tilemap;
         }
@@ -176,9 +205,14 @@ namespace MushROMs.Controls
             foreach (var size in max)
             {
                 if (size.Width > 0)
+                {
                     window.Width = Math.Min(window.Width, size.Width);
+                }
+
                 if (size.Height > 0)
+                {
                     window.Height = Math.Min(window.Height, size.Height);
+                }
             }
 
             return window;
@@ -194,6 +228,7 @@ namespace MushROMs.Controls
         protected override void OnResizeEnd(EventArgs e)
         {
             base.OnResizeEnd(e);
+
             //if (TileMapControl.TileMapResizeMode == TileMapResizeMode.FormResize)
             //    TileMapControl.TileMapResizeMode = TileMapResizeMode.None;
         }
@@ -201,15 +236,19 @@ namespace MushROMs.Controls
         protected override Rectangle AdjustSizingRectangle(Rectangle window)
         {
             if (TileMapControl == null || MainTileMapPadding == Padding.Empty)
+            {
                 return base.AdjustSizingRectangle(window);
+            }
 
             var tilemap = GetTileMapRectangle(window);
             tilemap.Size = GetBoundTileSize(tilemap.Size);
 
             // Set new tile size
             if (TileMapControl.TileMapResizeMode != TileMapResizeMode.TileMapCellResize)
+            {
                 TileMap.ViewSize = new Size(tilemap.Width / TileMap.CellWidth,
                     tilemap.Height / TileMap.CellHeight);
+            }
 
             // Adjust window size to bind to tilemap.
             return WinAPIMethods.InflateRectangle(tilemap, MainTileMapPadding);
@@ -218,15 +257,19 @@ namespace MushROMs.Controls
         protected override Size AdjustSize(Size window)
         {
             if (TileMapControl == null || MainTileMapPadding == Padding.Empty)
+            {
                 return base.AdjustSize(window);
+            }
 
             var tilemap = GetTileMapRectangle(window).Size;
             tilemap = GetBoundTileSize(tilemap);
 
             // Set new tile size
             if (TileMapControl.TileMapResizeMode != TileMapResizeMode.TileMapCellResize)
+            {
                 TileMap.ViewSize = new Size(tilemap.Width / TileMap.CellWidth,
                     tilemap.Height / TileMap.CellHeight);
+            }
 
             // Return inflated window size.
             return WinAPIMethods.InflateSize(tilemap, MainTileMapPadding);

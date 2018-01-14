@@ -15,11 +15,17 @@ namespace MushROMs.Editors
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new GFXEditor Editor
         {
-            get { return (GFXEditor)base.Editor; }
+            get
+            {
+                return (GFXEditor)base.Editor;
+            }
+
             set
             {
                 if (Editor == value)
+                {
                     return;
+                }
 
                 if (Editor != null)
                 {
@@ -51,6 +57,7 @@ namespace MushROMs.Editors
                 }
                 return _palette;
             }
+
             set
             {
                 if (Palette != null)
@@ -77,10 +84,14 @@ namespace MushROMs.Editors
             get
             {
                 if (_colorSelection == null)
+                {
                     _colorSelection = new GFXColorSelection(
                         Palette.Palette.StartAddress, Palette.TileMap.ZeroTile, Editor.GraphicsFormat);
+                }
+
                 return _colorSelection;
             }
+
             set
             {
                 _colorSelection = value;
@@ -94,9 +105,13 @@ namespace MushROMs.Editors
             get
             {
                 if (_paletteData == null)
+                {
                     _paletteData = new PaletteData(Palette.Palette, ColorSelection);
+                }
+
                 return _paletteData;
             }
+
             set
             {
                 _paletteData = value;

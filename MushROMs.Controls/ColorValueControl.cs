@@ -10,6 +10,7 @@ namespace MushROMs.Controls
         private static readonly Size FallbackClientSize = new Size(0x10, 0x10);
         private static readonly Color FallbackColor = Color.Empty;
         private const Keys FallbackClickKey = Keys.Space;
+
         private static readonly DashedPenPair FallbackBorderDashedPens = new DashedPenPair(
             Color.Black, Color.White, 1, 1);
 
@@ -25,11 +26,17 @@ namespace MushROMs.Controls
         [Description("The selected color for the control.")]
         public Color SelectedColor
         {
-            get { return _selectedColor; }
+            get
+            {
+                return _selectedColor;
+            }
+
             set
             {
                 if (SelectedColor == value)
+                {
                     return;
+                }
 
                 _selectedColor = value;
                 OnColorValueChanged(EventArgs.Empty);
@@ -40,7 +47,11 @@ namespace MushROMs.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DashedPenPair BorderDashedPens
         {
-            get { return _borderDashedPens; }
+            get
+            {
+                return _borderDashedPens;
+            }
+
             set
             {
                 _borderDashedPens = value;
@@ -63,12 +74,14 @@ namespace MushROMs.Controls
 
         protected virtual void SelectColor(EventArgs e)
         {
-            using (ColorDialog dlg = new ColorDialog())
+            using (var dlg = new ColorDialog())
             {
                 dlg.FullOpen = true;
                 dlg.Color = SelectedColor;
                 if (dlg.ShowDialog() == DialogResult.OK)
+                {
                     SelectedColor = dlg.Color;
+                }
             }
         }
 
@@ -81,10 +94,14 @@ namespace MushROMs.Controls
         protected virtual void ProcessKeyClick(KeyEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
             if (e.KeyCode == FallbackClickKey)
+            {
                 OnClick(EventArgs.Empty);
+            }
         }
 
         protected override void OnEnabledChanged(EventArgs e)
@@ -115,26 +132,35 @@ namespace MushROMs.Controls
         {
             DrawColorValue(e);
             if (Focused)
+            {
                 DrawFocusedBorder(e);
+            }
+
             base.OnPaint(e);
         }
 
         protected virtual void DrawColorValue(PaintEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
-            
-            using (SolidBrush brush = new SolidBrush(SelectedColor))
+            }
+
+            using (var brush = new SolidBrush(SelectedColor))
+            {
                 e.Graphics.FillRectangle(brush, ClientRectangle);
+            }
         }
 
         protected virtual void DrawFocusedBorder(PaintEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
             var border = new Rectangle(0, 0, ClientWidth - 1, ClientHeight - 1);
-            
+
             using (Pen pen1 = new Pen(Color.Empty, 1),
                        pen2 = new Pen(Color.Empty, 1))
             {

@@ -9,26 +9,38 @@ namespace MushROMs.Controls
 
         public IIntegerComponent IntegerComponent
         {
-            get { return _integerComponent; }
+            get
+            {
+                return _integerComponent;
+            }
+
             set
             {
                 // Do not link to itself
                 if (this == value)
+                {
                     return;
+                }
 
                 // Avoid redundant setting.
                 if (IntegerComponent == value)
+                {
                     return;
+                }
 
                 // Remove event from last component
                 if (IntegerComponent != null)
+                {
                     IntegerComponent.ValueChanged -= NumericControl_ValueChanged;
+                }
 
                 _integerComponent = value;
 
                 // Observe value of component
                 if (IntegerComponent != null)
+                {
                     IntegerComponent.ValueChanged += new EventHandler(NumericControl_ValueChanged);
+                }
             }
         }
 
@@ -42,7 +54,9 @@ namespace MushROMs.Controls
         {
             if (IntegerComponent.Value >= Minimum &&
                 IntegerComponent.Value <= Maximum)
+            {
                 Value = IntegerComponent.Value;
+            }
         }
     }
 }

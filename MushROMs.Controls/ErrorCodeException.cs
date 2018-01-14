@@ -2,8 +2,8 @@
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-using MushROMs.Controls.Properties;
 using Helper;
+using MushROMs.Controls.Properties;
 
 namespace MushROMs.Controls
 {
@@ -19,9 +19,11 @@ namespace MushROMs.Controls
         public ErrorCodeException() :
             this(Marshal.GetLastWin32Error())
         { }
+
         public ErrorCodeException(int errorCode) :
             this(errorCode, GetErrorCodeMessage(errorCode))
         { }
+
         public ErrorCodeException(int errorCode, string message) :
             base(message)
         {
@@ -33,16 +35,21 @@ namespace MushROMs.Controls
         {
             ErrorCode = Marshal.GetLastWin32Error();
         }
+
         public ErrorCodeException(string message, Exception innerException) :
             base(message, innerException)
         {
             ErrorCode = Marshal.GetLastWin32Error();
         }
+
         protected ErrorCodeException(SerializationInfo info, StreamingContext context) :
             base(info, context)
         {
             if (info == null)
+            {
                 throw new ArgumentNullException(nameof(info));
+            }
+
             ErrorCode = info.GetInt32(nameof(ErrorCode));
         }
 
@@ -55,7 +62,9 @@ namespace MushROMs.Controls
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             if (info == null)
+            {
                 throw new ArgumentNullException(nameof(info));
+            }
 
             base.GetObjectData(info, context);
             info.AddValue(nameof(ErrorCode), ErrorCode, ErrorCode.GetType());

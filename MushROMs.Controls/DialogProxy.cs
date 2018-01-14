@@ -60,6 +60,7 @@ namespace MushROMs.Controls
         {
             return BaseForm.ShowDialog();
         }
+
         public DialogResult ShowDialog(IWin32Window owner)
         {
             return BaseForm.ShowDialog(owner);
@@ -70,6 +71,7 @@ namespace MushROMs.Controls
         {
             return BaseForm.CreateObjRef(requestedType);
         }
+
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService()
         {
@@ -85,7 +87,9 @@ namespace MushROMs.Controls
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 BaseForm.Dispose();
+            }
         }
     }
 }

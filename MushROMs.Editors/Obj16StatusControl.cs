@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using MushROMs.SNES;
 
 namespace MushROMs.Editors
 {
@@ -19,6 +17,7 @@ namespace MushROMs.Editors
             add { btnNextByte.Click += value; }
             remove { btnNextByte.Click -= value; }
         }
+
         public event EventHandler LastByte
         {
             add { btnLastByte.Click += value; }
@@ -36,13 +35,23 @@ namespace MushROMs.Editors
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ZoomIndex
         {
-            get { return cbxZoom.SelectedIndex; }
+            get
+            {
+                return cbxZoom.SelectedIndex;
+            }
+
             set
             {
                 if (value <= 0)
+                {
                     value = 0;
+                }
+
                 if (value > ZoomScaleCount)
+                {
                     value = ZoomScaleCount - 1;
+                }
+
                 cbxZoom.SelectedIndex = value;
             }
         }

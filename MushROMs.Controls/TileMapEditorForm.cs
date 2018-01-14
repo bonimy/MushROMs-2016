@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MushROMs.Controls
 {
@@ -14,19 +12,16 @@ namespace MushROMs.Controls
 
         protected TileMapEditorForm(IEditor editor)
         {
-            if (editor == null)
-                throw new ArgumentNullException(nameof(editor));
-
-            Editor = editor;
+            Editor = editor ?? throw new ArgumentNullException(nameof(editor));
         }
 
         protected override void OnLoad(EventArgs e)
         {
-            Editor.NameChanged      += Editor_SetFormTitle;
+            Editor.NameChanged += Editor_SetFormTitle;
             Editor.ExtensionChanged += Editor_SetFormTitle;
-            Editor.DataInitialized  += Editor_SetFormTitle;
-            Editor.DataModified     += Editor_SetFormTitle;
-            Editor.FileSaved        += Editor_SetFormTitle;
+            Editor.DataInitialized += Editor_SetFormTitle;
+            Editor.DataModified += Editor_SetFormTitle;
+            Editor.FileSaved += Editor_SetFormTitle;
             SetFormTitleFromEditor();
 
             SetTileMapPadding();
@@ -43,7 +38,10 @@ namespace MushROMs.Controls
         {
             var title = Editor.Name + Editor.Extension;
             if (!Editor.Saved)
+            {
                 title += '*';
+            }
+
             Text = title;
         }
     }

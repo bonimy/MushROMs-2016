@@ -13,15 +13,23 @@ namespace MushROMs
 
         public int GridSize
         {
-            get { return _gridSize; }
+            get
+            {
+                return _gridSize;
+            }
+
             set
             {
                 if (GridSize == value)
+                {
                     return;
+                }
 
                 if (value < 0)
+                {
                     throw new ArgumentOutOfRangeException(nameof(value),
                         SR.ErrorInvalidClosedLowerBound(nameof(value), value, 0));
+                }
 
                 _gridSize = value;
                 OnGridSizeChanged(EventArgs.Empty);
@@ -30,11 +38,17 @@ namespace MushROMs
 
         public int ZeroTile
         {
-            get { return _zeroTile; }
+            get
+            {
+                return _zeroTile;
+            }
+
             set
             {
                 if (ZeroTile == value)
+                {
                     return;
+                }
 
                 _zeroTile = value;
                 OnZeroTileChanged(EventArgs.Empty);
@@ -48,11 +62,17 @@ namespace MushROMs
 
         public int ActiveGridTile
         {
-            get { return _activeGridTile; }
+            get
+            {
+                return _activeGridTile;
+            }
+
             set
             {
                 if (ActiveGridTile == value)
+                {
                     return;
+                }
 
                 _activeGridTile = value;
                 OnActiveGridTileChanged(EventArgs.Empty);
@@ -67,14 +87,22 @@ namespace MushROMs
 
         public ITileMapSelection1D Selection
         {
-            get { return _selection; }
+            get
+            {
+                return _selection;
+            }
+
             set
             {
                 if (value == null)
+                {
                     throw new ArgumentNullException(nameof(value));
+                }
 
                 if (Selection == value)
+                {
                     return;
+                }
 
                 _selection = value;
                 OnSelectionChanged(EventArgs.Empty);
@@ -93,18 +121,13 @@ namespace MushROMs
 
         public void InitializeSelection(ITileMapSelection1D selection)
         {
-            if (selection == null)
-                throw new ArgumentNullException(nameof(selection));
-
-            Selection = selection;
+            Selection = selection ?? throw new ArgumentNullException(nameof(selection));
             OnSelectionInitialized(EventArgs.Empty);
         }
+
         public void CreateSelection(ITileMapSelection1D selection)
         {
-            if (selection == null)
-                throw new ArgumentNullException(nameof(selection));
-
-            Selection = selection;
+            Selection = selection ?? throw new ArgumentNullException(nameof(selection));
             OnSelectionCreated(EventArgs.Empty);
         }
 
@@ -112,10 +135,12 @@ namespace MushROMs
         {
             return GetViewTileX(gridTile, ViewWidth, ZeroTile);
         }
+
         public int GetViewTileY(int gridTile)
         {
             return GetViewTileY(gridTile, ViewWidth, ZeroTile);
         }
+
         public Position GetViewTile(int gridTile)
         {
             return GetViewTile(gridTile, ViewWidth, ZeroTile);
@@ -125,10 +150,12 @@ namespace MushROMs
         {
             return GetViewTileX(gridTile, viewWidth, 0);
         }
+
         public static int GetViewTileY(int gridTile, int viewWidth)
         {
             return GetViewTileY(gridTile, viewWidth, 0);
         }
+
         public static Position GetViewTile(int gridTile, int viewWidth)
         {
             return GetViewTile(gridTile, viewWidth, 0);
@@ -137,19 +164,25 @@ namespace MushROMs
         public static int GetViewTileX(int gridTile, int viewWidth, int zeroIndex)
         {
             if (viewWidth <= 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(viewWidth),
                     SR.ErrorInvalidOpenLowerBound(nameof(viewWidth), viewWidth, 0));
+            }
 
             return (gridTile - zeroIndex) % viewWidth;
         }
+
         public static int GetViewTileY(int gridTile, int viewWidth, int zeroIndex)
         {
             if (viewWidth <= 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(viewWidth),
                     SR.ErrorInvalidOpenLowerBound(nameof(viewWidth), viewWidth, 0));
+            }
 
             return (gridTile - zeroIndex) / viewWidth;
         }
+
         public static Position GetViewTile(int gridTile, int viewWidth, int zeroIndex)
         {
             return new Position(GetViewTileX(gridTile, viewWidth, zeroIndex),
@@ -160,6 +193,7 @@ namespace MushROMs
         {
             return GetGridTile(viewTile, ViewWidth, ZeroTile);
         }
+
         public int GetGridTile(int viewTileX, int viewTileY)
         {
             return GetGridTile(viewTileX, viewTileY, ViewWidth, ZeroTile);
@@ -169,6 +203,7 @@ namespace MushROMs
         {
             return GetGridTile(viewTile, viewWidth, 0);
         }
+
         public static int GetGridTile(int viewTileX, int viewTileY, int viewWidth)
         {
             return GetGridTile(viewTileX, viewTileY, viewWidth, 0);
@@ -178,11 +213,14 @@ namespace MushROMs
         {
             return GetGridTile(viewTile.X, viewTile.Y, viewWidth, zeroIndex);
         }
+
         public static int GetGridTile(int viewTileX, int viewTileY, int viewWidth, int zeroIndex)
         {
             if (viewWidth <= 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(viewWidth),
                     SR.ErrorInvalidOpenLowerBound(nameof(viewWidth), viewWidth, 0));
+            }
 
             return (viewTileY * viewWidth) + viewTileX + zeroIndex;
         }

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Globalization;
+using System.IO;
 using Helper.Properties;
 
 namespace Helper
@@ -51,7 +51,9 @@ namespace Helper
         {
             var name = Path.GetFileName(path);
             if (String.IsNullOrEmpty(name))
+            {
                 name = Resources.ErrorFileFormatName;
+            }
 
             return GetString(Resources.ErrorFileFormat, name);
         }
@@ -79,7 +81,9 @@ namespace Helper
         public static string GetUntitledName(int number, string ext)
         {
             if (ext == null)
-                ext = string.Empty;
+            {
+                ext = String.Empty;
+            }
 
             return GetString(Resources.UntitledName, GetString(number)) + ext;
         }
@@ -88,14 +92,18 @@ namespace Helper
         {
             return String.Format(CurrentCulture, format, args);
         }
+
         public static string GetString(IFormattable value)
         {
             return GetString(value, null);
         }
+
         public static string GetString(IFormattable value, string format)
         {
             if (value == null)
+            {
                 return null;
+            }
 
             return value.ToString(format, CurrentCulture);
         }

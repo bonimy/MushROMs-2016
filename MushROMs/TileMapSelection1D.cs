@@ -10,6 +10,7 @@
             get;
             protected set;
         }
+
         public abstract int NumTiles
         {
             get;
@@ -24,13 +25,17 @@
         public int[] GetSelectedIndexes()
         {
             if (SelectedIndexes == null)
+            {
                 SelectedIndexes = InitializeSelectedIndexes();
+            }
+
             return SelectedIndexes;
         }
 
         public abstract void IterateIndexes(TileMethod1D method);
 
         protected abstract int[] InitializeSelectedIndexes();
+
         public abstract bool ContainsIndex(int index);
 
         public abstract ITileMapSelection1D Copy(int startIndex);
@@ -39,14 +44,17 @@
         {
             return new TileMapGateSelection1D(this, value, (left, right) => left & right);
         }
+
         public ITileMapSelection1D LogicalOr(ITileMapSelection1D value)
         {
             return new TileMapGateSelection1D(this, value, (left, right) => left | right);
         }
+
         public ITileMapSelection1D LogicalXor(ITileMapSelection1D value)
         {
             return new TileMapGateSelection1D(this, value, (left, right) => left ^ right);
         }
+
         public ITileMapSelection1D LogicalNegate(ITileMapSelection1D value)
         {
             return new TileMapGateSelection1D(this, value, (left, right) => left & !right);

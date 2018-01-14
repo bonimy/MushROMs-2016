@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MushROMs.Assembler
 {
@@ -8,16 +7,18 @@ namespace MushROMs.Assembler
 
     public class OpCodes
     {
-
         private static Dictionary<string, AssembleOp> _opDictionary;
+
         private static Dictionary<string, AssembleOp> OpDictionary
         {
             get
             {
                 if (_opDictionary == null)
                 {
-                    _opDictionary = new Dictionary<string, AssembleOp>(StringComparer.OrdinalIgnoreCase);
-                    _opDictionary.Add("lda", AssembleLDA);
+                    _opDictionary = new Dictionary<string, AssembleOp>(StringComparer.OrdinalIgnoreCase)
+                    {
+                        { "lda", AssembleLDA }
+                    };
                 }
                 return _opDictionary;
             }
@@ -31,12 +32,13 @@ namespace MushROMs.Assembler
         public static void AssembleOp(string text)
         {
             if (IsOpcode(text))
+            {
                 OpDictionary[text]();
+            }
         }
 
         private static void AssembleLDA()
         {
-
         }
     }
 }

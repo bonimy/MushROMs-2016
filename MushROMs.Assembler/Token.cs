@@ -7,7 +7,7 @@ namespace MushROMs.Assembler
     public struct Token
     {
         public static readonly Token Empty = new Token();
-        
+
         public string Value
         {
             get;
@@ -26,12 +26,13 @@ namespace MushROMs.Assembler
             {
                 switch (TokenType)
                 {
-                case TokenType.BinaryNumber:
-                case TokenType.DecimalNumber:
-                case TokenType.HexadecimalNumber:
-                    return true;
-                default:
-                    return false;
+                    case TokenType.BinaryNumber:
+                    case TokenType.DecimalNumber:
+                    case TokenType.HexadecimalNumber:
+                        return true;
+
+                    default:
+                        return false;
                 }
             }
         }
@@ -42,12 +43,13 @@ namespace MushROMs.Assembler
             {
                 switch (TokenType)
                 {
-                case TokenType.Addition:
-                case TokenType.Subtraction:
-                case TokenType.Negation:
-                    return true;
-                default:
-                    return false;
+                    case TokenType.Addition:
+                    case TokenType.Subtraction:
+                    case TokenType.Negation:
+                        return true;
+
+                    default:
+                        return false;
                 }
             }
         }
@@ -58,19 +60,20 @@ namespace MushROMs.Assembler
             {
                 switch (TokenType)
                 {
-                case TokenType.Addition:
-                case TokenType.Subtraction:
-                case TokenType.Multiplication:
-                case TokenType.Division:
-                case TokenType.Modulo:
-                case TokenType.BitShiftLeft:
-                case TokenType.BitShiftRight:
-                case TokenType.BitwiseAND:
-                case TokenType.BitwiseOR:
-                case TokenType.BitwiseXOR:
-                    return true;
-                default:
-                    return false;
+                    case TokenType.Addition:
+                    case TokenType.Subtraction:
+                    case TokenType.Multiplication:
+                    case TokenType.Division:
+                    case TokenType.Modulo:
+                    case TokenType.BitShiftLeft:
+                    case TokenType.BitShiftRight:
+                    case TokenType.BitwiseAND:
+                    case TokenType.BitwiseOR:
+                    case TokenType.BitwiseXOR:
+                        return true;
+
+                    default:
+                        return false;
                 }
             }
         }
@@ -100,11 +103,16 @@ namespace MushROMs.Assembler
         public static string GetListText(ICollection<Token> tokens)
         {
             if (tokens == null)
+            {
                 throw new ArgumentNullException(nameof(tokens));
+            }
 
             var sb = new StringBuilder();
             foreach (var token in tokens)
+            {
                 sb.Append(token.Value);
+            }
+
             return sb.ToString();
         }
     }

@@ -13,11 +13,17 @@ namespace MushROMs.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new TileMap1D TileMap
         {
-            get { return (TileMap1D)base.TileMap; }
+            get
+            {
+                return (TileMap1D)base.TileMap;
+            }
+
             protected set
             {
                 if (TileMap == value)
+                {
                     return;
+                }
 
                 if (TileMap != null)
                 {
@@ -43,9 +49,15 @@ namespace MushROMs.Controls
             {
                 var zero = Position.Empty;
                 if (HorizontalScrollBar != null)
+                {
                     zero.X = HorizontalScrollBar.Value;
+                }
+
                 if (VerticalScrollBar != null)
+                {
                     zero.Y = VerticalScrollBar.Value;
+                }
+
                 return zero;
             }
         }
@@ -54,17 +66,19 @@ namespace MushROMs.Controls
         {
             get;
             set;
-        }       
-         
+        }
+
         private int FirstSelectedIndex
         {
             get { return TileMap.GetGridTile(FirstViewPoint); }
         }
+
         private Position FirstViewPoint
         {
             get { return GetViewPoint(FirstAbsolutePoint); }
             set { FirstAbsolutePoint = GetAbsolutePoint(value); }
         }
+
         private Position FirstAbsolutePoint
         {
             get;
@@ -75,11 +89,13 @@ namespace MushROMs.Controls
         {
             get { return TileMap.GetGridTile(SecondViewPoint); }
         }
+
         private Position SecondViewPoint
         {
             get { return GetViewPoint(SecondAbsolutePoint); }
             set { SecondAbsolutePoint = GetAbsolutePoint(value); }
         }
+
         private Position SecondAbsolutePoint
         {
             get;
@@ -90,18 +106,22 @@ namespace MushROMs.Controls
         {
             get { return false; }
         }
+
         protected virtual bool CreateOrSelection
         {
             get { return ControlKeyHeld; }
         }
+
         protected virtual bool CreateXorSelection
         {
             get { return false; }
         }
+
         protected virtual bool CreateNegatedSelection
         {
             get { return AltKeyHeld; }
         }
+
         protected virtual bool CreateGateSelection
         {
             get { return CreateAndSelection || CreateOrSelection || CreateXorSelection || CreateNegatedSelection; }
@@ -110,18 +130,22 @@ namespace MushROMs.Controls
         public override void GenerateSelectionPath(GraphicsPath path)
         {
             if (TileMap == null)
+            {
                 return;
+            }
 
             if (path == null)
+            {
                 throw new ArgumentNullException(nameof(path));
+            }
 
             var selection = TileMap.Selection;
 
             path.Reset();
 
-            for (int y = TileMap.ViewHeight; --y >= 0; )
+            for (var y = TileMap.ViewHeight; --y >= 0;)
             {
-                for (int x = TileMap.ViewWidth; --x >= 0; )
+                for (var x = TileMap.ViewWidth; --x >= 0;)
                 {
                     var index = TileMap.GetGridTile(new Point(x, y));
                     if (selection.ContainsIndex(index) && TileMap.TileIsInGrid(index))
@@ -146,7 +170,7 @@ namespace MushROMs.Controls
                         corners[2] = new Point(clips[2], clips[3]);
                         corners[3] = new Point(clips[0], clips[3]);
 
-                        for (int i = edges.Length; --i >= 0; )
+                        for (var i = edges.Length; --i >= 0;)
                         {
                             var index2 = TileMap.GetGridTile(edges[i]);
                             if (!selection.ContainsIndex(index2) || !TileMap.TileIsInGrid(index2))
@@ -163,7 +187,9 @@ namespace MushROMs.Controls
         protected override void ResetHorizontalScrollBar()
         {
             if (TileMap == null)
+            {
                 return;
+            }
 
             if (HorizontalScrollBar != null)
             {
@@ -181,7 +207,9 @@ namespace MushROMs.Controls
         protected override void ResetVerticalScrollBar()
         {
             if (TileMap == null)
+            {
                 return;
+            }
 
             if (VerticalScrollBar != null)
             {
@@ -198,7 +226,10 @@ namespace MushROMs.Controls
 
                     var value = TileMap.ZeroTile / TileMap.ViewWidth;
                     if (rows <= value + TileMap.ViewHeight)
+                    {
                         value = rows - TileMap.ViewHeight;
+                    }
+
                     VerticalScrollBar.Value = value;
                 }
                 else
@@ -230,7 +261,9 @@ namespace MushROMs.Controls
         protected virtual bool BeginMouseSelection(MouseEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
             return e.Button == MouseButtons.Left;
         }
@@ -245,7 +278,9 @@ namespace MushROMs.Controls
             if (TileMap != null)
             {
                 if (BeginMouseSelection(e))
+                {
                     InitializeSelectionMouseDown(e);
+                }
             }
 
             base.OnMouseDown(e);
@@ -254,17 +289,26 @@ namespace MushROMs.Controls
         protected virtual void InitializeSelectionMouseDown(MouseEventArgs e)
         {
             if (TileMap == null)
+            {
                 return;
+            }
 
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
             var tile = TileMap.GetViewTileFromScreenDot(e.Location, true);
             FirstViewPoint = tile;
             if (CreateGateSelection)
+            {
                 InitialSelection = TileMap.Selection;
+            }
             else
+            {
                 InitialSelection = TileMapSelection1D.Empty;
+            }
+
             TileMap.InitializeSelection(InitialSelection);
             GetSelectionMouseMove(e);
         }
@@ -274,7 +318,9 @@ namespace MushROMs.Controls
             if (TileMap != null)
             {
                 if (EndMouseSelection(e) && TileMap.Selecting)
+                {
                     CreateSelectionMouseUp(e);
+                }
             }
 
             base.OnMouseUp(e);
@@ -283,7 +329,9 @@ namespace MushROMs.Controls
         protected virtual void CreateSelectionMouseUp(MouseEventArgs e)
         {
             if (TileMap == null)
+            {
                 return;
+            }
 
             GetSelectionMouseMove(e);
             TileMap.CreateSelection(TileMap.Selection);
@@ -294,7 +342,9 @@ namespace MushROMs.Controls
             if (TileMap != null)
             {
                 if (TileMap.Selecting)
+                {
                     GetSelectionMouseMove(e);
+                }
             }
             base.OnMouseMove(e);
         }
@@ -302,10 +352,14 @@ namespace MushROMs.Controls
         protected virtual void GetSelectionMouseMove(MouseEventArgs e)
         {
             if (TileMap == null)
+            {
                 return;
+            }
 
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
             ModifySelection(TileMap.GetViewTileFromScreenDot(e.Location, true));
         }
@@ -337,7 +391,7 @@ namespace MushROMs.Controls
             SecondAbsolutePoint = new Position(x2, y2);
 
             Range range = SecondAbsolutePoint - FirstAbsolutePoint;
-            
+
             if (SecondViewPoint.X < 0 && -range.Horizontal < TileMap.ViewWidth)
             {
                 HorizontalScrollBar.Value = Math.Max(SecondAbsolutePoint.X, 0);
@@ -357,38 +411,66 @@ namespace MushROMs.Controls
             }
 
             if (SecondViewPoint.X < 0)
+            {
                 SecondViewPoint = new Position(0, SecondViewPoint.Y);
+            }
+
             if (SecondViewPoint.X >= TileMap.ViewWidth)
+            {
                 SecondViewPoint = new Position(TileMap.ViewWidth - 1, SecondViewPoint.Y);
+            }
 
             if (SecondViewPoint.Y < 0)
+            {
                 SecondViewPoint = new Position(SecondViewPoint.X, 0);
+            }
+
             if (SecondViewPoint.Y >= TileMap.ViewHeight)
+            {
                 SecondViewPoint = new Position(SecondViewPoint.X, TileMap.ViewHeight - 1);
-            
+            }
+
             if (SecondSelectedIndex == FirstSelectedIndex)
+            {
                 ModifySelection(new TileMapSingleSelection1D(FirstSelectedIndex));
+            }
             else if (ShiftKeyHeld)
+            {
                 ModifySelection(new TileMapLineSelection1D(FirstSelectedIndex, SecondSelectedIndex));
+            }
             else
+            {
                 ModifySelection(new TileMapBoxSelection1D(TileMap.ViewWidth, TileMap.ZeroTile, FirstViewPoint, SecondViewPoint));
+            }
         }
 
         private void ModifySelection(ITileMapSelection1D selection)
         {
             if (selection == null)
+            {
                 throw new ArgumentNullException(nameof(selection));
+            }
 
             if (CreateAndSelection)
+            {
                 TileMap.Selection = InitialSelection.LogicalAnd(selection);
+            }
             else if (CreateOrSelection)
+            {
                 TileMap.Selection = InitialSelection.LogicalOr(selection);
+            }
             else if (CreateNegatedSelection)
+            {
                 TileMap.Selection = InitialSelection.LogicalNegate(selection);
+            }
             else if (CreateXorSelection)
+            {
                 TileMap.Selection = InitialSelection.LogicalXor(selection);
+            }
             else
+            {
                 TileMap.Selection = selection;
+            }
         }
 
         private Position GetAbsolutePoint(Position view)

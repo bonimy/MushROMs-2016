@@ -41,18 +41,22 @@ namespace MushROMs.Controls
         public override void GenerateSelectionPath(GraphicsPath path)
         {
             if (TileMap == null)
+            {
                 return;
+            }
 
             if (path == null)
+            {
                 throw new ArgumentNullException(nameof(path));
+            }
 
             var selection = TileMap.Selection;
 
             path.Reset();
 
-            for (int y = TileMap.ViewHeight; --y >= 0;)
+            for (var y = TileMap.ViewHeight; --y >= 0;)
             {
-                for (int x = TileMap.ViewWidth; --x >= 0;)
+                for (var x = TileMap.ViewWidth; --x >= 0;)
                 {
                     var index = new Position(x, y);
                     if (selection.ContainsIndex(index) && TileMap.TileIsInGrid(index))
@@ -77,7 +81,7 @@ namespace MushROMs.Controls
                         corners[2] = new Point(clips[2], clips[3]);
                         corners[3] = new Point(clips[0], clips[3]);
 
-                        for (int i = edges.Length; --i >= 0;)
+                        for (var i = edges.Length; --i >= 0;)
                         {
                             var index2 = TileMap.GetGridTile(edges[i]);
                             if (!selection.ContainsIndex(index2) || !TileMap.TileIsInGrid(index2))

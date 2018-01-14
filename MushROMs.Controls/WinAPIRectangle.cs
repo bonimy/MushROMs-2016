@@ -9,7 +9,7 @@ namespace MushROMs.Controls
     public struct WinAPIRectangle
     {
         public static readonly WinAPIRectangle Empty = new WinAPIRectangle();
-        
+
         private int _left;
         private int _top;
         private int _right;
@@ -20,16 +20,19 @@ namespace MushROMs.Controls
             get { return _left; }
             set { _left = value; }
         }
+
         public int Top
         {
             get { return _top; }
             set { _top = value; }
         }
+
         public int Right
         {
             get { return _right; }
             set { _right = value; }
         }
+
         public int Bottom
         {
             get { return _bottom; }
@@ -41,11 +44,13 @@ namespace MushROMs.Controls
             get { return Left; }
             set { Left = value; }
         }
+
         public int Y
         {
             get { return Top; }
             set { Top = value; }
         }
+
         public Point Location
         {
             get { return new Point(X, Y); }
@@ -57,11 +62,13 @@ namespace MushROMs.Controls
             get { return Right - Left; }
             set { Right = value + Left; }
         }
+
         public int Height
         {
             get { return Bottom - Top; }
             set { Bottom = value + Top; }
         }
+
         public Size Size
         {
             get { return new Size(Width, Height); }
@@ -80,6 +87,7 @@ namespace MushROMs.Controls
         {
             return new WinAPIRectangle(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom);
         }
+
         public static implicit operator Rectangle(WinAPIRectangle rectangle)
         {
             return Rectangle.FromLTRB(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom);
@@ -90,6 +98,7 @@ namespace MushROMs.Controls
             return left.Left == right.Left && left.Top == right.Top &&
                 left.Right == right.Right && left.Bottom == right.Bottom;
         }
+
         public static bool operator !=(WinAPIRectangle left, WinAPIRectangle right)
         {
             return !(left == right);
@@ -98,14 +107,18 @@ namespace MushROMs.Controls
         public override bool Equals(object obj)
         {
             if (!(obj is WinAPIRectangle))
+            {
                 return false;
+            }
 
             return (WinAPIRectangle)obj == this;
         }
+
         public override int GetHashCode()
         {
             return ((Rectangle)this).GetHashCode();
         }
+
         public override string ToString()
         {
             var sb = new StringBuilder();

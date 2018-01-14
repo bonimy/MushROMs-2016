@@ -13,7 +13,7 @@ namespace MushROMs.SNES
         private const int PriorityMask = 1;
         private const int FlipBitShift = 14;
         private const int FlipMask = 3;
-        
+
         private ushort _value;
 
         public int Value
@@ -24,7 +24,11 @@ namespace MushROMs.SNES
 
         public int TileIndex
         {
-            get { return Value & TileIndexMask; }
+            get
+            {
+                return Value & TileIndexMask;
+            }
+
             set
             {
                 Value &= ~TileIndexMask;
@@ -34,7 +38,11 @@ namespace MushROMs.SNES
 
         public int PaletteNumber
         {
-            get { return (Value >> PaletteNumberBitShift) & PaletteNumberMask; }
+            get
+            {
+                return (Value >> PaletteNumberBitShift) & PaletteNumberMask;
+            }
+
             set
             {
                 Value &= ~(PaletteNumberMask << PaletteNumberBitShift);
@@ -44,19 +52,31 @@ namespace MushROMs.SNES
 
         public LayerPriority Priority
         {
-            get { return (LayerPriority)((Value >> PriorityBitShift) & PriorityMask); }
+            get
+            {
+                return (LayerPriority)((Value >> PriorityBitShift) & PriorityMask);
+            }
+
             set
             {
                 if (value != LayerPriority.Priority0)
+                {
                     Value |= (PriorityMask << PriorityBitShift);
+                }
                 else
+                {
                     Value &= ~(PriorityMask << PriorityBitShift);
+                }
             }
         }
 
         public TileFlipModes TileFlipMode
         {
-            get { return (TileFlipModes)((Value >> FlipBitShift) & FlipMask); }
+            get
+            {
+                return (TileFlipModes)((Value >> FlipBitShift) & FlipMask);
+            }
+
             set
             {
                 Value &= ~(FlipMask << FlipBitShift);
@@ -66,25 +86,41 @@ namespace MushROMs.SNES
 
         public bool XFlipped
         {
-            get { return (TileFlipMode & TileFlipModes.FlipHorizontal) != 0; }
+            get
+            {
+                return (TileFlipMode & TileFlipModes.FlipHorizontal) != 0;
+            }
+
             set
             {
                 if (value)
+                {
                     TileFlipMode &= ~TileFlipModes.FlipHorizontal;
+                }
                 else
+                {
                     TileFlipMode |= TileFlipModes.FlipHorizontal;
+                }
             }
         }
 
         public bool YFlipped
         {
-            get { return (TileFlipMode & TileFlipModes.FlipVeritcal) != 0; }
+            get
+            {
+                return (TileFlipMode & TileFlipModes.FlipVeritcal) != 0;
+            }
+
             set
             {
                 if (value)
+                {
                     TileFlipMode &= ~TileFlipModes.FlipVeritcal;
+                }
                 else
+                {
                     TileFlipMode |= TileFlipModes.FlipVeritcal;
+                }
             }
         }
 
@@ -107,10 +143,11 @@ namespace MushROMs.SNES
             return tile;
         }
 
-        public static implicit operator int (ObjTile tile)
+        public static implicit operator int(ObjTile tile)
         {
             return tile.Value;
         }
+
         public static implicit operator ObjTile(int value)
         {
             return new ObjTile(value);
@@ -120,6 +157,7 @@ namespace MushROMs.SNES
         {
             return left.Value == right.Value;
         }
+
         public static bool operator !=(ObjTile left, ObjTile right)
         {
             return !(left == right);
@@ -128,14 +166,18 @@ namespace MushROMs.SNES
         public override bool Equals(object obj)
         {
             if (!(obj is ObjTile))
+            {
                 return false;
+            }
 
             return (ObjTile)obj == this;
         }
+
         public override int GetHashCode()
         {
             return Value;
         }
+
         public override string ToString()
         {
             return SR.GetString(Value, "X4");

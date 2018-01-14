@@ -1,7 +1,6 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Helper;
 using Helper.ColorSpaces;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests.Helper.ColorSpaces
 {
@@ -30,7 +29,7 @@ namespace Tests.Helper.ColorSpaces
             Assert.AreEqual(color, new ColorHsl(0, 1, l));
 
             // Test color clamps extremes and snaps near to 0 or 1
-            color = new ColorHsl(Single.PositiveInfinity, Single.Epsilon, Single.MinValue, 1-1e-8f);
+            color = new ColorHsl(Single.PositiveInfinity, Single.Epsilon, Single.MinValue, 1 - 1e-8f);
             Assert.AreEqual(color, new ColorHsl(1, 0, 0, 1));
 
             // Ensure NaN values are not accepted and throw the proper message

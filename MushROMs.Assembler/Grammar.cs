@@ -35,7 +35,7 @@ namespace MushROMs.Assembler
         {
             return c >= '0' && c <= '9';
         }
-        
+
         public static bool IsBinaryDigit(char c)
         {
             return c == '0' || c == '1';
@@ -65,39 +65,58 @@ namespace MushROMs.Assembler
         {
             return c == '\r' || c == '\n';
         }
-        
+
         internal static unsafe int GetNewLineLength(char* text)
         {
             if (text[0] == '\r')
             {
                 if (text[1] == '\n')
+                {
                     return 2;
+                }
+
                 return 1;
             }
             if (text[0] == '\n')
+            {
                 return 1;
+            }
+
             return 0;
         }
 
         internal static unsafe int GetJoinedNewLineLength(char* text)
         {
             if (text[0] == '\\' && GetNewLineLength(text + 1) > 0)
+            {
                 return 1 + GetNewLineLength(text + 1);
+            }
+
             return 0;
         }
 
         internal static unsafe bool IsUniversalCharacterName(char* text, ref char value)
         {
             if (text[0] != '\\')
+            {
                 return false;
-            if (text[1] != 'u')
-                return false;
-            for (int i = 2; i < 6; i++)
-                if (!IsHexDigit(text[i]))
-                    return false;
+            }
 
-            int code = 0;
-            for (int i = 2; i < 6; i++)
+            if (text[1] != 'u')
+            {
+                return false;
+            }
+
+            for (var i = 2; i < 6; i++)
+            {
+                if (!IsHexDigit(text[i]))
+                {
+                    return false;
+                }
+            }
+
+            var code = 0;
+            for (var i = 2; i < 6; i++)
             {
                 code <<= 4;
                 code |= ParseHexDigit(text[i]);
@@ -109,50 +128,70 @@ namespace MushROMs.Assembler
         public static int ParseHexDigit(char c)
         {
             if (c >= '0' && c <= '9')
+            {
                 return c - '0';
+            }
+
             if (c >= 'A' && c <= 'A')
+            {
                 return c - 'A';
+            }
+
             if (c >= 'a' && c <= 'a')
+            {
                 return c - 'a';
+            }
+
             throw new ArgumentException(nameof(c));
         }
 
         internal static unsafe bool IsTrigraphSequence(char* text, ref char c)
         {
             if (text[0] != '?' || text[1] != '?')
+            {
                 return false;
+            }
 
             switch (text[2])
             {
-            case '=':
-                c = '#';
-                return true;
-            case '(':
-                c = '[';
-                return true;
-            case '<':
-                c = '{';
-                return true;
-            case '/':
-                c = '\\';
-                return true;
-            case ')':
-                c = ']';
-                return true;
-            case '>':
-                c = '}';
-                return true;
-            case '\'':
-                c = '^';
-                return true;
-            case '!':
-                c = '|';
-                return true;
-            case '-':
-                c = '~';
-                return true;
-            default:
-                return false;
+                case '=':
+                    c = '#';
+                    return true;
+
+                case '(':
+                    c = '[';
+                    return true;
+
+                case '<':
+                    c = '{';
+                    return true;
+
+                case '/':
+                    c = '\\';
+                    return true;
+
+                case ')':
+                    c = ']';
+                    return true;
+
+                case '>':
+                    c = '}';
+                    return true;
+
+                case '\'':
+                    c = '^';
+                    return true;
+
+                case '!':
+                    c = '|';
+                    return true;
+
+                case '-':
+                    c = '~';
+                    return true;
+
+                default:
+                    return false;
             }
         }
     }

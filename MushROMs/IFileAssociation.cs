@@ -3,6 +3,7 @@
 namespace MushROMs
 {
     public delegate IEditor InitializeEditorMethod(byte[] data);
+
     public delegate byte[] SaveFileDataMethod(IEditor editor);
 
     public interface IFileAssociation
@@ -11,14 +12,17 @@ namespace MushROMs
         {
             get;
         }
+
         InitializeEditorMethod InitializeEditorMethod
         {
             get;
         }
+
         SaveFileDataMethod SaveFileDataMethod
         {
             get;
         }
+
         FileVisibilityFilters Filter
         {
             get;

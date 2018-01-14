@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MushROMs.Assembler
+﻿namespace MushROMs.Assembler
 {
     public class Label
     {
@@ -34,7 +28,6 @@ namespace MushROMs.Assembler
 
         public Label(string name)
         {
-
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿/*using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using Helper.PixelFormats;
 
 namespace MushROMs.SNES
@@ -14,23 +10,44 @@ namespace MushROMs.SNES
             return length >= 0 && length % Color15BppBgr.SizeOf == 0;
         }
 
-        public static bool IsValidData(byte[] data)
+        public RPFSerializer(byte[] data) : base(data)
         {
-            if (data == null)
-                return false;
-            if (!IsValidSize(data.Length))
-                return false;
+        }
 
-            unsafe
+        public override bool IsValidByteData
+        {
+            get
             {
-                fixed (byte* ptr = data)
+                if (Data == null)
                 {
-                    for (int i = GetNumColorsFromSize(data.Length); --i >= 0;)
-                        if ((((Color15BppBgr*)ptr)[i] & 0x8000) != 0)
-                            return false;
+                    return false;
                 }
+
+                if (!IsValidSize(Data.Length))
+                {
+                    return false;
+                }
+
+                unsafe
+                {
+                    fixed (byte* ptr = Data)
+                    {
+                        for (var i = GetNumColorsFromSize(Data.Length); --i >= 0;)
+                        {
+                            if ((((Color15BppBgr*)ptr)[i] & 0x8000) != 0)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
             }
-            return true;
+        }
+
+        public override Color15BppBgr[] GetColors()
+        {
+            throw new NotImplementedException();
         }
 
         public override int GetNumColorsFromSize(int length)
@@ -44,4 +61,3 @@ namespace MushROMs.SNES
         }
     }
 }
-*/

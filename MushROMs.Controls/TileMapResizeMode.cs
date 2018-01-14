@@ -6,7 +6,7 @@
  * But if we instead change the parent form's size first, then we need
  * to change the view size, and then client size last. Also, we need to
  * modify the form size according by discrete amounts to bind to the
- * 
+ *
  *
  *
  */

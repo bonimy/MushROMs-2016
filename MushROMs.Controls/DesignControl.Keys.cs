@@ -20,6 +20,7 @@ namespace MushROMs.Controls
             get;
             private set;
         }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public static Keys PreviousKeys
@@ -27,6 +28,7 @@ namespace MushROMs.Controls
             get;
             private set;
         }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public static Keys ActiveKeys
@@ -41,12 +43,14 @@ namespace MushROMs.Controls
         {
             get { return (ModifierKeys & Keys.Control) != Keys.None; }
         }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public static bool ShiftKeyHeld
         {
             get { return (ModifierKeys & Keys.Shift) != Keys.None; }
         }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public static bool AltKeyHeld
@@ -56,19 +60,27 @@ namespace MushROMs.Controls
 
         protected override bool IsInputKey(Keys keyData)
         {
-            for (int i = FallbackOverrideInputKeys.Count; --i >= 0; )
+            for (var i = FallbackOverrideInputKeys.Count; --i >= 0;)
+            {
                 if (keyData == FallbackOverrideInputKeys[i])
+                {
                     return true;
+                }
+            }
 
             return base.IsInputKey(keyData);
         }
-        
+
         [UIPermission(SecurityAction.LinkDemand, Window = UIPermissionWindow.AllWindows)]
         protected override bool ProcessDialogKey(Keys keyData)
         {
-            for (int i = FallbackOverrideInputKeys.Count; --i >= 0; )
+            for (var i = FallbackOverrideInputKeys.Count; --i >= 0;)
+            {
                 if (keyData == FallbackOverrideInputKeys[i])
-                        return false;
+                {
+                    return false;
+                }
+            }
 
             return base.ProcessDialogKey(keyData);
         }

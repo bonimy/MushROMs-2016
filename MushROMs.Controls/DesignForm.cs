@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Debug = System.Diagnostics.Debug;
 using System.Drawing;
 using System.Security.Permissions;
 using System.Windows.Forms;
+using Debug = System.Diagnostics.Debug;
 
 namespace MushROMs.Controls
 {
@@ -59,18 +59,27 @@ namespace MushROMs.Controls
 
         protected override bool IsInputKey(Keys keyData)
         {
-            for (int i = FallbackOverrideInputKeys.Count; --i >= 0;)
+            for (var i = FallbackOverrideInputKeys.Count; --i >= 0;)
+            {
                 if (keyData == FallbackOverrideInputKeys[i])
+                {
                     return true;
+                }
+            }
+
             return base.IsInputKey(keyData);
         }
 
         [UIPermission(SecurityAction.LinkDemand, Window = UIPermissionWindow.AllWindows)]
         protected override bool ProcessDialogKey(Keys keyData)
         {
-            for (int i = FallbackOverrideInputKeys.Count; --i >= 0;)
+            for (var i = FallbackOverrideInputKeys.Count; --i >= 0;)
+            {
                 if (keyData == FallbackOverrideInputKeys[i])
+                {
                     return false;
+                }
+            }
 
             return base.ProcessDialogKey(keyData);
         }
@@ -80,26 +89,27 @@ namespace MushROMs.Controls
         {
             switch (m.Msg)
             {
-            case WindowMessages.Size:
-                if (m.WParam == IntPtr.Zero)
-                {
+                case WindowMessages.Size:
+                    if (m.WParam == IntPtr.Zero)
+                    {
+                        unsafe
+                        {
+                            var client = new Size((int)m.LParam & 0xFFFF, (int)m.LParam >> 0x10);
+                            var window = WinAPIMethods.InflateSize(client, WindowPadding);
+                            window = AdjustSize(window);
+                            client = WinAPIMethods.DeflateSize(window, WindowPadding);
+                            m.LParam = (IntPtr)((client.Width & 0xFFFF) | ((client.Height & 0xFFFF) << 0x10));
+                        }
+                    }
+                    break;
+
+                case WindowMessages.Sizing:
                     unsafe
                     {
-                        var client = new Size((int)m.LParam & 0xFFFF, (int)m.LParam >> 0x10);
-                        var window = WinAPIMethods.InflateSize(client, WindowPadding);
-                        window = AdjustSize(window);
-                        client = WinAPIMethods.DeflateSize(window, WindowPadding);
-                        m.LParam = (IntPtr)((client.Width & 0xFFFF) | ((client.Height & 0xFFFF) << 0x10));
+                        var pRECT = (WinAPIRectangle*)m.LParam;
+                        *pRECT = AdjustSizingRectangle(*pRECT);
                     }
-                }
-                break;
-            case WindowMessages.Sizing:
-                unsafe
-                {
-                    var pRECT = (WinAPIRectangle*)m.LParam;
-                    *pRECT = AdjustSizingRectangle(*pRECT);
-                }
-                break;
+                    break;
             }
             base.DefWndProc(ref m);
         }
@@ -117,31 +127,33 @@ namespace MushROMs.Controls
         public static Size GetFormBorderSize(Form form)
         {
             if (form == null)
+            {
                 throw new ArgumentNullException(nameof(form));
+            }
 
             switch (form.FormBorderStyle)
             {
-            case FormBorderStyle.None:
-                return Size.Empty;
+                case FormBorderStyle.None:
+                    return Size.Empty;
 
-            case FormBorderStyle.FixedSingle:
-            case FormBorderStyle.FixedDialog:
-            case FormBorderStyle.Sizable:
-                return SystemInformation.FrameBorderSize +
-                    WinAPIMethods.PaddedBorderSize;
+                case FormBorderStyle.FixedSingle:
+                case FormBorderStyle.FixedDialog:
+                case FormBorderStyle.Sizable:
+                    return SystemInformation.FrameBorderSize +
+                        WinAPIMethods.PaddedBorderSize;
 
-            case FormBorderStyle.FixedToolWindow:
-            case FormBorderStyle.SizableToolWindow:
-                return SystemInformation.FixedFrameBorderSize +
-                    WinAPIMethods.PaddedBorderSize;
+                case FormBorderStyle.FixedToolWindow:
+                case FormBorderStyle.SizableToolWindow:
+                    return SystemInformation.FixedFrameBorderSize +
+                        WinAPIMethods.PaddedBorderSize;
 
-            case FormBorderStyle.Fixed3D:
-                return SystemInformation.FrameBorderSize +
-                    SystemInformation.Border3DSize +
-                    WinAPIMethods.PaddedBorderSize;
+                case FormBorderStyle.Fixed3D:
+                    return SystemInformation.FrameBorderSize +
+                        SystemInformation.Border3DSize +
+                        WinAPIMethods.PaddedBorderSize;
 
-            default:    //This should never occur.
-                return Size.Empty;
+                default:    //This should never occur.
+                    return Size.Empty;
             }
         }
 
@@ -154,26 +166,28 @@ namespace MushROMs.Controls
         public static int GetCaptionHeight(Form form)
         {
             if (form == null)
+            {
                 throw new ArgumentNullException(nameof(form));
+            }
 
             switch (form.FormBorderStyle)
             {
-            case FormBorderStyle.None:
-                return 0;
+                case FormBorderStyle.None:
+                    return 0;
 
-            case FormBorderStyle.FixedSingle:
-            case FormBorderStyle.Fixed3D:
-            case FormBorderStyle.FixedDialog:
-            case FormBorderStyle.Sizable:
-                return SystemInformation.CaptionHeight;
+                case FormBorderStyle.FixedSingle:
+                case FormBorderStyle.Fixed3D:
+                case FormBorderStyle.FixedDialog:
+                case FormBorderStyle.Sizable:
+                    return SystemInformation.CaptionHeight;
 
-            case FormBorderStyle.FixedToolWindow:
-            case FormBorderStyle.SizableToolWindow:
-                return SystemInformation.ToolWindowCaptionHeight;
+                case FormBorderStyle.FixedToolWindow:
+                case FormBorderStyle.SizableToolWindow:
+                    return SystemInformation.ToolWindowCaptionHeight;
 
-            default:    //This should never occur.
-                Debug.Assert(false, "Invalid BorderStyle enum was passed.");
-                return 0;
+                default:    //This should never occur.
+                    Debug.Assert(false, "Invalid BorderStyle enum was passed.");
+                    return 0;
             }
         }
     }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Helper;
 using Helper.PixelFormats;
 using MushROMs.SNES.Properties;
@@ -23,7 +19,11 @@ namespace MushROMs.SNES
 
         private byte[] Data
         {
-            get { return _data; }
+            get
+            {
+                return _data;
+            }
+
             set
             {
                 _data = value;
@@ -33,11 +33,17 @@ namespace MushROMs.SNES
 
         public int StartAddress
         {
-            get { return _startAddress; }
+            get
+            {
+                return _startAddress;
+            }
+
             private set
             {
                 if (StartAddress == value)
+                {
                     return;
+                }
 
                 _startAddress = value;
                 OnStartAddressChanged(EventArgs.Empty);
@@ -58,10 +64,12 @@ namespace MushROMs.SNES
 
         public Obj16Editor()
         {
-            TileMap = new TileMap1D();
-            TileMap.TileSize = 0x10;
-            TileMap.ViewSize = 0x10;
-            TileMap.ZoomSize = 1;
+            TileMap = new TileMap1D
+            {
+                TileSize = 0x10,
+                ViewSize = 0x10,
+                ZoomSize = 1
+            };
             TileMap.SelectionChanged += TileMap_SelectionChanged;
             TileMap.Selection = new TileMapSingleSelection1D(TileMap.ZeroTile);
         }
@@ -74,9 +82,14 @@ namespace MushROMs.SNES
         public void InitializeData(byte[] data)
         {
             if (data == null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
+
             if (!MAP16File.IsValidData(data))
+            {
                 throw new ArgumentException(nameof(data));
+            }
 
             Data = new byte[data.Length];
             Array.Copy(data, Data, Data.Length);
@@ -85,7 +98,9 @@ namespace MushROMs.SNES
         public void InitializeData(Obj16Tile[] tiles)
         {
             if (tiles == null)
+            {
                 throw new ArgumentNullException(nameof(tiles));
+            }
 
             var data = new byte[tiles.Length * Obj16Tile.SizeOf];
             unsafe
@@ -94,8 +109,10 @@ namespace MushROMs.SNES
                 fixed (Obj16Tile* src = tiles)
                 {
                     var dest = (Obj16Tile*)ptr;
-                    for (int i = tiles.Length; --i >= 0;)
+                    for (var i = tiles.Length; --i >= 0;)
+                    {
                         dest[i] = src[i];
+                    }
                 }
             }
 
@@ -125,13 +142,17 @@ namespace MushROMs.SNES
         public Obj16Tile GetColorAtAddress(int address)
         {
             if (address < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(address),
                     SR.ErrorInvalidClosedLowerBound(nameof(address), address, 0));
+            }
 
             var max = Data.Length - Obj16Tile.SizeOf;
             if (address > max)
+            {
                 throw new ArgumentOutOfRangeException(nameof(address),
                     SR.ErrorInvalidClosedUpperBound(nameof(address), address, max));
+            }
 
             unsafe
             {
@@ -145,7 +166,9 @@ namespace MushROMs.SNES
             var ext = System.IO.Path.GetExtension(path).ToLowerInvariant();
             var fileAssociations = MasterEditor.GetFileAssociations();
             if (!fileAssociations.ContainsKey(ext))
+            {
                 throw new FileFormatException(path);
+            }
 
             var fileAssociation = fileAssociations[ext];
 
@@ -161,9 +184,14 @@ namespace MushROMs.SNES
         public void EditColor(Obj16Selection selection, Obj16Tile color)
         {
             if (selection == null)
+            {
                 throw new ArgumentNullException(nameof(selection));
+            }
+
             if (!(selection.TileMapSelection is TileMapSingleSelection1D))
+            {
                 throw new ArgumentException(nameof(selection), Resources.ErrorNotSingleSelection);
+            }
 
             var data = GetEditorData(selection);
             data.GetData()[0] = color;
@@ -179,8 +207,11 @@ namespace MushROMs.SNES
         {
             var data = selection.GetEditorData(this);
             var src = data.GetData();
-            for (int i = src.Length; --i >= 0;)
+            for (var i = src.Length; --i >= 0;)
+            {
                 src[i] = new Obj16Tile();
+            }
+
             WriteData(data);
         }
 
@@ -210,10 +241,12 @@ namespace MushROMs.SNES
         {
             return GetAddressFromIndex(index, StartAddress);
         }
+
         public static int GetAddressFromIndex(int index, int startAddress)
         {
             return (index * Obj16Tile.SizeOf) + startAddress;
         }
+
         public static int GetIndexFromAddress(int address)
         {
             return address / Obj16Tile.SizeOf;
@@ -227,15 +260,25 @@ namespace MushROMs.SNES
         public virtual void DrawDataAsTileMap(IntPtr scan0, int length, PaletteData palette, GFXData gfx)
         {
             if (scan0 == IntPtr.Zero)
+            {
                 throw new ArgumentNullException(nameof(scan0));
+            }
+
             if (palette == null)
+            {
                 throw new ArgumentNullException(nameof(palette));
+            }
+
             if (gfx == null)
+            {
                 throw new ArgumentNullException(nameof(gfx));
+            }
 
             var colors = palette.GetData();
             if (colors.Length < gfx.ColorsPerPixel * 8)
+            {
                 throw new ArgumentOutOfRangeException(nameof(palette));
+            }
 
             var dots = gfx.GetData();
 
@@ -248,8 +291,10 @@ namespace MushROMs.SNES
 
             // Ensure the drawing size does not exceed the IntPtr size.
             if (alloc > length)
+            {
                 throw new ArgumentOutOfRangeException(nameof(length),
                     SR.ErrorArrayBounds(nameof(length), length, alloc));
+            }
 
             // Get the number of tiles being drawn (limited to the data size).
             var tiles = Math.Min(TileMap.GridSize - TileMap.ZeroTile, TileMap.ViewSize.Area);
@@ -262,6 +307,7 @@ namespace MushROMs.SNES
 
             // Determine if it is a gated selection (to darken the excluded regions).
             var gateSelection = validSelection ? Selection.TileMapSelection : null;
+
             //if (!(gateSelection is TileMapGateSelection1D))
             //    gateSelection = null;
 
@@ -269,18 +315,20 @@ namespace MushROMs.SNES
             var pixel = (width * TileMap.CellHeight - TileMap.ZoomWidth) / 2;
 
             var normal = new Color32BppArgb[colors.Length];
-            for (int i = normal.Length; --i >= 0;)
+            for (var i = normal.Length; --i >= 0;)
             {
                 normal[i] = colors[i];
                 normal[i].Alpha = Byte.MaxValue;
             }
 
             var dark = new Color32BppArgb[normal.Length];
-            for (int i = dark.Length; --i >= 0;)
+            for (var i = dark.Length; --i >= 0;)
             {
                 dark[i].Alpha = normal[i].Alpha;
-                for (int j = 3; --j >= 0;)
+                for (var j = 3; --j >= 0;)
+                {
                     dark[i][j] = (byte)(normal[i][j] / 2);
+                }
             }
 
             var format = gfx.GraphicsFormat;
@@ -292,11 +340,11 @@ namespace MushROMs.SNES
                     var obj16Tiles = (Obj16Tile*)ptr;
 
                     // Loop is already capped at data size, so no worry of exceeding array bounds.
-                    for (int i = tiles; --i >= 0;)
+                    for (var i = tiles; --i >= 0;)
                     {
                         var obj16 = obj16Tiles[i];
 
-                        // Darken regions that are not in gated selections. 
+                        // Darken regions that are not in gated selections.
                         var colors32 = gateSelection != null && !gateSelection.ContainsIndex(i + TileMap.ZeroTile) ?
                             dark : normal;
 
@@ -305,12 +353,14 @@ namespace MushROMs.SNES
                             ((i % TileMap.ViewWidth) * TileMap.CellWidth) +
                             ((i / TileMap.ViewWidth) * TileMap.CellHeight * width);
 
-                        for (int j = Obj16Tile.NumberOfTiles; --j >= 0;)
+                        for (var j = Obj16Tile.NumberOfTiles; --j >= 0;)
                         {
                             var obj8 = obj16[j];
 
                             if (obj8.TileIndex >= dots.Length)
+                            {
                                 obj8 = new ObjTile();
+                            }
 
                             var tile = dots[obj8.TileIndex];
 
@@ -325,23 +375,29 @@ namespace MushROMs.SNES
                             var xscale = obj8.XFlipped ? -1 : 1;
                             var yscale = obj8.YFlipped ? -1 : 1;
 
-                            for (int y = 0; y < GFXTile.PlanesPerTile; y++, dest += width * TileMap.ZoomHeight)
+                            for (var y = 0; y < GFXTile.PlanesPerTile; y++, dest += width * TileMap.ZoomHeight)
                             {
                                 var pixels = obj8.YFlipped ?
                                     (tile.UnsafeData + (GFXTile.PlanesPerTile - 1 - y) * GFXTile.DotsPerPlane) :
                                     (tile.UnsafeData + (y * GFXTile.DotsPerPlane));
 
                                 if (obj8.XFlipped)
+                                {
                                     pixels += (GFXTile.DotsPerPlane - 1);
+                                }
 
                                 var src = dest;
-                                for (int x = 0; x < GFXTile.DotsPerPlane; x++, src += TileMap.ZoomWidth, pixels += xscale)
+                                for (var x = 0; x < GFXTile.DotsPerPlane; x++, src += TileMap.ZoomWidth, pixels += xscale)
                                 {
                                     var line = src;
-                                    var color = *pixels == 0 ? new Color32BppArgb() :  colors32[cstart + *pixels];
-                                    for (int n = TileMap.ZoomHeight; --n >= 0; line += width)
-                                        for (int m = TileMap.ZoomWidth; --m >= 0;)
+                                    var color = *pixels == 0 ? new Color32BppArgb() : colors32[cstart + *pixels];
+                                    for (var n = TileMap.ZoomHeight; --n >= 0; line += width)
+                                    {
+                                        for (var m = TileMap.ZoomWidth; --m >= 0;)
+                                        {
                                             line[m] = color;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -356,22 +412,21 @@ namespace MushROMs.SNES
 
             switch (flip)
             {
-            case TileFlipModes.None:
-                for (int y = 0; y < GFXTile.DotsPerPlane; y++)
-                {
-                    for (int x = 0; x < GFXTile.DotsPerPlane; x++)
+                case TileFlipModes.None:
+                    for (var y = 0; y < GFXTile.DotsPerPlane; y++)
                     {
-                        var color = colors[pixels[x]];
-                        for (int n = zoom.Vertical; --n >= 0;)
+                        for (var x = 0; x < GFXTile.DotsPerPlane; x++)
                         {
-                            for (int m = zoom.Horizontal; --m >= 0;)
+                            var color = colors[pixels[x]];
+                            for (var n = zoom.Vertical; --n >= 0;)
                             {
-
+                                for (var m = zoom.Horizontal; --m >= 0;)
+                                {
+                                }
                             }
                         }
                     }
-                }
-                break;
+                    break;
             }
         }
     }

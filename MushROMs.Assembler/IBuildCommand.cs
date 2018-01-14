@@ -3,6 +3,7 @@
     public interface IBuildCommand
     {
         byte[] ToData();
+
         void Execute(Builder builder);
     }
 }

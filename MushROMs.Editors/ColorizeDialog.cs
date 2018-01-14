@@ -24,11 +24,13 @@ namespace MushROMs.Editors
             get { return _baseForm.Hue; }
             set { _baseForm.Hue = value; }
         }
+
         public float Saturation
         {
             get { return _baseForm.Saturation; }
             set { _baseForm.Saturation = value; }
         }
+
         public float Lightness
         {
             get { return _baseForm.Lightness; }

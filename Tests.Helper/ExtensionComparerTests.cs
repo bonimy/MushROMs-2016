@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Helper;
 
 namespace Tests.Helper
 {
@@ -32,7 +31,7 @@ namespace Tests.Helper
             Assert.AreEqual(left.Length, right.Length, "Unequal number of test cases");
 
             var comparer = new ExtensionComparer();
-            for (int i = 0; i < left.Length; i++)
+            for (var i = 0; i < left.Length; i++)
             {
                 Assert.AreEqual(comparer.Compare(left[i], right[i]), 0, left[i] + "!=" + right[i]);
                 Assert.AreEqual(comparer.GetHashCode(left[i]), comparer.GetHashCode(right[i]), "Hash: " + left[i] + "!=" + right[i]);

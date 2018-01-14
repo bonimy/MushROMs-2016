@@ -7,11 +7,13 @@
             get;
             set;
         }
+
         public byte Value2
         {
             get;
             set;
         }
+
         public byte Value3
         {
             get;
@@ -25,33 +27,52 @@
 
         public int X
         {
-            get { return Value1 >> 4; }
+            get
+            {
+                return Value1 >> 4;
+            }
+
             set
             {
                 Value1 &= 0x0F;
                 Value1 |= (byte)((value & 0x0F) << 4);
             }
         }
+
         private bool YInternal
         {
-            get { return (Value1 & 0x0F) == 0x0F; }
+            get
+            {
+                return (Value1 & 0x0F) == 0x0F;
+            }
+
             set
             {
                 if (value)
+                {
                     Value1 |= 0x0F;
+                }
                 else
+                {
                     Value1 &= 0xF0;
+                }
             }
         }
+
         public int Y
         {
             get
             {
                 if (YInternal)
+                {
                     return Value2 >> 4;
+                }
                 else
+                {
                     return Value1 & 0x0F;
+                }
             }
+
             set
             {
                 if (YInternal)
@@ -73,21 +94,30 @@
             {
                 return ((YInternal ? Value3 : Value2) & 0x80) != 0;
             }
+
             set
             {
                 if (YInternal)
                 {
                     if (value)
+                    {
                         Value3 |= 0x80;
+                    }
                     else
+                    {
                         Value3 &= 0x7F;
+                    }
                 }
                 else
                 {
                     if (value)
+                    {
                         Value2 |= 0x80;
+                    }
                     else
+                    {
                         Value2 &= 0x7F;
+                    }
                 }
             }
         }
@@ -97,10 +127,15 @@
             get
             {
                 if (YInternal)
+                {
                     return (Value3 >> 4) & 7;
+                }
                 else
+                {
                     return (Value2 >> 4) & 7;
+                }
             }
+
             set
             {
                 if (YInternal)
@@ -118,7 +153,11 @@
 
         public int Parameter
         {
-            get { return Value2 & 0x0F; }
+            get
+            {
+                return Value2 & 0x0F;
+            }
+
             set
             {
                 Value2 &= 0xF0;
@@ -131,16 +170,21 @@
             get
             {
                 if (YInternal)
+                {
                     return Value3 & 0x0F;
+                }
                 else
+                {
                     return -1;
+                }
             }
+
             set
             {
-                bool p = PageFlag;
-                int c = Command;
-                int v = Parameter;
-                int y = Y;
+                var p = PageFlag;
+                var c = Command;
+                var v = Parameter;
+                var y = Y;
 
                 if (value == -1)
                 {
@@ -179,21 +223,31 @@
                         if (Y == 0x0D)
                         {
                             if (Command == 0)
+                            {
                                 return ObjectType.PageSkip;
+                            }
                             else
+                            {
                                 return (ObjectType)((Y << 8) | (Command << 4) | (Parameter));
+                            }
                         }
                         else if (Y == 0x0E)
                         {
                             return (ObjectType)(0x0E00 | (Command >= 4 ? 0x40 : 0));
                         }
                         else
+                        {
                             return (ObjectType)((Y << 8) | (Command << 4));
+                        }
                     }
                     else if (Command == 0)
+                    {
                         return (ObjectType)Parameter;
+                    }
                     else
+                    {
                         return (ObjectType)(Command << 4);
+                    }
                 }
             }
         }
@@ -204,13 +258,14 @@
             {
                 switch (ObjectType)
                 {
-                case ObjectType.Empty:
-                case ObjectType.Empty2:
-                case ObjectType.Empty3:
-                case ObjectType.Empty4:
-                    return true;
-                default:
-                    return false;
+                    case ObjectType.Empty:
+                    case ObjectType.Empty2:
+                    case ObjectType.Empty3:
+                    case ObjectType.Empty4:
+                        return true;
+
+                    default:
+                        return false;
                 }
             }
         }
@@ -221,6 +276,7 @@
             Value2 = value2;
             Value3 = (byte)(((value1 & 0x0F) == 0x0F) ? value3 : 0);
         }
+
         public LevelObject(int x, int y, bool pageFlag, int command, int parameter, int extendedCommand) : this()
         {
             ExtendedCommand = extendedCommand;
@@ -234,9 +290,13 @@
         public static implicit operator LevelObject(NES.SMB1.LevelObject src)
         {
             if (src.Y == 0x0F)
+            {
                 return new LevelObject(src.X, 0x0F, src.PageFlag, src.Command, src.Parameter, 0);
+            }
             else
+            {
                 return new LevelObject(src.X, src.Y, src.PageFlag, src.Command, src.Parameter, -1);
+            }
         }
 
         public static bool operator ==(LevelObject left, LevelObject right)
@@ -253,8 +313,11 @@
                     left.Value3 == right.Value3;
             }
             else
+            {
                 return false;
+            }
         }
+
         public static bool operator !=(LevelObject left, LevelObject right)
         {
             return !(left == right);
@@ -262,7 +325,7 @@
 
         public override string ToString()
         {
-            return string.Format("({0}, {1}): {2}", X.ToString("X"), Y.ToString("X"), ObjectType);
+            return System.String.Format("({0}, {1}): {2}", X.ToString("X"), Y.ToString("X"), ObjectType);
         }
     }
 }

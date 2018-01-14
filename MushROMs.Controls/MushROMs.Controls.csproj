@@ -124,16 +124,6 @@
     <Compile Include="WindowMessages.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Helper\Helper.csproj">
-      <Project>{5d7d8aa9-ba96-46ab-bacf-8959d4d8c549}</Project>
-      <Name>Helper</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MushROMs\MushROMs.csproj">
-      <Project>{2b8f9ead-d4f4-47fd-97c3-28b620946bd3}</Project>
-      <Name>MushROMs</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Properties\KeyFile.snk" />
   </ItemGroup>
   <ItemGroup>
@@ -936,6 +926,16 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Helper\Helper.csproj">
+      <Project>{5d7d8aa9-ba96-46ab-bacf-8959d4d8c549}</Project>
+      <Name>Helper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MushROMs\MushROMs.csproj">
+      <Project>{2b8f9ead-d4f4-47fd-97c3-28b620946bd3}</Project>
+      <Name>MushROMs</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

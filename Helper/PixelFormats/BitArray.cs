@@ -1,10 +1,9 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
 namespace Helper.PixelFormats
 {
     /// <summary>
-    /// Represents a <see cref="byte"/> with an indexer for each bit value.
+    /// Represents a <see cref="Byte"/> with an indexer for each bit value.
     /// </summary>
     public struct BitArray
     {
@@ -15,7 +14,7 @@ namespace Helper.PixelFormats
         public const int SizeOf = sizeof(byte);
 
         /// <summary>
-        /// The number of bits contained in a single <see cref="byte"/>.
+        /// The number of bits contained in a single <see cref="Byte"/>.
         /// This field is constant.
         /// </summary>
         public const int BitsPerByte = 8;
@@ -28,7 +27,7 @@ namespace Helper.PixelFormats
             get;
             set;
         }
-        
+
         /// <summary>
         /// Gets or sets the bit value at the specified index.
         /// </summary>
@@ -50,21 +49,26 @@ namespace Helper.PixelFormats
             {
                 return (byte)((Value >> index) & 1);
             }
+
             set
             {
                 if (value == 0)
+                {
                     Value &= (byte)(~(1 << index));
+                }
                 else
+                {
                     Value |= (byte)(1 << index);
+                }
             }
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BitArray"/> class from a specified
-        /// <see cref="byte"/> value.
+        /// <see cref="Byte"/> value.
         /// </summary>
         /// <param name="value">
-        /// A <see cref="byte"/> that specifies <see cref="Value"/>.
+        /// A <see cref="Byte"/> that specifies <see cref="Value"/>.
         /// </param>
         private BitArray(byte value)
         {
@@ -72,11 +76,11 @@ namespace Helper.PixelFormats
         }
 
         /// <summary>
-        /// Converts the specified <see cref="byte"/> data type to a 
+        /// Converts the specified <see cref="Byte"/> data type to a
         /// <see cref="BitArray"/> structure.
         /// </summary>
         /// <param name="value">
-        /// The <see cref="byte"/> to be converted.
+        /// The <see cref="Byte"/> to be converted.
         /// </param>
         /// <returns>
         /// The <see cref="BitArray"/> that results from the conversion.
@@ -85,17 +89,18 @@ namespace Helper.PixelFormats
         {
             return new BitArray(value);
         }
+
         /// <summary>
-        /// Converts the specified <see cref="BitArray"/> structure to a 
-        /// <see cref="byte"/> data type.
+        /// Converts the specified <see cref="BitArray"/> structure to a
+        /// <see cref="Byte"/> data type.
         /// </summary>
         /// <param name="value">
         /// The <see cref="BitArray"/> to be converted.
         /// </param>
         /// <returns>
-        /// The <see cref="byte"/> that results from the conversion.
+        /// The <see cref="Byte"/> that results from the conversion.
         /// </returns>
-        public static implicit operator byte (BitArray array)
+        public static implicit operator byte(BitArray array)
         {
             return array.Value;
         }
@@ -119,6 +124,7 @@ namespace Helper.PixelFormats
         {
             return left.Value == right.Value;
         }
+
         /// <summary>
         /// Compares two <see cref="BitArray"/> objects. The result specifies
         /// whether <see cref="Value"/> of the two <see cref="BitArray"/>
@@ -141,10 +147,10 @@ namespace Helper.PixelFormats
 
         /// <summary>
         /// Specifies whether this <see cref="BitArray"/> is the same value as
-        /// the specified <see cref="object"/>.
+        /// the specified <see cref="Object"/>.
         /// </summary>
         /// <param name="obj">
-        /// The <see cref="object"/> to test.
+        /// The <see cref="Object"/> to test.
         /// </param>
         /// <returns>
         /// true if <paramref name="obj"/> is a <see cref="BitArray"/> and has the same
@@ -153,10 +159,13 @@ namespace Helper.PixelFormats
         public override bool Equals(object obj)
         {
             if (!(obj is BitArray))
+            {
                 return false;
+            }
 
             return (BitArray)obj == this;
         }
+
         /// <summary>
         /// Returns a hash code for this <see cref="BitArray"/>.
         /// </summary>
@@ -167,17 +176,21 @@ namespace Helper.PixelFormats
         {
             return Value.GetHashCode();
         }
+
         /// <summary>
-        /// Converts this <see cref="BitArray"/> to a human-readable <see cref="string"/>.
+        /// Converts this <see cref="BitArray"/> to a human-readable <see cref="String"/>.
         /// </summary>
         /// <returns>
-        /// A <see cref="string"/> that represents this <see cref="BitArray"/>.
+        /// A <see cref="String"/> that represents this <see cref="BitArray"/>.
         /// </returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
-            for (int i = 0; i < BitsPerByte; i++)
+            for (var i = 0; i < BitsPerByte; i++)
+            {
                 sb.Append((char)(this[i] + '0'));
+            }
+
             return sb.ToString();
         }
     }

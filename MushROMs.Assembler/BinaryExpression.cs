@@ -4,29 +4,33 @@ using System.Collections.Generic;
 namespace MushROMs.Assembler
 {
     public delegate int Calculation();
+
     public delegate int BinaryOperation(int left, int right);
 
     public class BinaryExpression
     {
         private static Dictionary<BinaryOperator, BinaryOperation> _binaryOperations;
+
         private static Dictionary<BinaryOperator, BinaryOperation> BinaryOperations
         {
             get
             {
                 if (_binaryOperations == null)
                 {
-                    _binaryOperations = new Dictionary<BinaryOperator  , BinaryOperation>();
-                    _binaryOperations.Add(BinaryOperator.None          , (x, y) => x     );
-                    _binaryOperations.Add(BinaryOperator.Addition      , (x, y) => x  + y);
-                    _binaryOperations.Add(BinaryOperator.Subtraction   , (x, y) => x  - y);
-                    _binaryOperations.Add(BinaryOperator.Multiplication, (x, y) => x  * y);
-                    _binaryOperations.Add(BinaryOperator.Division      , (x, y) => x  / y);
-                    _binaryOperations.Add(BinaryOperator.Modulo        , (x, y) => x  % y);
-                    _binaryOperations.Add(BinaryOperator.BitShiftLeft  , (x, y) => x << y);
-                    _binaryOperations.Add(BinaryOperator.BitShiftRight , (x, y) => x >> y);
-                    _binaryOperations.Add(BinaryOperator.BitwiseAND    , (x, y) => x  & y);
-                    _binaryOperations.Add(BinaryOperator.BitwiseOR     , (x, y) => x  | y);
-                    _binaryOperations.Add(BinaryOperator.BitwiseXOR    , (x, y) => x  ^ y);
+                    _binaryOperations = new Dictionary<BinaryOperator, BinaryOperation>
+                    {
+                        { BinaryOperator.None, (x, y) => x },
+                        { BinaryOperator.Addition, (x, y) => x + y },
+                        { BinaryOperator.Subtraction, (x, y) => x - y },
+                        { BinaryOperator.Multiplication, (x, y) => x * y },
+                        { BinaryOperator.Division, (x, y) => x / y },
+                        { BinaryOperator.Modulo, (x, y) => x % y },
+                        { BinaryOperator.BitShiftLeft, (x, y) => x << y },
+                        { BinaryOperator.BitShiftRight, (x, y) => x >> y },
+                        { BinaryOperator.BitwiseAND, (x, y) => x & y },
+                        { BinaryOperator.BitwiseOR, (x, y) => x | y },
+                        { BinaryOperator.BitwiseXOR, (x, y) => x ^ y }
+                    };
                 }
                 return _binaryOperations;
             }
@@ -61,22 +65,17 @@ namespace MushROMs.Assembler
 
         public BinaryExpression(Calculation left, Calculation right, BinaryOperation operation)
         {
-            if (left == null)
-                throw new ArgumentNullException(nameof(left));
-            if (right == null)
-                throw new ArgumentNullException(nameof(right));
-            if (operation == null)
-                throw new ArgumentNullException(nameof(operation));
-
-            Left = left;
-            Right = right;
-            Operation = operation;
+            Left = left ?? throw new ArgumentNullException(nameof(left));
+            Right = right ?? throw new ArgumentNullException(nameof(right));
+            Operation = operation ?? throw new ArgumentNullException(nameof(operation));
         }
 
         public static BinaryOperation GetBinaryOperation(BinaryOperator value)
         {
             if (!BinaryOperations.ContainsKey(value))
+            {
                 return null;
+            }
 
             return BinaryOperations[value];
         }

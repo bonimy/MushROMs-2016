@@ -20,7 +20,9 @@ namespace MushROMs
         public override void IterateIndexes(TileMethod2D method)
         {
             if (method == null)
+            {
                 throw new ArgumentNullException(nameof(method));
+            }
         }
 
         public override bool ContainsIndex(Position index)

@@ -3,9 +3,9 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using Helper;
 using MushROMs.Controls;
-using MushROMs.SNES;
 using MushROMs.Editors;
 using MushROMs.GenericEditor.Properties;
+using MushROMs.SNES;
 
 namespace MushROMs.GenericEditor
 {
@@ -19,18 +19,21 @@ namespace MushROMs.GenericEditor
         {
             get { return menuStrip; }
         }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ToolStrip ToolStrip
         {
             get { return toolStrip; }
         }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public StatusStrip StatusStrip
         {
             get { return statusStrip; }
         }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ContextMenuStrip ContextMenuStrip
@@ -42,7 +45,11 @@ namespace MushROMs.GenericEditor
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MasterForm MasterForm
         {
-            get { return _masterForm; }
+            get
+            {
+                return _masterForm;
+            }
+
             set
             {
                 if (MasterForm != null)
@@ -77,7 +84,7 @@ namespace MushROMs.GenericEditor
                         MasterEditor.EditorActivated += MasterEditor_EditorActivated;
                     }
                 }
-                
+
                 ToggleMasterMenu();
             }
         }
@@ -86,7 +93,6 @@ namespace MushROMs.GenericEditor
         {
             if (MasterForm.ActiveMdiChild is IEditorForm)
             {
-
             }
         }
 
@@ -99,7 +105,7 @@ namespace MushROMs.GenericEditor
         {
             get { return MasterForm?.MasterEditor; }
         }
-        
+
         private IEditor ActiveEditor
         {
             get { return MasterEditor?.ActiveEditor; }
@@ -112,7 +118,11 @@ namespace MushROMs.GenericEditor
 
         private bool CoreMenuEnabled
         {
-            get { return tsmFile.Enabled; }
+            get
+            {
+                return tsmFile.Enabled;
+            }
+
             set
             {
                 tsmFile.Enabled =
@@ -129,7 +139,11 @@ namespace MushROMs.GenericEditor
 
         private bool RecentFilesMenuEnabled
         {
-            get { return tsmRecentFiles.Enabled; }
+            get
+            {
+                return tsmRecentFiles.Enabled;
+            }
+
             set
             {
                 tsmRecentFiles.Enabled =
@@ -139,7 +153,11 @@ namespace MushROMs.GenericEditor
 
         private bool EditMenuEnabled
         {
-            get { return tsmEdit.Enabled; }
+            get
+            {
+                return tsmEdit.Enabled;
+            }
+
             set
             {
                 tsmClose.Enabled =
@@ -159,7 +177,11 @@ namespace MushROMs.GenericEditor
 
         private bool PasteEnabled
         {
-            get { return tsmPaste.Enabled; }
+            get
+            {
+                return tsmPaste.Enabled;
+            }
+
             set
             {
                 tsmPaste.Enabled =
@@ -169,7 +191,11 @@ namespace MushROMs.GenericEditor
 
         private bool UndoEnabled
         {
-            get { return tsmUndo.Enabled; }
+            get
+            {
+                return tsmUndo.Enabled;
+            }
+
             set
             {
                 tsmUndo.Enabled =
@@ -179,7 +205,11 @@ namespace MushROMs.GenericEditor
 
         private bool RedoEnabled
         {
-            get { return tsmRedo.Enabled; }
+            get
+            {
+                return tsmRedo.Enabled;
+            }
+
             set
             {
                 tsmRedo.Enabled =
@@ -189,7 +219,11 @@ namespace MushROMs.GenericEditor
 
         private bool PaletteMenuVisible
         {
-            get { return tsmPalette.Visible; }
+            get
+            {
+                return tsmPalette.Visible;
+            }
+
             set
             {
                 tsmPalette.Visible =
@@ -279,7 +313,9 @@ namespace MushROMs.GenericEditor
         private void MasterEditor_EditorAdded(object sender, EditorEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
             if (e.Editor != null)
             {
@@ -319,7 +355,9 @@ namespace MushROMs.GenericEditor
         private void Editor_DataModified(object sender, EventArgs e)
         {
             if (!ActiveEditor.PreviewMode)
+            {
                 ToggleMasterMenu();
+            }
         }
 
         private void MasterEditor_SelectionDataCopied(object sender, EventArgs e)
@@ -344,20 +382,27 @@ namespace MushROMs.GenericEditor
             RecentFilesMenuEnabled = files != null && files.Count > 0;
 
             if (!RecentFilesMenuEnabled)
+            {
                 return;
+            }
 
             var menus = new ToolStripItemCollection[] { tsmRecentFiles.DropDownItems, cmsRecentFiles.Items };
             foreach (var menu in menus)
             {
                 foreach (ToolStripMenuItem tsm in menu)
+                {
                     tsm.Click -= RecentFile_Click;
+                }
+
                 menu.Clear();
 
-                for (int i = 0; i < files.Count; i++)
+                for (var i = 0; i < files.Count; i++)
                 {
-                    var tsm = new ToolStripMenuItem();
-                    tsm.Tag = files[i];
-                    tsm.Text = DisplayRecentFile(i, files[i]);
+                    var tsm = new ToolStripMenuItem
+                    {
+                        Tag = files[i],
+                        Text = DisplayRecentFile(i, files[i])
+                    };
                     tsm.Click += RecentFile_Click;
                     menu.Add(tsm);
                 }
@@ -375,57 +420,80 @@ namespace MushROMs.GenericEditor
             var max = Settings.MaxRecentFiles;
 
             if (files.Contains(path))
+            {
                 files.Remove(path);
+            }
+
             files.Insert(0, path);
             while (files.Count > max)
+            {
                 files.RemoveAt(max);
+            }
         }
 
         private void TogglePasteEnabled()
         {
             if (CopyData != null && ActiveEditor != null)
+            {
                 PasteEnabled = ActiveEditor.IsValidSelectionData(CopyData);
+            }
             else
+            {
                 PasteEnabled = false;
+            }
         }
 
         private void NewFile_Click(object sender, EventArgs e)
         {
             if (MasterForm != null)
+            {
                 MasterForm.CreateNewFile();
+            }
         }
 
         private void OpenFile_Click(object sender, EventArgs e)
         {
             if (MasterForm != null)
+            {
                 MasterForm.OpenFile();
+            }
         }
 
         private void Close_Click(object sender, EventArgs e)
         {
             if (MasterForm == null)
+            {
                 return;
+            }
 
             if (MasterForm.ActiveMdiChild != null)
+            {
                 MasterForm.ActiveMdiChild.Close();
+            }
         }
 
         private void SaveFile_Click(object sender, EventArgs e)
         {
             if (MasterForm != null)
+            {
                 MasterForm.SaveFile();
+            }
         }
 
         private void SaveAs_Click(object sender, EventArgs e)
         {
             if (MasterForm != null)
+            {
                 MasterForm.SaveFileAs();
+            }
         }
 
         private void SaveAll_Click(object sender, EventArgs e)
         {
             if (MasterForm != null)
+            {
                 MasterForm.SaveAllFiles();
+            }
         }
 
         private void RecentFiles_Click(object sender, EventArgs e)
@@ -436,7 +504,9 @@ namespace MushROMs.GenericEditor
         private void RecentFile_Click(object sender, EventArgs e)
         {
             if (MasterForm == null)
+            {
                 return;
+            }
 
             var tsm = (ToolStripMenuItem)sender;
             MasterForm.OpenFile((string)tsm.Tag);
@@ -445,92 +515,118 @@ namespace MushROMs.GenericEditor
         private void Exit_Click(object sender, EventArgs e)
         {
             if (MasterForm != null)
+            {
                 MasterForm.Close();
+            }
         }
 
         private void Undo_Click(object sender, EventArgs e)
         {
             if (MasterForm != null)
+            {
                 MasterForm.Undo();
+            }
         }
 
         private void Redo_Click(object sender, EventArgs e)
         {
             if (MasterForm != null)
+            {
                 MasterForm.Redo();
+            }
         }
 
         private void Cut_Click(object sender, EventArgs e)
         {
             if (ActiveEditor != null)
+            {
                 ActiveEditor.Delete();
+            }
         }
 
         private void Copy_Click(object sender, EventArgs e)
         {
             if (ActiveEditor != null && ActiveEditor.CanCopy)
+            {
                 ActiveEditor.Copy();
+            }
         }
 
         private void Paste_Click(object sender, EventArgs e)
         {
             if (ActiveEditor != null && ActiveEditor.CanPaste)
+            {
                 ActiveEditor.Paste();
+            }
         }
 
         private void Delete_Click(object sender, EventArgs e)
         {
             if (ActiveEditor != null && ActiveEditor.CanDelete)
+            {
                 ActiveEditor.Delete();
+            }
         }
 
         private void SelectAll_Click(object sender, EventArgs e)
         {
             if (ActiveEditor != null && ActiveEditor.CanSelectAll)
+            {
                 ActiveEditor.SelectAll();
+            }
         }
 
         private void InvertColors_Click(object sender, EventArgs e)
         {
             if (ActiveEditor is PaletteEditor)
+            {
                 ((PaletteEditor)ActiveEditor).InvertColors();
+            }
         }
 
         private void Blend_Click(object sender, EventArgs e)
         {
             if (ActiveEditor is PaletteEditor)
+            {
                 ((PaletteForm)MasterForm.ActiveMdiChild).Blend();
+            }
         }
 
         private void Colorize_Click(object sender, EventArgs e)
         {
             if (ActiveEditor is PaletteEditor)
+            {
                 ((PaletteForm)MasterForm.ActiveMdiChild).Colorize();
+            }
         }
 
         private void Grayscale_Click(object sender, EventArgs e)
         {
             if (ActiveEditor is PaletteEditor)
+            {
                 ((PaletteForm)MasterForm.ActiveMdiChild).Grayscale();
+            }
         }
 
         private void HorizontalGradient_Click(object sender, EventArgs e)
         {
-            if (ActiveEditor is PaletteEditor)
+            if (ActiveEditor is PaletteEditor editor)
             {
-                var editor = (PaletteEditor)ActiveEditor;
                 if (editor.Selection.TileMapSelection is TileMapBoxSelection1D)
+                {
                     editor.HorizontalGradient();
+                }
             }
         }
 
         private void VerticalGradient_Click(object sender, EventArgs e)
         {
-            if (ActiveEditor is PaletteEditor)
+            if (ActiveEditor is PaletteEditor editor)
             {
-                var editor = (PaletteEditor)ActiveEditor;
                 if (editor.Selection.TileMapSelection is TileMapBoxSelection1D)
+                {
                     editor.VerticalGradient();
+                }
             }
         }
 

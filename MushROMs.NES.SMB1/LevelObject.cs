@@ -7,6 +7,7 @@
             get;
             set;
         }
+
         public byte Value2
         {
             get;
@@ -15,16 +16,25 @@
 
         public int X
         {
-            get { return Value1 >> 4; }
+            get
+            {
+                return Value1 >> 4;
+            }
+
             set
             {
                 Value1 &= 0x0F;
                 Value1 |= (byte)((value & 0x0F) << 4);
             }
         }
+
         public int Y
         {
-            get { return Value1 & 0x0F; }
+            get
+            {
+                return Value1 & 0x0F;
+            }
+
             set
             {
                 Value1 &= 0xF0;
@@ -34,19 +44,31 @@
 
         public bool PageFlag
         {
-            get { return (Value2 & 0x80) != 0; }
+            get
+            {
+                return (Value2 & 0x80) != 0;
+            }
+
             set
             {
                 if (value)
+                {
                     Value2 |= 0x80;
+                }
                 else
+                {
                     Value2 &= 0x7F;
+                }
             }
         }
 
         public int Command
         {
-            get { return (Value2 >> 4) & 7; }
+            get
+            {
+                return (Value2 >> 4) & 7;
+            }
+
             set
             {
                 Value2 &= 0x8F;
@@ -56,7 +78,11 @@
 
         public int Parameter
         {
-            get { return Value2 & 0x0F; }
+            get
+            {
+                return Value2 & 0x0F;
+            }
+
             set
             {
                 Value2 &= 0xF0;
@@ -73,17 +99,27 @@
                     if (Y == 0x0D)
                     {
                         if (Command == 0)
+                        {
                             return ObjectType.PageSkip;
+                        }
                         else
+                        {
                             return (ObjectType)((Y << 8) | (Command << 4) | (Parameter));
+                        }
                     }
                     else
+                    {
                         return (ObjectType)((Y << 8) | (Command << 4));
+                    }
                 }
                 else if (Command == 0)
+                {
                     return (ObjectType)Parameter;
+                }
                 else
+                {
                     return (ObjectType)(Command << 4);
+                }
             }
         }
 
@@ -92,6 +128,7 @@
             Value1 = value1;
             Value2 = value2;
         }
+
         public LevelObject(int x, int y, bool pageFlag, int command, int parameter) : this()
         {
             X = x;
@@ -106,6 +143,7 @@
             return left.Value1 == right.Value1 &&
                 left.Value2 == right.Value2;
         }
+
         public static bool operator !=(LevelObject left, LevelObject right)
         {
             return !(left == right);
@@ -114,7 +152,9 @@
         public override bool Equals(object obj)
         {
             if (!(obj is LevelObject))
+            {
                 return false;
+            }
 
             return (LevelObject)obj == this;
         }
@@ -126,7 +166,7 @@
 
         public override string ToString()
         {
-            return string.Format("({0}, {1}): {2}", (X & 0x0F).ToString("X"), Y.ToString("X"), ObjectType);
+            return System.String.Format("({0}, {1}): {2}", (X & 0x0F).ToString("X"), Y.ToString("X"), ObjectType);
         }
     }
 }

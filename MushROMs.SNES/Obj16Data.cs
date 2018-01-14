@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MushROMs.SNES
 {
@@ -23,11 +19,11 @@ namespace MushROMs.SNES
         public Obj16Data(Obj16Editor editor, Obj16Selection selection)
         {
             if (editor == null)
+            {
                 throw new ArgumentNullException(nameof(editor));
-            if (selection == null)
-                throw new ArgumentNullException(nameof(selection));
+            }
 
-            Selection = selection;
+            Selection = selection ?? throw new ArgumentNullException(nameof(selection));
             Data = new Obj16Tile[Selection.NumTiles];
             var startIndex = Selection.StartIndex;
             var data = editor.GetData();
@@ -40,11 +36,14 @@ namespace MushROMs.SNES
                 fixed (Obj16Tile* dest = Data)
                 {
                     var src = (Obj16Tile*)ptr + startIndex;
-                    for (int i = Selection.NumTiles; --i >= 0;)
+                    for (var i = Selection.NumTiles; --i >= 0;)
+                    {
                         if (indexes[i] + startIndex < length)
+                        {
                             dest[i] = src[indexes[i]];
+                        }
+                    }
                 }
-                   
             }
         }
 
@@ -70,7 +69,9 @@ namespace MushROMs.SNES
         public void WriteToEditor(Obj16Editor editor)
         {
             if (editor == null)
+            {
                 throw new ArgumentNullException(nameof(editor));
+            }
 
             var startIndex = Selection.StartIndex;
             var length = Obj16Editor.GetIndexFromAddress(editor.GetData().Length);
@@ -82,9 +83,13 @@ namespace MushROMs.SNES
                 fixed (Obj16Tile* src = Data)
                 {
                     var dest = (Obj16Tile*)ptr + startIndex;
-                    for (int i = Selection.NumTiles; --i >= 0;)
+                    for (var i = Selection.NumTiles; --i >= 0;)
+                    {
                         if (indexes[i] + startIndex < length)
+                        {
                             dest[indexes[i]] = src[i];
+                        }
+                    }
                 }
             }
         }

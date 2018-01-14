@@ -10,6 +10,7 @@ namespace MushROMs.Assembler
             get;
             private set;
         }
+
         public int LineNumber
         {
             get;
@@ -21,11 +22,13 @@ namespace MushROMs.Assembler
             get;
             private set;
         }
+
         private IList<string> Args
         {
             get;
             set;
         }
+
         private IList<Token> Tokens
         {
             get;
@@ -38,8 +41,10 @@ namespace MushROMs.Assembler
             LineNumber = lineNumber;
             Name = name;
             Args = args;
-            Tokens = new List<Token>(tokens);
-            Tokens.Add(new Token(String.Empty, TokenType.EOF));
+            Tokens = new List<Token>(tokens)
+            {
+                new Token(String.Empty, TokenType.EOF)
+            };
         }
 
         public IList<string> GetArgs()

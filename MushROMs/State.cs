@@ -7,6 +7,7 @@
             get;
             private set;
         }
+
         public ISelectionData Redo
         {
             get;

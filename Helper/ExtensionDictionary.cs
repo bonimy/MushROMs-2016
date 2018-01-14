@@ -10,12 +10,15 @@ namespace Helper
         public ExtensionDictionary() :
             base(new ExtensionComparer())
         { }
+
         public ExtensionDictionary(ExtensionDictionary<T> dictionary) :
             base(dictionary, new ExtensionComparer())
         { }
+
         public ExtensionDictionary(int capacity) :
             base(capacity, new ExtensionComparer())
         { }
+
         protected ExtensionDictionary(SerializationInfo info, StreamingContext context) :
             base(info, context)
         { }
@@ -27,6 +30,7 @@ namespace Helper
                 AssertExtension(key);
                 return base[key];
             }
+
             set
             {
                 AssertExtension(key);
@@ -39,16 +43,19 @@ namespace Helper
             AssertExtension(key);
             base.Add(key, value);
         }
+
         public new bool ContainsKey(string key)
         {
             AssertExtension(key);
             return base.ContainsKey(key);
         }
+
         public new bool Remove(string key)
         {
             AssertExtension(key);
             return base.Remove(key);
         }
+
         public new bool TryGetValue(string key, out T value)
         {
             AssertExtension(key);
@@ -58,7 +65,9 @@ namespace Helper
         private static void AssertExtension(string key)
         {
             if (!IOHelper.IsValidExtension(key))
+            {
                 throw new ArgumentException(SR.ErrorInvalidExtensionName(key), nameof(key));
+            }
         }
     }
 }

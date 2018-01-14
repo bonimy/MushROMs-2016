@@ -1,7 +1,7 @@
 ﻿/* Refer to https://en.wikipedia.org/wiki/RGB_color_model for a detailed
  * explanation of the RGB color model, which may prove useful to better understand
  * the conversion algorithms to other color models.
- * 
+ *
  * Refer to https://en.wikipedia.org/wiki/Blend_modes for information on all of the blend algorithms.
  */
 
@@ -14,7 +14,7 @@ using System.Text;
 namespace Helper.ColorSpaces
 {
     /// <summary>
-    /// Represents a color with <see cref="float"/> representations
+    /// Represents a color with <see cref="Single"/> representations
     /// of alpha, red, green, and blue channels ranging from 0 to 1, inclusive.
     /// </summary>
     [StructLayout(LayoutKind.Explicit)]
@@ -32,6 +32,7 @@ namespace Helper.ColorSpaces
         /// This field is constant.
         /// </summary>
         private const int NumberOfChannels = 4;
+
         /// <summary>
         /// The number of channels, excluding the alpha channel.
         /// </summary>
@@ -42,22 +43,25 @@ namespace Helper.ColorSpaces
         /// This field is constant.
         /// </summary>
         private const int AlphaIndex = 3;
+
         /// <summary>
         /// The index of the <see cref="Red"/> channel in the <see cref="ColorRgb"/> components array.
         /// This field is constant.
         /// </summary>
         private const int RedIndex = 2;
+
         /// <summary>
         /// The index of the <see cref="Green"/> channel in the <see cref="ColorRgb"/> components array.
         /// This field is constant.
         /// </summary>
         private const int GreenIndex = 1;
+
         /// <summary>
         /// The index of the <see cref="Blue"/> channel in the <see cref="ColorRgb"/> components array.
         /// This field is constant.
         /// </summary>
         private const int BlueIndex = 0;
-        
+
         /// <summary>
         /// The minimum allowable difference between two values to consider a channel comparison of two
         /// <see cref="ColorRgb"/> channels as not equal.
@@ -78,18 +82,21 @@ namespace Helper.ColorSpaces
         /// </summary>
         [FieldOffset(AlphaIndex * sizeof(float))]
         private float _alpha;
+
         /// <summary>
         /// The red channel of this <see cref="ColorRgb"/> structure. The range of this
         /// channel is 0 to 1 inclusive.
         /// </summary>
         [FieldOffset(RedIndex * sizeof(float))]
         private float _red;
+
         /// <summary>
         /// The green channel of this <see cref="ColorRgb"/> structure. The range of this
         /// channel is 0 to 1 inclusive.
         /// </summary>
         [FieldOffset(GreenIndex * sizeof(float))]
         private float _green;
+
         /// <summary>
         /// The blue channel of this <see cref="ColorRgb"/> structure. The range of this
         /// channel is 0 to 1 inclusive.
@@ -106,6 +113,7 @@ namespace Helper.ColorSpaces
             get { return _alpha; }
             private set { _alpha = value; }
         }
+
         /// <summary>
         /// Gets the red channel of this <see cref="ColorRgb"/> structure. The range of this
         /// channel is 0 to 1 inclusive.
@@ -115,6 +123,7 @@ namespace Helper.ColorSpaces
             get { return _red; }
             private set { _red = value; }
         }
+
         /// <summary>
         /// Gets the green channel of this <see cref="ColorRgb"/> structure. The range of this
         /// channel is 0 to 1 inclusive.
@@ -124,6 +133,7 @@ namespace Helper.ColorSpaces
             get { return _green; }
             private set { _green = value; }
         }
+
         /// <summary>
         /// Gets the blue channel of this <see cref="ColorRgb"/> structure. The range of this
         /// channel is 0 to 1 inclusive.
@@ -143,9 +153,10 @@ namespace Helper.ColorSpaces
             get
             {
                 Debug.Assert(index >= 0 && index < NumberOfChannels);
-                fixed(float* ptr = _channels)
+                fixed (float* ptr = _channels)
                     return ptr[index];
             }
+
             set
             {
                 Debug.Assert(index >= 0 && index < NumberOfChannels);
@@ -162,6 +173,7 @@ namespace Helper.ColorSpaces
         {
             get { return MathHelper.Max(Red, Green, Blue); }
         }
+
         /// <summary>
         /// Gets the value of the non-alpha channel of this <see cref="ColorRgb"/>
         /// structure with the lowest value.
@@ -178,6 +190,7 @@ namespace Helper.ColorSpaces
         {
             get { return (Max + Min) / 2; }
         }
+
         /// <summary>
         /// Gets the luma of this <see cref="ColorRgb"/> structure.
         /// </summary>
@@ -185,6 +198,7 @@ namespace Helper.ColorSpaces
         {
             get { return ColorHcy.RedWeight * Red + ColorHcy.GreenWeight * Green + ColorHcy.BlueWeight * Blue; }
         }
+
         /// <summary>
         /// Gets the chroma of this <see cref="ColorRgb"/> structure.
         /// </summary>
@@ -219,6 +233,7 @@ namespace Helper.ColorSpaces
         public ColorRgb(float red, float green, float blue) :
             this(1, red, green, blue)
         { }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ColorRgb"/> structure using the given
         /// color channels.
@@ -249,13 +264,24 @@ namespace Helper.ColorSpaces
         public ColorRgb(float alpha, float red, float green, float blue) : this()
         {
             if (Single.IsNaN(alpha))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(alpha)), nameof(alpha));
+            }
+
             if (Single.IsNaN(red))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(red)), nameof(red));
+            }
+
             if (Single.IsNaN(green))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(green)), nameof(green));
+            }
+
             if (Single.IsNaN(blue))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(blue)), nameof(blue));
+            }
 
             Alpha = MathHelper.Clamp(alpha, 0, 1, Tolerance);
             Red = MathHelper.Clamp(red, 0, 1, Tolerance);
@@ -285,15 +311,18 @@ namespace Helper.ColorSpaces
         {
             return Grayscale(ColorWeight.Balanced);
         }
+
         public ColorRgb LumaGrayscale()
         {
             return Grayscale(ColorWeight.Luma);
         }
+
         public ColorRgb Grayscale(ColorWeight weight)
         {
             var value = Red * weight.Red + Green * weight.Green + Blue * weight.Blue;
-            return new ColorRgb(Alpha, value, value, value);            
+            return new ColorRgb(Alpha, value, value, value);
         }
+
         public ColorRgb Invert()
         {
             return new ColorRgb(Alpha, 1 - Red, 1 - Green, 1 - Blue);
@@ -305,44 +334,64 @@ namespace Helper.ColorSpaces
             {
                 case BlendMode.Multiply:
                     return Multiply(bottom);
+
                 case BlendMode.Screen:
                     return ScreenBlend(bottom);
+
                 case BlendMode.Overlay:
                     return Overlay(bottom);
+
                 case BlendMode.HardLight:
                     return HardLightBlend(bottom);
+
                 case BlendMode.SoftLight:
                     return SoftLightBlend(bottom);
+
                 case BlendMode.ColorDodge:
                     return ColorDodge(bottom);
+
                 case BlendMode.LinearDodge:
                     return LinearDodge(bottom);
+
                 case BlendMode.ColorBurn:
                     return ColorBurn(bottom);
+
                 case BlendMode.LinearBurn:
                     return LinearBurn(bottom);
+
                 case BlendMode.Difference:
                     return Difference(bottom);
+
                 case BlendMode.Darken:
                     return Darken(bottom);
+
                 case BlendMode.Lighten:
                     return Lighten(bottom);
+
                 case BlendMode.VividLight:
                     return VividLightBlend(bottom);
+
                 case BlendMode.LinearLight:
                     return LinearLightBlend(bottom);
+
                 case BlendMode.DarkerColor:
                     return DarkerColorBlend(bottom);
+
                 case BlendMode.LighterColor:
                     return LighterColorBlend(bottom);
+
                 case BlendMode.Hue:
                     return HueBlend(bottom);
+
                 case BlendMode.Saturation:
                     return SaturationBlend(bottom);
+
                 case BlendMode.Luminosity:
                     return LuminosityBlend(bottom);
+
                 case BlendMode.Divide:
                     return Divide(bottom);
+
                 default:
                     return Empty;
             }
@@ -351,7 +400,7 @@ namespace Helper.ColorSpaces
         public static ColorRgb operator &(ColorRgb left, ColorRgb right)
         {
             var result = Empty;
-            for (int i = NumberOfColorChannels; --i >= 0;)
+            for (var i = NumberOfColorChannels; --i >= 0;)
             {
                 result[i] = left[i] + right[i] * left.Alpha;
             }
@@ -362,12 +411,16 @@ namespace Helper.ColorSpaces
         public static ColorRgb operator /(ColorRgb left, ColorRgb right)
         {
             var color = Empty;
-            for (int i = NumberOfColorChannels; --i >= 0;)
+            for (var i = NumberOfColorChannels; --i >= 0;)
             {
                 if (left[i] == 0)
+                {
                     color[i] = 1;
+                }
                 else
+                {
                     color[i] = Math.Min(right[i] / left[i], 1);
+                }
             }
             color.Alpha = left.Alpha;
             return color;
@@ -376,12 +429,16 @@ namespace Helper.ColorSpaces
         public ColorRgb Divide(ColorRgb bottom)
         {
             var color = Empty;
-            for (int i = NumberOfColorChannels; --i >= 0;)
+            for (var i = NumberOfColorChannels; --i >= 0;)
             {
                 if (this[i] == 0)
+                {
                     color[i] = 1;
+                }
                 else
+                {
                     color[i] = Math.Min(bottom[i] / this[i], 1);
+                }
             }
             color.Alpha = Alpha;
             return color;
@@ -421,8 +478,11 @@ namespace Helper.ColorSpaces
         public ColorRgb Multiply(ColorRgb bottom)
         {
             var color = Empty;
-            for (int i = NumberOfColorChannels; --i >= 0;)
+            for (var i = NumberOfColorChannels; --i >= 0;)
+            {
                 color[i] = this[i] * bottom[i];
+            }
+
             color.Alpha = Alpha;
             return color;
         }
@@ -430,8 +490,11 @@ namespace Helper.ColorSpaces
         public ColorRgb ScreenBlend(ColorRgb bottom)
         {
             var color = Empty;
-            for (int i = NumberOfColorChannels; --i >= 0;)
-                color[i] = 1 - (1 - this[i] ) * (1 - bottom[i]);
+            for (var i = NumberOfColorChannels; --i >= 0;)
+            {
+                color[i] = 1 - (1 - this[i]) * (1 - bottom[i]);
+            }
+
             color.Alpha = Alpha;
             return color;
         }
@@ -439,12 +502,16 @@ namespace Helper.ColorSpaces
         public ColorRgb Overlay(ColorRgb bottom)
         {
             var color = Empty;
-            for (int i = NumberOfColorChannels; --i >= 0;)
+            for (var i = NumberOfColorChannels; --i >= 0;)
             {
                 if (bottom[i] < 0.5f)
+                {
                     color[i] = 2 * bottom[i] * this[i];
+                }
                 else
+                {
                     color[i] = 1 - 2 * (1 - bottom[i]) * (1 - this[i]);
+                }
             }
             color.Alpha = Alpha;
             return color;
@@ -458,12 +525,16 @@ namespace Helper.ColorSpaces
         public ColorRgb SoftLightBlend(ColorRgb bottom)
         {
             var color = Empty;
-            for (int i = NumberOfColorChannels; --i >= 0;)
+            for (var i = NumberOfColorChannels; --i >= 0;)
             {
                 if (bottom[i] < 0.5f)
+                {
                     color[i] = (2 * bottom[i] * this[i]) + (bottom[i] * bottom[i] * (1 - 2 * this[i]));
+                }
                 else
+                {
                     color[i] = (2 * bottom[i] * (1 - this[i])) + ((float)Math.Sqrt(bottom[i]) * (2 * this[i] - 1));
+                }
             }
             color.Alpha = Alpha;
             return color;
@@ -472,12 +543,16 @@ namespace Helper.ColorSpaces
         public ColorRgb ColorDodge(ColorRgb bottom)
         {
             var color = Empty;
-            for (int i = NumberOfColorChannels; --i >= 0;)
+            for (var i = NumberOfColorChannels; --i >= 0;)
             {
                 if (this[i] < 1)
+                {
                     color[i] = Math.Min(bottom[i] / (1 - this[i]), 1);
+                }
                 else
+                {
                     color[i] = 1;
+                }
             }
             color.Alpha = Alpha;
             return color;
@@ -486,8 +561,11 @@ namespace Helper.ColorSpaces
         public ColorRgb LinearDodge(ColorRgb bottom)
         {
             var color = Empty;
-            for (int i = NumberOfColorChannels; --i >= 0;)
+            for (var i = NumberOfColorChannels; --i >= 0;)
+            {
                 color[i] = Math.Min(this[i] + bottom[i], 1);
+            }
+
             color.Alpha = Alpha;
             return color;
         }
@@ -495,12 +573,16 @@ namespace Helper.ColorSpaces
         public ColorRgb ColorBurn(ColorRgb bottom)
         {
             var color = Empty;
-            for (int i = NumberOfColorChannels; --i >= 0;)
+            for (var i = NumberOfColorChannels; --i >= 0;)
             {
                 if (this[i] > 0)
+                {
                     color[i] = Math.Max(1 - ((1 - bottom[i]) / this[i]), 0);
+                }
                 else
+                {
                     color[i] = 0;
+                }
             }
             color.Alpha = Alpha;
             return color;
@@ -509,8 +591,11 @@ namespace Helper.ColorSpaces
         public ColorRgb LinearBurn(ColorRgb bottom)
         {
             var color = Empty;
-            for (int i = NumberOfColorChannels; --i >= 0;)
+            for (var i = NumberOfColorChannels; --i >= 0;)
+            {
                 color[i] = Math.Max(this[i] + bottom[i] - 1, 0);
+            }
+
             color.Alpha = Alpha;
             return color;
         }
@@ -518,12 +603,16 @@ namespace Helper.ColorSpaces
         public ColorRgb Difference(ColorRgb bottom)
         {
             var color = Empty;
-            for (int i = NumberOfColorChannels; --i >= 0;)
+            for (var i = NumberOfColorChannels; --i >= 0;)
             {
                 if (this[i] > bottom[i])
+                {
                     color[i] = this[i] - bottom[i];
+                }
                 else
+                {
                     color[i] = bottom[i] - this[i];
+                }
             }
             color.Alpha = Alpha;
             return color;
@@ -532,8 +621,11 @@ namespace Helper.ColorSpaces
         public ColorRgb Darken(ColorRgb bottom)
         {
             var color = Empty;
-            for (int i = NumberOfColorChannels; --i >= 0;)
+            for (var i = NumberOfColorChannels; --i >= 0;)
+            {
                 color[i] = Math.Min(this[i], bottom[i]);
+            }
+
             color.Alpha = Alpha;
             return color;
         }
@@ -541,8 +633,11 @@ namespace Helper.ColorSpaces
         public ColorRgb Lighten(ColorRgb bottom)
         {
             var color = Empty;
-            for (int i = NumberOfColorChannels; --i >= 0;)
+            for (var i = NumberOfColorChannels; --i >= 0;)
+            {
                 color[i] = Math.Max(this[i], bottom[i]);
+            }
+
             color.Alpha = Alpha;
             return color;
         }
@@ -551,19 +646,27 @@ namespace Helper.ColorSpaces
         {
             var color = Empty;
 
-            for (int i = NumberOfColorChannels; --i >= 0; )
+            for (var i = NumberOfColorChannels; --i >= 0;)
             {
                 if (this[i] > 0.5f)
                 {
                     if (this[i] < 1)
+                    {
                         color[i] = Math.Min(bottom[i] / (1 - this[i]), 1);
+                    }
                     else
+                    {
                         color[i] = 1;
+                    }
                 }
                 else if (this[i] > 0)
+                {
                     color[i] = Math.Max(1 - (1 - bottom[i]) / this[i], 0);
+                }
                 else
+                {
                     color[i] = 0;
+                }
             }
             color.Alpha = Alpha;
             return color;
@@ -573,7 +676,7 @@ namespace Helper.ColorSpaces
         {
             var color = Empty;
 
-            for (int i = NumberOfColorChannels; --i >= 0; )
+            for (var i = NumberOfColorChannels; --i >= 0;)
             {
                 color[i] = MathHelper.Clamp(2 * this[i] + bottom[i] - 1, 0, 1);
             }
@@ -600,6 +703,7 @@ namespace Helper.ColorSpaces
                 (int)((scale * color.Green) + 0.5f),
                 (int)((scale * color.Blue) + 0.5f));
         }
+
         /// <summary>
         /// Converts a <see cref="Color"/> structure to a <see cref="ColorRgb"/>
         /// structure.
@@ -638,13 +742,14 @@ namespace Helper.ColorSpaces
                 1 - color.Magenta,
                 1 - color.Yellow);
         }
+
         /// <summary>
         /// Converts a <see cref="ColorCmyk"/> structure to a <see cref="ColorRgb"/>
         /// structure.
         /// </summary>
         /// <param name="color">
         /// The <see cref="ColorCmyk"/> to be converted.
-        /// </param> 
+        /// </param>
         /// <returns>
         /// The <see cref="ColorRgb"/> the results from the conversion.
         /// </returns>
@@ -657,6 +762,7 @@ namespace Helper.ColorSpaces
                 white * (1 - color.Magenta),
                 white * (1 - color.Yellow));
         }
+
         /// <summary>
         /// Converts a <see cref="ColorHcy"/> structure to a <see cref="ColorRgb"/>
         /// structure.
@@ -711,6 +817,7 @@ namespace Helper.ColorSpaces
             var match = color.Luma - (ColorHcy.RedWeight * r + ColorHcy.GreenWeight * g + ColorHcy.BlueWeight * b);
             return new ColorRgb(color.Alpha, r + match, g + match, b + match);
         }
+
         /// <summary>
         /// Converts a <see cref="ColorHsl"/> structure to a <see cref="ColorRgb"/>
         /// structure.
@@ -766,6 +873,7 @@ namespace Helper.ColorSpaces
             var match = color.Lightness - 0.5f * chroma;
             return new ColorRgb(color.Alpha, r + match, g + match, b + match);
         }
+
         /// <summary>
         /// Converts a <see cref="ColorHsv"/> structure to a <see cref="ColorRgb"/>
         /// structure.
@@ -840,11 +948,17 @@ namespace Helper.ColorSpaces
         /// </returns>
         public static bool operator ==(ColorRgb left, ColorRgb right)
         {
-            for (int i = NumberOfChannels; --i >= 0;)
+            for (var i = NumberOfChannels; --i >= 0;)
+            {
                 if (!MathHelper.NearlyEquals(left[i], right[i], Tolerance))
+                {
                     return false;
+                }
+            }
+
             return true;
         }
+
         /// <summary>
         /// Compares two <see cref="ColorRgb"/> objects. The result specifies whether
         /// the <see cref="Alpha"/>, <see cref="Red"/>, <see cref="Green"/>, and
@@ -885,6 +999,7 @@ namespace Helper.ColorSpaces
         {
             return (Color)left == right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorRgb"/> object to a
         /// <see cref="Color"/> object. The result specifies whether
@@ -904,6 +1019,7 @@ namespace Helper.ColorSpaces
         {
             return !(left == right);
         }
+
         /// <summary>
         /// Compares a <see cref="Color"/> object to a
         /// <see cref="ColorRgb"/> object. The result specifies whether
@@ -923,6 +1039,7 @@ namespace Helper.ColorSpaces
         {
             return right == left;
         }
+
         /// <summary>
         /// Compares a <see cref="Color"/> object to a
         /// <see cref="ColorRgb"/> object. The result specifies whether
@@ -962,6 +1079,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorRgb"/> object to a
         /// <see cref="ColorCmy"/> object. The result specifies whether
@@ -1001,6 +1119,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorRgb"/> object to a
         /// <see cref="ColorCmyk"/> object. The result specifies whether
@@ -1040,6 +1159,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorRgb"/> object to a
         /// <see cref="ColorHcy"/> object. The result specifies whether
@@ -1079,6 +1199,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorRgb"/> object to a
         /// <see cref="ColorHsl"/> object. The result specifies whether
@@ -1118,6 +1239,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorRgb"/> object to a
         /// <see cref="ColorHsv"/> object. The result specifies whether
@@ -1140,10 +1262,10 @@ namespace Helper.ColorSpaces
 
         /// <summary>
         /// Specifies whether this <see cref="ColorRgb"/> is the same color as
-        /// the specified <see cref="object"/>.
+        /// the specified <see cref="Object"/>.
         /// </summary>
         /// <param name="obj">
-        /// The <see cref="object"/> to test.
+        /// The <see cref="Object"/> to test.
         /// </param>
         /// <returns>
         /// true if <paramref name="obj"/> is the same color as this <see cref="ColorRgb"/>.
@@ -1151,10 +1273,13 @@ namespace Helper.ColorSpaces
         public override bool Equals(object obj)
         {
             if (!(obj is ColorRgb))
+            {
                 return false;
+            }
 
             return (ColorRgb)obj == this;
         }
+
         /// <summary>
         /// Returns a hash code for this <see cref="ColorRgb"/>.
         /// </summary>
@@ -1169,11 +1294,12 @@ namespace Helper.ColorSpaces
         {
             return ((Color)this).GetHashCode();
         }
+
         /// <summary>
-        /// Converts this <see cref="ColorRgb"/> to a human-readable <see cref="string"/>.
+        /// Converts this <see cref="ColorRgb"/> to a human-readable <see cref="String"/>.
         /// </summary>
         /// <returns>
-        /// A <see cref="string"/> the represent this <see cref="ColorRgb"/>.
+        /// A <see cref="String"/> the represent this <see cref="ColorRgb"/>.
         /// </returns>
         public override string ToString()
         {

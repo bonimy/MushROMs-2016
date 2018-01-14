@@ -9,21 +9,25 @@ namespace Helper.ColorSpaces
             get;
             private set;
         }
+
         public int Saturation
         {
             get;
             private set;
         }
+
         public int Lightness
         {
             get;
             private set;
         }
+
         public int Effectiveness
         {
             get;
             private set;
         }
+
         public ColorizerMode ColorizerMode
         {
             get;
@@ -47,6 +51,7 @@ namespace Helper.ColorSpaces
                 left.Effectiveness == right.Effectiveness &&
                 left.ColorizerMode == right.ColorizerMode;
         }
+
         public static bool operator !=(Colorizer left, Colorizer right)
         {
             return !(left == right);
@@ -55,14 +60,18 @@ namespace Helper.ColorSpaces
         public override bool Equals(object obj)
         {
             if (!(obj is Colorizer))
+            {
                 return false;
+            }
 
             return (Colorizer)obj == this;
         }
+
         public override int GetHashCode()
         {
             return Hash.Generate(Hue, Saturation, Lightness, Effectiveness, (int)ColorizerMode);
         }
+
         public override string ToString()
         {
             var sb = new StringBuilder();

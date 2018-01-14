@@ -14,7 +14,9 @@ namespace MushROMs
         public event EventHandler SelectionDataCopied;
 
         public event EventHandler<EditorEventArgs> EditorAdded;
+
         public event EventHandler<EditorEventArgs> EditorRemoved;
+
         public event EventHandler EditorActivated;
 
         private List<IEditor> Editors
@@ -31,7 +33,11 @@ namespace MushROMs
 
         public IEditor ActiveEditor
         {
-            get { return _activeEditor; }
+            get
+            {
+                return _activeEditor;
+            }
+
             private set
             {
                 _activeEditor = value;
@@ -41,7 +47,11 @@ namespace MushROMs
 
         public ISelectionData CopyData
         {
-            get { return _copyData; }
+            get
+            {
+                return _copyData;
+            }
+
             set
             {
                 _copyData = value;
@@ -65,7 +75,10 @@ namespace MushROMs
         public void AddFileAssociation(IFileAssociation fileAssociation)
         {
             if (fileAssociation == null)
+            {
                 throw new ArgumentNullException(nameof(fileAssociation));
+            }
+
             FileAssociations.Add(fileAssociation.Extension, fileAssociation);
         }
 
@@ -90,7 +103,10 @@ namespace MushROMs
 
             var ext = Path.GetExtension(path);
             if (!FileAssociations.ContainsKey(ext))
+            {
                 throw new FileFormatException(path, SR.GetString(Resources.ErrorInvalidExtension, ext));
+            }
+
             var fileAssociation = FileAssociations[ext];
             return OpenFileInternal(path, fileAssociation.InitializeEditorMethod);
         }
@@ -108,11 +124,15 @@ namespace MushROMs
         private IEditor OpenFileInternal(string path, InitializeEditorMethod initializeEditor)
         {
             if (initializeEditor == null)
+            {
                 throw new ArgumentNullException(nameof(initializeEditor));
+            }
 
             var editor = initializeEditor(File.ReadAllBytes(path));
             if (editor == null)
+            {
                 throw new FileFormatException(path, Resources.ErrorEditorInitialization);
+            }
 
             editor.FullPath = path;
             editor.MasterEditor = this;
@@ -128,23 +148,32 @@ namespace MushROMs
         public void SaveAllFiles()
         {
             foreach (var editor in Editors)
+            {
                 editor.Save();
+            }
         }
 
         public void AddEditor(IEditor editor)
         {
             if (editor == null)
+            {
                 throw new ArgumentNullException(nameof(editor));
+            }
 
             if (!Editors.Contains(editor))
+            {
                 Editors.Add(editor);
+            }
+
             OnEditorAdded(new EditorEventArgs(editor));
         }
 
         public void RemoveEditor(IEditor editor)
         {
             if (editor == null)
+            {
                 throw new ArgumentNullException(nameof(editor));
+            }
 
             if (Editors.Contains(editor))
             {
@@ -156,9 +185,14 @@ namespace MushROMs
         public void ActivateEditor(IEditor editor)
         {
             if (editor == null)
+            {
                 throw new ArgumentNullException(nameof(editor));
+            }
+
             if (!Editors.Contains(editor))
+            {
                 throw new ArgumentException(Resources.ErrorEditorNotFound, nameof(editor));
+            }
 
             // This feels so hacky but it works exactly as intended.
             Editors.Remove(editor);
@@ -169,13 +203,19 @@ namespace MushROMs
         protected virtual void OnEditorAdded(EditorEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
             if (e.Editor == null)
+            {
                 return;
+            }
 
             if (!EditorDictionary.ContainsValue(e.Editor))
+            {
                 EditorDictionary.Add(e.Editor.FullPath, e.Editor);
+            }
 
             ActivateEditor(e.Editor);
 
@@ -185,16 +225,22 @@ namespace MushROMs
         protected virtual void OnEditorRemoved(EditorEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
             EditorDictionary.Remove(e.Editor.FullPath);
 
             if (ActiveEditor == e.Editor)
             {
                 if (Editors.Count > 0)
+                {
                     ActivateEditor(Editors[Editors.Count - 1]);
+                }
                 else
+                {
                     ActiveEditor = null;
+                }
             }
 
             EditorRemoved?.Invoke(this, e);
@@ -204,7 +250,6 @@ namespace MushROMs
         {
             EditorActivated?.Invoke(this, e);
         }
-
 
         protected virtual void OnSelectionDataCopied(EventArgs e)
         {

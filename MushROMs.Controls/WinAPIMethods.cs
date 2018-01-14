@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
-using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace MushROMs.Controls
 {
@@ -33,6 +33,7 @@ namespace MushROMs.Controls
         {
             get { return GetSystemMetrics(SM_CXPADDEDBORDER); }
         }
+
         public static Size PaddedBorderSize
         {
             get { return new Size(PaddedBorderWidth, PaddedBorderWidth); }
@@ -41,13 +42,18 @@ namespace MushROMs.Controls
         public static BorderStyle GetBorderStyle(IWin32Window window)
         {
             if ((UnsafeNativeMethods.GetWindowLong(window, GWL_EXSTYLE) & WS_EX_CLIENTEDGE) != 0)
+            {
                 return BorderStyle.Fixed3D;
+            }
 
             if ((UnsafeNativeMethods.GetWindowLong(window, GWL_STYLE) & WS_BORDER) != 0)
+            {
                 return BorderStyle.FixedSingle;
+            }
 
             return BorderStyle.None;
         }
+
         public static void SetBorderStyle(IWin32Window window, BorderStyle value)
         {
             var style = UnsafeNativeMethods.GetWindowLong(window, GWL_STYLE) & ~WS_BORDER;
@@ -55,20 +61,23 @@ namespace MushROMs.Controls
 
             switch (value)
             {
-            case BorderStyle.Fixed3D:
-                UnsafeNativeMethods.SetWindowLong(window, GWL_STYLE, style);
-                UnsafeNativeMethods.SetWindowLong(window, GWL_EXSTYLE, exstyle | WS_EX_CLIENTEDGE);
-                return;
-            case BorderStyle.FixedSingle:
-                UnsafeNativeMethods.SetWindowLong(window, GWL_STYLE, style | WS_BORDER);
-                UnsafeNativeMethods.SetWindowLong(window, GWL_EXSTYLE, exstyle);
-                return;
-            case BorderStyle.None:
-                UnsafeNativeMethods.SetWindowLong(window, GWL_STYLE, style);
-                UnsafeNativeMethods.SetWindowLong(window, GWL_EXSTYLE, exstyle);
-                return;
-            default:
-                return;
+                case BorderStyle.Fixed3D:
+                    UnsafeNativeMethods.SetWindowLong(window, GWL_STYLE, style);
+                    UnsafeNativeMethods.SetWindowLong(window, GWL_EXSTYLE, exstyle | WS_EX_CLIENTEDGE);
+                    return;
+
+                case BorderStyle.FixedSingle:
+                    UnsafeNativeMethods.SetWindowLong(window, GWL_STYLE, style | WS_BORDER);
+                    UnsafeNativeMethods.SetWindowLong(window, GWL_EXSTYLE, exstyle);
+                    return;
+
+                case BorderStyle.None:
+                    UnsafeNativeMethods.SetWindowLong(window, GWL_STYLE, style);
+                    UnsafeNativeMethods.SetWindowLong(window, GWL_EXSTYLE, exstyle);
+                    return;
+
+                default:
+                    return;
             }
         }
 
@@ -82,14 +91,17 @@ namespace MushROMs.Controls
         {
             switch (GetBorderStyle(window))
             {
-            case BorderStyle.None:
-                return Size.Empty;
-            case BorderStyle.FixedSingle:
-                return SystemInformation.BorderSize;
-            case BorderStyle.Fixed3D:
-                return SystemInformation.Border3DSize;
-            default:    //This should never occur.
-                return Size.Empty;
+                case BorderStyle.None:
+                    return Size.Empty;
+
+                case BorderStyle.FixedSingle:
+                    return SystemInformation.BorderSize;
+
+                case BorderStyle.Fixed3D:
+                    return SystemInformation.Border3DSize;
+
+                default:    //This should never occur.
+                    return Size.Empty;
             }
         }
 

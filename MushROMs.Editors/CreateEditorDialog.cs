@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-using MushROMs.Controls;
+﻿using MushROMs.Controls;
 
 namespace MushROMs.Editors
 {

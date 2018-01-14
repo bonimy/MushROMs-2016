@@ -15,10 +15,15 @@ namespace MushROMs.Controls
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
             if (e.KeyCode == Keys.Enter)
+            {
                 e.Handled = true;
+            }
+
             base.OnKeyDown(e);
         }
     }

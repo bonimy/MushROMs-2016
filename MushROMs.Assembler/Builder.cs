@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using MushROMs.SNES;
 
 namespace MushROMs.Assembler
@@ -63,13 +59,14 @@ namespace MushROMs.Assembler
         {
             CurrentAddress += 1 + size;
             DirectWriter.Data.Add(code);
-            for (int i = 0; i < size; i++)
+            for (var i = 0; i < size; i++)
+            {
                 DirectWriter.Data.Add((byte)(value >> (i << 3)));
+            }
         }
 
         public void WriteData(string path)
         {
-
         }
     }
 }

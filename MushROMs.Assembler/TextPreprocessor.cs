@@ -13,6 +13,7 @@ namespace MushROMs.Assembler
             get;
             set;
         }
+
         private int Length
         {
             get;
@@ -30,24 +31,28 @@ namespace MushROMs.Assembler
             get;
             set;
         }
+
         private int CurrentIndex
         {
             get;
             set;
         }
+
         private int CurrentLength
         {
             get { return CurrentIndex - StartIndex; }
         }
+
         private char CurrentChar
         {
             get { return UnsafeText[CurrentIndex]; }
         }
+
         private string CurrentText
         {
             get { return new string(UnsafeText, StartIndex, CurrentLength); }
         }
-        
+
         private Dictionary<char, ParseAction> PreprocessorDictionary
         {
             get;
@@ -68,17 +73,14 @@ namespace MushROMs.Assembler
 
         private TextPreprocessor(string text)
         {
-            if (text == null)
-                throw new ArgumentNullException(nameof(text));
-
-            Text = text;
+            Text = text ?? throw new ArgumentNullException(nameof(text));
             Length = Text.Length;
             ResolveTrigraphs();
             TrimWhite();
 
             InitializePreprocessorDictionary();
 
-            fixed(char* ptr = Text)
+            fixed (char* ptr = Text)
             {
                 UnsafeText = ptr;
                 ParseTokens();
@@ -91,7 +93,7 @@ namespace MushROMs.Assembler
 
             fixed (char* str = Text)
             {
-                for (int i = 0; i < Length;)
+                for (var i = 0; i < Length;)
                 {
                     if (str[i] == '\r')
                     {
@@ -99,13 +101,16 @@ namespace MushROMs.Assembler
 
                         i++;
                         if (str[i] == '\n')
+                        {
                             i++;
+                        }
+
                         continue;
                     }
 
                     if (str[i] == '?' && str[i + 1] == '?')
                     {
-                        char c = str[i];
+                        var c = str[i];
                         if (IsTrigraphChar(str[i + 2], ref c))
                         {
                             sb.Append(c);
@@ -128,7 +133,9 @@ namespace MushROMs.Assembler
             if (sb.Length > 0)
             {
                 if (sb[sb.Length - 1] != '\n')
+                {
                     sb.Append('\n');
+                }
             }
 
             Length = sb.Length;
@@ -142,12 +149,15 @@ namespace MushROMs.Assembler
 
             fixed (char* str = Text)
             {
-                for (int i = 0; i < Length;)
+                for (var i = 0; i < Length;)
                 {
                     _loop:
                     if (Grammar.IsWhiteSpace(str[i]))
                     {
-                        do i++;
+                        do
+                        {
+                            i++;
+                        }
                         while (Grammar.IsWhiteSpace(str[i]));
 
                         goto _white;
@@ -155,7 +165,10 @@ namespace MushROMs.Assembler
 
                     if (str[i] == ';')
                     {
-                        do i++;
+                        do
+                        {
+                            i++;
+                        }
                         while (!Grammar.IsLineSeparator(str[i]));
 
                         goto _white;
@@ -165,7 +178,9 @@ namespace MushROMs.Assembler
                     {
                         i += 2;
                         if (last != ' ')
+                        {
                             sb.Append(' ');
+                        }
 
                         for (; i < Length; i++)
                         {
@@ -177,11 +192,16 @@ namespace MushROMs.Assembler
 
                             if (str[i] == '\n')
                             {
-                                int len = sb.Length;
+                                var len = sb.Length;
                                 if (len >= 1 && sb[len - 1] == ' ')
+                                {
                                     sb[len - 1] = '\n';
+                                }
                                 else
+                                {
                                     sb.Append('\n');
+                                }
+
                                 continue;
                             }
                         }
@@ -213,11 +233,15 @@ namespace MushROMs.Assembler
 
                     if (str[i] == '\n')
                     {
-                        int len = sb.Length;
+                        var len = sb.Length;
                         if (len >= 1 && sb[len - 1] == ' ')
+                        {
                             sb[len - 1] = '\n';
+                        }
                         else
+                        {
                             sb.Append('\n');
+                        }
 
                         i++;
                         last = '\n';
@@ -229,7 +253,9 @@ namespace MushROMs.Assembler
 
                     _white:
                     if (last != ' ' && last != '\n')
+                    {
                         sb.Append(last = ' ');
+                    }
                 }
             }
 
@@ -241,12 +267,16 @@ namespace MushROMs.Assembler
         {
             PreprocessorTokens = new List<Token>();
 
-            for (CurrentIndex = 0; CurrentIndex < Length; )
+            for (CurrentIndex = 0; CurrentIndex < Length;)
             {
                 if (IsValidChar(CurrentChar))
+                {
                     PreprocessorDictionary[CurrentChar]();
+                }
                 else
+                {
                     AddMaskToken(c => !IsValidChar(c), TokenType.InvalidCharSequence);
+                }
             }
 
             PreprocessorDictionary['\0']();
@@ -256,23 +286,30 @@ namespace MushROMs.Assembler
         {
             return PreprocessorDictionary.ContainsKey(c);
         }
-        
+
         private void InitializePreprocessorDictionary()
         {
-            PreprocessorDictionary = new Dictionary<char, ParseAction>(0x80);
+            PreprocessorDictionary = new Dictionary<char, ParseAction>(0x80)
+            {
+                { '\0', () => AddSingleCharToken(TokenType.EOF) },
+                { '\n', () => AddSingleCharToken(TokenType.NewLine) },
+                { ' ', () => AddMaskToken(Grammar.IsWhiteSpace, TokenType.WhiteSpace) }
+            };
 
-            PreprocessorDictionary.Add('\0', () => AddSingleCharToken(TokenType.EOF));
-            PreprocessorDictionary.Add('\n', () => AddSingleCharToken(TokenType.NewLine));
-            PreprocessorDictionary.Add(' ', () => AddMaskToken(Grammar.IsWhiteSpace, TokenType.WhiteSpace));
-
-            for (char x = 'a'; x <= 'z'; x++)
+            for (var x = 'a'; x <= 'z'; x++)
+            {
                 PreprocessorDictionary.Add(x, AddKeywordOrLabel);
+            }
 
-            for (char x = 'A'; x <= 'Z'; x++)
+            for (var x = 'A'; x <= 'Z'; x++)
+            {
                 PreprocessorDictionary.Add(x, AddKeywordOrLabel);
+            }
 
-            for (char x = '0'; x <= '9'; x++)
+            for (var x = '0'; x <= '9'; x++)
+            {
                 PreprocessorDictionary.Add(x, () => AddMaskToken(Grammar.IsDigit, TokenType.DecimalNumber));
+            }
 
             PreprocessorDictionary.Add('_', AddKeywordOrLabel);
             PreprocessorDictionary.Add('{', () => AddSingleCharToken(TokenType.LeftBrace));
@@ -315,7 +352,10 @@ namespace MushROMs.Assembler
         {
             StartIndex = CurrentIndex++;
             while (test(CurrentChar))
+            {
                 CurrentIndex++;
+            }
+
             AddToken(type);
         }
 
@@ -330,7 +370,9 @@ namespace MushROMs.Assembler
             StartIndex = CurrentIndex++;
 
             while (Grammar.IsKeywordChar(CurrentChar))
+            {
                 CurrentIndex++;
+            }
 
             if (CurrentChar == ':')
             {
@@ -348,9 +390,13 @@ namespace MushROMs.Assembler
             }
 
             if (String.Compare(CurrentText, "equ", StringComparison.InvariantCultureIgnoreCase) == 0)
+            {
                 AddToken(TokenType.Assignment);
+            }
             else
+            {
                 AddToken(TokenType.Keyword);
+            }
         }
 
         private void AddMacroSubabel()
@@ -360,7 +406,9 @@ namespace MushROMs.Assembler
             {
                 CurrentIndex++;
                 while (Grammar.IsKeywordChar(CurrentChar))
+                {
                     CurrentIndex++;
+                }
 
                 AddToken(TokenType.MacroLabel);
                 return;
@@ -383,7 +431,10 @@ namespace MushROMs.Assembler
             {
                 var index = CurrentIndex++;
                 while (Grammar.IsKeywordChar(UnsafeText[index]))
+                {
                     index++;
+                }
+
                 if (UnsafeText[index] == '>')
                 {
                     CurrentIndex = index + 1;
@@ -413,7 +464,10 @@ namespace MushROMs.Assembler
             StartIndex = CurrentIndex++;
             if (Grammar.IsBinaryDigit(CurrentChar))
             {
-                do CurrentIndex++;
+                do
+                {
+                    CurrentIndex++;
+                }
                 while (Grammar.IsBinaryDigit(CurrentChar) || CurrentChar == '_');
 
                 AddToken(TokenType.BinaryNumber);
@@ -424,7 +478,9 @@ namespace MushROMs.Assembler
             {
                 CurrentIndex++;
                 while (Grammar.IsKeywordChar(CurrentChar))
+                {
                     CurrentIndex++;
+                }
 
                 AddToken(TokenType.MacroCall);
                 return;
@@ -451,7 +507,10 @@ namespace MushROMs.Assembler
             StartIndex = CurrentIndex++;
             if (CurrentChar == '+')
             {
-                do CurrentIndex++;
+                do
+                {
+                    CurrentIndex++;
+                }
                 while (CurrentChar == '+');
 
                 AddToken(TokenType.ForwardLabel);
@@ -466,7 +525,10 @@ namespace MushROMs.Assembler
             StartIndex = CurrentIndex++;
             if (CurrentChar == '-')
             {
-                do CurrentIndex++;
+                do
+                {
+                    CurrentIndex++;
+                }
                 while (CurrentChar == '-');
 
                 AddToken(TokenType.BackwardLabel);
@@ -481,7 +543,10 @@ namespace MushROMs.Assembler
             StartIndex = CurrentIndex++;
             if (Grammar.IsNonDigit(CurrentChar))
             {
-                do CurrentIndex++;
+                do
+                {
+                    CurrentIndex++;
+                }
                 while (Grammar.IsKeywordChar(CurrentChar));
 
                 AddToken(TokenType.Define);
@@ -504,7 +569,9 @@ namespace MushROMs.Assembler
                     return;
                 }
                 if (Grammar.IsLineSeparator(CurrentChar))
+                {
                     break;
+                }
             }
         }
 
@@ -520,49 +587,62 @@ namespace MushROMs.Assembler
                     return;
                 }
                 if (Grammar.IsLineSeparator(CurrentChar))
+                {
                     break;
+                }
             }
         }
-        
+
         private void AddToken(TokenType tokenType)
         {
             if (CurrentLength > 0)
+            {
                 PreprocessorTokens.Add(new Token(CurrentText, tokenType));
+            }
         }
 
         private static bool IsTrigraphChar(char code, ref char value)
         {
             switch (code)
             {
-            case '=':
-                value = '#';
-                return true;
-            case ')':
-                value = ']';
-                return true;
-            case '!':
-                value = '|';
-                return true;
-            case '(':
-                value = '[';
-                return true;
-            case '\'':
-                value = '^';
-                return true;
-            case '>':
-                value = '}';
-                return true;
-            case '/':
-                value = '\\';
-                return true;
-            case '<':
-                value = '{';
-                return true;
-            case '-':
-                value = '~';
-                return true;
-            default:
-                return false;
+                case '=':
+                    value = '#';
+                    return true;
+
+                case ')':
+                    value = ']';
+                    return true;
+
+                case '!':
+                    value = '|';
+                    return true;
+
+                case '(':
+                    value = '[';
+                    return true;
+
+                case '\'':
+                    value = '^';
+                    return true;
+
+                case '>':
+                    value = '}';
+                    return true;
+
+                case '/':
+                    value = '\\';
+                    return true;
+
+                case '<':
+                    value = '{';
+                    return true;
+
+                case '-':
+                    value = '~';
+                    return true;
+
+                default:
+                    return false;
             }
         }
     }

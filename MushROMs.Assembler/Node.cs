@@ -13,30 +13,36 @@ namespace MushROMs.Assembler
             get;
             private set;
         }
+
         public int ProgramLineNumber
         {
             get;
             private set;
         }
+
         public int BlockNumber
         {
             get;
             private set;
         }
+
         public int StartIndex
         {
             get;
             private set;
         }
+
         public int Length
         {
             get;
             private set;
         }
+
         public int EndIndex
         {
             get { return StartIndex + Length; }
         }
+
         public KeywordType KeywordType
         {
             get;
@@ -62,6 +68,7 @@ namespace MushROMs.Assembler
                 left.Length == right.Length &&
                 left.KeywordType == right.KeywordType;
         }
+
         public static bool operator !=(Node left, Node right)
         {
             return !(left == right);
@@ -70,14 +77,18 @@ namespace MushROMs.Assembler
         public override bool Equals(object obj)
         {
             if (!(obj is Node))
+            {
                 return false;
+            }
 
             return (Node)obj == this;
         }
+
         public override int GetHashCode()
         {
             return Hash.Generate(TextLineNumber, BlockNumber ^ ProgramLineNumber, StartIndex, Length, (int)KeywordType);
         }
+
         public override string ToString()
         {
             return SR.GetString("Index = {0}, Length = {1}, Type = {2}", StartIndex, Length, KeywordType);

@@ -28,11 +28,8 @@ namespace MushROMs.SNES
 
         public PaletteSelection(int startAddress, ITileMapSelection1D selection)
         {
-            if (selection == null)
-                throw new ArgumentNullException(nameof(selection));
-
             StartAddress = startAddress;
-            TileMapSelection = selection;
+            TileMapSelection = selection ?? throw new ArgumentNullException(nameof(selection));
         }
 
         internal PaletteSelection(int startAddress, int index, GraphicsFormat graphicsFormat)

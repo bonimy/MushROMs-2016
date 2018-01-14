@@ -9,7 +9,7 @@ using System.Text;
 namespace Helper.ColorSpaces
 {
     /// <summary>
-    /// Represents a color with <see cref="float"/> representations
+    /// Represents a color with <see cref="Single"/> representations
     /// of alpha, hue, saturation, and value channels ranging from 0
     /// to 1, inclusive.
     /// </summary>
@@ -37,6 +37,7 @@ namespace Helper.ColorSpaces
             get;
             private set;
         }
+
         /// <summary>
         /// Gets the hue channel of this <see cref="ColorHsv"/> structure.
         /// Valid values range from 0 to 1 inclusive.
@@ -46,6 +47,7 @@ namespace Helper.ColorSpaces
             get;
             private set;
         }
+
         /// <summary>
         /// Gets the saturation channel of this <see cref="ColorHsv"/> structure.
         /// Valid values range from 0 to 1 inclusive.
@@ -55,6 +57,7 @@ namespace Helper.ColorSpaces
             get;
             private set;
         }
+
         /// <summary>
         /// Gets the value channel of this <see cref="ColorHsv"/> structure.
         /// Valid values range from 0 to 1 inclusive.
@@ -91,6 +94,7 @@ namespace Helper.ColorSpaces
         public ColorHsv(float hue, float saturation, float value)
             : this(1, hue, saturation, value)
         { }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ColorHsv"/> structure using the given
         /// color channels.
@@ -121,13 +125,24 @@ namespace Helper.ColorSpaces
         public ColorHsv(float alpha, float hue, float saturation, float value)
         {
             if (Single.IsNaN(alpha))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(alpha)), nameof(alpha));
+            }
+
             if (Single.IsNaN(hue))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(hue)), nameof(hue));
+            }
+
             if (Single.IsNaN(saturation))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(saturation)), nameof(saturation));
+            }
+
             if (Single.IsNaN(value))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(value)), nameof(value));
+            }
 
             Alpha = MathHelper.Clamp(alpha, 0, 1, Tolerance);
             Hue = MathHelper.Clamp(hue, 0, 1, Tolerance);
@@ -149,6 +164,7 @@ namespace Helper.ColorSpaces
         {
             return (Color)color;
         }
+
         /// <summary>
         /// Converts a <see cref="Color"/> structure to a <see cref="ColorHsv"/>
         /// structure.
@@ -187,20 +203,29 @@ namespace Helper.ColorSpaces
                 {
                     hue = (color.Green - color.Blue) / chroma;
                     if (hue < 0)
+                    {
                         hue += 6;
+                    }
                 }
                 else if (value == color.Green)
+                {
                     hue = (color.Blue - color.Red) / chroma + 2;
+                }
                 else //if (value == color.Blue)
+                {
                     hue = (color.Red - color.Green) / chroma + 4;
+                }
 
                 hue /= 6;
             }
             if (value != 0)
+            {
                 saturation = chroma / value;
+            }
 
             return new ColorHsv(color.Alpha, hue, saturation, value);
         }
+
         /// <summary>
         /// Converts a <see cref="ColorCmy"/> structure to a <see cref="ColorHsv"/>
         /// structure.
@@ -215,6 +240,7 @@ namespace Helper.ColorSpaces
         {
             return color;
         }
+
         /// <summary>
         /// Converts a <see cref="ColorCmyk"/> structure to a <see cref="ColorHsv"/>
         /// structure.
@@ -229,6 +255,7 @@ namespace Helper.ColorSpaces
         {
             return color;
         }
+
         /// <summary>
         /// Converts a <see cref="ColorHcy"/> structure to a <see cref="ColorHsv"/>
         /// structure.
@@ -243,6 +270,7 @@ namespace Helper.ColorSpaces
         {
             return color;
         }
+
         /// <summary>
         /// Converts a <see cref="ColorHsl"/> structure to a <see cref="ColorHsv"/>
         /// structure.
@@ -276,6 +304,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares two <see cref="ColorHsv"/> objects. The result specifies whether
         /// they convert to unequal <see cref="ColorRgb"/> values.
@@ -314,6 +343,7 @@ namespace Helper.ColorSpaces
         {
             return (ColorRgb)left == right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorHsv"/> object to a
         /// <see cref="Color"/> object. The result specifies whether
@@ -333,6 +363,7 @@ namespace Helper.ColorSpaces
         {
             return !(left == right);
         }
+
         /// <summary>
         /// Compares a <see cref="Color"/> object to a
         /// <see cref="ColorHsv"/> object. The result specifies whether
@@ -352,6 +383,7 @@ namespace Helper.ColorSpaces
         {
             return right == left;
         }
+
         /// <summary>
         /// Compares a <see cref="Color"/> object to a
         /// <see cref="ColorHsv"/> object. The result specifies whether
@@ -391,6 +423,7 @@ namespace Helper.ColorSpaces
         {
             return right == left;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorHsv"/> object to a
         /// <see cref="ColorRgb"/> object. The result specifies whether
@@ -430,6 +463,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorHsv"/> object to a
         /// <see cref="ColorCmyk"/> object. The result specifies whether
@@ -469,6 +503,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorHsv"/> object to a
         /// <see cref="ColorHcy"/> object. The result specifies whether
@@ -508,6 +543,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorHsv"/> object to a
         /// <see cref="ColorHsl"/> object. The result specifies whether
@@ -547,6 +583,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorHsv"/> object to a
         /// <see cref="ColorCmy"/> object. The result specifies whether
@@ -569,10 +606,10 @@ namespace Helper.ColorSpaces
 
         /// <summary>
         /// Specifies whether this <see cref="ColorHsv"/> is the same color as
-        /// the specified <see cref="object"/>.
+        /// the specified <see cref="Object"/>.
         /// </summary>
         /// <param name="obj">
-        /// The <see cref="object"/> to test.
+        /// The <see cref="Object"/> to test.
         /// </param>
         /// <returns>
         /// true if <paramref name="obj"/> is the same color as this <see cref="ColorHsv"/>.
@@ -580,10 +617,13 @@ namespace Helper.ColorSpaces
         public override bool Equals(object obj)
         {
             if (!(obj is ColorHsv))
+            {
                 return false;
+            }
 
             return (ColorHsv)obj == this;
         }
+
         /// <summary>
         /// Returns a hash code for this <see cref="ColorHsv"/>.
         /// </summary>
@@ -598,11 +638,12 @@ namespace Helper.ColorSpaces
         {
             return ((ColorRgb)this).GetHashCode();
         }
+
         /// <summary>
-        /// Converts this <see cref="ColorHsv"/> to a human-readable <see cref="string"/>.
+        /// Converts this <see cref="ColorHsv"/> to a human-readable <see cref="String"/>.
         /// </summary>
         /// <returns>
-        /// A <see cref="string"/> the represent this <see cref="ColorHsv"/>.
+        /// A <see cref="String"/> the represent this <see cref="ColorHsv"/>.
         /// </returns>
         public override string ToString()
         {

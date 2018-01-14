@@ -22,6 +22,7 @@ namespace Helper
             get;
             private set;
         }
+
         public string Filter
         {
             get;
@@ -30,20 +31,17 @@ namespace Helper
 
         public FileFilter(string displayName, List<string> extensions)
         {
-            if (displayName == null)
-                throw new ArgumentNullException(nameof(displayName));
-
-            DisplayName = displayName;
+            DisplayName = displayName ?? throw new ArgumentNullException(nameof(displayName));
             Extensions = GenerateExtensionsList(extensions);
             Filter = GenerateFileFilter(true);
         }
 
         public string GenerateFileFilter(bool showExtensions)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             sb.Append(DisplayName);
-            
+
             if (showExtensions)
             {
                 sb.Append(" (");
@@ -59,9 +57,9 @@ namespace Helper
 
         public static string GenerateExtensionsList(List<string> extensions)
         {
-            StringBuilder sb = new StringBuilder();
-            
-            foreach (string extension in extensions)
+            var sb = new StringBuilder();
+
+            foreach (var extension in extensions)
             {
                 sb.Append(WildCard);
                 sb.Append(extension);

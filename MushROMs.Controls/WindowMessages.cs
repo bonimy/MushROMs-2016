@@ -10,7 +10,7 @@
         public const int MouseMove = 0x200;
         public const int MouseHover = 0x2A1;
         public const int MouseLeave = 0x2A3;
-        
+
         public const int Size = 0x005;
         public const int Sizing = 0x0214;
     }

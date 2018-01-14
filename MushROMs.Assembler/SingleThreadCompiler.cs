@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace MushROMs.Assembler
 {
@@ -11,12 +9,13 @@ namespace MushROMs.Assembler
             get;
             private set;
         }
-        
+
         private Dictionary<string, Define> Defines
         {
             get;
             set;
         }
+
         private Dictionary<string, Macro> Macros
         {
             get;
@@ -34,6 +33,7 @@ namespace MushROMs.Assembler
             get;
             set;
         }
+
         private IList<Token> ResolvedTokens
         {
             get;
@@ -61,6 +61,7 @@ namespace MushROMs.Assembler
         {
             return Defines;
         }
+
         public IDictionary<string, Macro> GetMacros()
         {
             return Macros;
@@ -70,6 +71,7 @@ namespace MushROMs.Assembler
         {
             return Tokens;
         }
+
         public IList<Token> GetResolvedTokens()
         {
             return ResolvedTokens;

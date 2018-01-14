@@ -79,13 +79,15 @@ namespace MushROMs.Controls
         {
             // Make value positive if negative is not allowed.
             if (!AllowNegative && value < 0)
+            {
                 value = Math.Abs(value);
+            }
 
             // Set the value.
             _value = value;
 
             // Stringize the value.
-            Text = Value.ToString(AllowHex ? "X" : string.Empty, SR.CurrentCulture);
+            Text = Value.ToString(AllowHex ? "X" : String.Empty, SR.CurrentCulture);
 
             OnValueChanged(EventArgs.Empty);
         }
@@ -104,34 +106,47 @@ namespace MushROMs.Controls
         protected virtual void ParseNumericKeyPress(KeyPressEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
             // Only accept valid number characters and formatters
             if (e.KeyChar >= '0' && e.KeyChar <= '9')
+            {
                 return;
+            }
             else if (AllowNegative && e.KeyChar == '-' && SelectionStart == 0 && !Text.Contains("-"))
+            {
                 return;
+            }
             else if (AllowHex && e.KeyChar >= 'a' && e.KeyChar <= 'f')
+            {
                 return;
+            }
             else if (AllowHex && e.KeyChar >= 'A' && e.KeyChar <= 'F')
+            {
                 return;
+            }
             else if (e.KeyChar == '\b')
+            {
                 return;
+            }
             else
+            {
                 e.Handled = true;
+            }
         }
 
         protected override void OnTextChanged(EventArgs e)
         {
-            // Save original value.
-            int textValue;
-
             // Parse new value.
-            if (int.TryParse(Text, NumberStyle, CultureInfo.InvariantCulture, out textValue))
+            if (Int32.TryParse(Text, NumberStyle, CultureInfo.InvariantCulture, out var textValue))
             {
                 // Only raise event if value changed.
                 if (Value != textValue)
+                {
                     Value = textValue;
+                }
             }
             base.OnTextChanged(e);
         }

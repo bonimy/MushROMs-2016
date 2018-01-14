@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using MushROMs.Properties;
 
 namespace MushROMs
@@ -18,16 +18,23 @@ namespace MushROMs
         public event EventHandler MasterEditorChanged;
 
         public event EventHandler NameChanged;
+
         public event EventHandler ExtensionChanged;
+
         public event EventHandler DirectoryChanged;
+
         public event EventHandler PathChanged;
 
         public event EventHandler FileOpened;
+
         public event EventHandler FileSaved;
 
         public event EventHandler DataInitialized;
+
         public event EventHandler DataModified;
+
         public event EventHandler UndoApplied;
+
         public event EventHandler RedoApplied;
 
         public event EventHandler SelectionChanged;
@@ -36,7 +43,11 @@ namespace MushROMs
 
         public MasterEditor MasterEditor
         {
-            get { return _masterEditor; }
+            get
+            {
+                return _masterEditor;
+            }
+
             set
             {
                 _masterEditor = value;
@@ -49,10 +60,13 @@ namespace MushROMs
             get
             {
                 if (String.IsNullOrEmpty(Directory) || String.IsNullOrEmpty(Name) || String.IsNullOrEmpty(Extension))
+                {
                     return null;
+                }
 
                 return Directory + Path.DirectorySeparatorChar + Name + Extension;
             }
+
             set
             {
                 Directory = Path.GetDirectoryName(value);
@@ -64,7 +78,11 @@ namespace MushROMs
 
         public string Directory
         {
-            get { return _directory; }
+            get
+            {
+                return _directory;
+            }
+
             set
             {
                 _directory = value;
@@ -75,7 +93,11 @@ namespace MushROMs
 
         public string Name
         {
-            get { return _name; }
+            get
+            {
+                return _name;
+            }
+
             set
             {
                 _name = value;
@@ -86,7 +108,11 @@ namespace MushROMs
 
         public string Extension
         {
-            get { return _extension; }
+            get
+            {
+                return _extension;
+            }
+
             set
             {
                 _extension = value;
@@ -106,44 +132,54 @@ namespace MushROMs
             get;
             private set;
         }
+
         public int HistoryIndex
         {
             get;
             private set;
         }
+
         private List<State> History
         {
             get;
             set;
         }
+
         public virtual bool Saved
         {
             get { return HistoryIndex == SaveIndex; }
         }
+
         public virtual bool CanUndo
         {
             get { return HistoryIndex > 0 && !PreviewMode; }
         }
+
         public virtual bool CanRedo
         {
             get { return HistoryIndex < History.Count && !PreviewMode; }
         }
+
         public virtual bool CanCut
         {
             get { return CanDelete && CanCopy; }
         }
+
         public virtual bool CanCopy
         {
             get { return true; }
         }
+
         public virtual bool CanPaste
         {
             get { return true; }
         }
+
         public virtual bool CanDelete
         {
             get { return true; }
         }
+
         public virtual bool CanSelectAll
         {
             get { return true; }
@@ -151,13 +187,14 @@ namespace MushROMs
 
         public ISelection Selection
         {
-            get { return _selection; }
+            get
+            {
+                return _selection;
+            }
+
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException(nameof(value));
-
-                _selection = value;
+                _selection = value ?? throw new ArgumentNullException(nameof(value));
                 OnSelectionChanged(EventArgs.Empty);
             }
         }
@@ -212,11 +249,13 @@ namespace MushROMs
             FullPath = path;
             OnFileSaved(EventArgs.Empty);
         }
-        
+
         private void AddHistoryData(ISelectionData data)
         {
             if (HistoryIndex < History.Count)
+            {
                 History.RemoveRange(HistoryIndex, History.Count - HistoryIndex);
+            }
 
             History.Add(new State(data, this));
             HistoryIndex++;
@@ -227,7 +266,9 @@ namespace MushROMs
             if (CanUndo)
             {
                 if (HistoryIndex <= 0)
+                {
                     throw new InvalidOperationException(Resources.ErrorNoCopyData);
+                }
 
                 WriteData(History[--HistoryIndex].Undo, false);
                 OnUndoApplied(EventArgs.Empty);
@@ -239,7 +280,9 @@ namespace MushROMs
             if (CanRedo)
             {
                 if (HistoryIndex >= History.Count)
+                {
                     throw new InvalidOperationException(Resources.ErrorNoRedoData);
+                }
 
                 WriteData(History[HistoryIndex++].Redo, false);
                 OnRedoApplied(EventArgs.Empty);
@@ -255,7 +298,9 @@ namespace MushROMs
         public virtual void Copy()
         {
             if (Selection == null)
+            {
                 throw new InvalidOperationException(Resources.ErrorNoSelection);
+            }
 
             CopyData = Selection.GetSelectionData(this);
         }
@@ -263,18 +308,23 @@ namespace MushROMs
         public virtual void Paste()
         {
             if (CopyData == null)
+            {
                 throw new InvalidOperationException(Resources.ErrorNoCopyData);
+            }
 
             WriteData(CopyData.Copy(Selection));
         }
 
         public abstract void Delete();
+
         public abstract void SelectAll();
 
         public ISelectionData GetSelectionData()
         {
             if (Selection == null)
+            {
                 return null;
+            }
 
             return Selection.GetSelectionData(this);
         }
@@ -287,10 +337,14 @@ namespace MushROMs
         public void EnablePreviewMode()
         {
             if (Selection == null)
+            {
                 throw new InvalidOperationException(Resources.ErrorNoSelection);
+            }
 
             if (PreviewMode)
+            {
                 return;
+            }
 
             PreviewMode = true;
             PreviewData = GetSelectionData().Copy(Selection);
@@ -300,10 +354,14 @@ namespace MushROMs
         public void DisablePreviewMode()
         {
             if (Selection == null)
+            {
                 throw new InvalidOperationException(Resources.ErrorNoSelection);
+            }
 
             if (!PreviewMode)
+            {
                 return;
+            }
 
             WriteData(PreviewData, false);
             PreviewMode = false;
@@ -318,12 +376,19 @@ namespace MushROMs
         private void WriteData(ISelectionData data, bool history)
         {
             if (data == null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
+
             if (!IsValidSelectionData(data))
+            {
                 throw new ArgumentException(Resources.ErrorSelectionDataInvalid, nameof(data));
+            }
 
             if (history && !PreviewMode)
+            {
                 AddHistoryData(data);
+            }
 
             data.WriteToEditor(this);
 

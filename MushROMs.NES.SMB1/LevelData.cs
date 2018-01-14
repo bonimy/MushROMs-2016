@@ -21,11 +21,13 @@ namespace MushROMs.NES.SMB1
             get;
             private set;
         }
+
         public AreaType AreaType
         {
             get;
             private set;
         }
+
         public LevelHeader LevelHeader
         {
             get;
@@ -37,15 +39,18 @@ namespace MushROMs.NES.SMB1
             get;
             set;
         }
+
         public LevelObject[] GetLevelObjects()
         {
             return LevelObjects;
         }
+
         private EnemyObject[] EnemyObjects
         {
             get;
             set;
         }
+
         public EnemyObject[] GetEnemyObjects()
         {
             return EnemyObjects;
@@ -54,9 +59,14 @@ namespace MushROMs.NES.SMB1
         public LevelData(byte[] src, int mapNumber)
         {
             if (src == null)
+            {
                 throw new ArgumentNullException(nameof(src));
+            }
+
             if (mapNumber < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(mapNumber));
+            }
 
             var maps = AddressConverter.NesToPc(MapListPointer);
             var world = AddressConverter.NesToPc(LevelsPerWorldPointer);
@@ -104,7 +114,7 @@ namespace MushROMs.NES.SMB1
         {
             var levels = new LevelData[NumberOfMaps];
 
-            int areas = AddressConverter.NesToPc(AreaTypeLevelOffsetPointer);
+            var areas = AddressConverter.NesToPc(AreaTypeLevelOffsetPointer);
             int ws = src[areas + 0];
             int gs = src[areas + 1];
             int us = src[areas + 2];
@@ -114,13 +124,13 @@ namespace MushROMs.NES.SMB1
                 new AreaIndex(gs, AreaType.Grassland),
                 new AreaIndex(us, AreaType.Underground),
                 new AreaIndex(cs, AreaType.Castle),
-                new AreaIndex(int.MaxValue, 0)});
+                new AreaIndex(Int32.MaxValue, 0)});
             list.Sort((x, y) => x.Index - y.Index);
 
-            for (int i = 0; i < NumberOfMaps; i++)
+            for (var i = 0; i < NumberOfMaps; i++)
             {
-                int map = i;
-                for (int j = 0; j < 4; j++)
+                var map = i;
+                for (var j = 0; j < 4; j++)
                 {
                     if (i >= list[j].Index && i < list[j + 1].Index)
                     {
@@ -140,7 +150,7 @@ namespace MushROMs.NES.SMB1
         {
             return "Map" + MapNumber.ToString("X2");
         }
-        
+
         private struct AreaIndex
         {
             public int Index;

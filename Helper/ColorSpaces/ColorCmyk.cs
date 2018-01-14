@@ -1,5 +1,5 @@
 ﻿/* Refer to https://en.wikipedia.org/wiki/CMYK_color_model for more information on
- * the CMY color model. 
+ * the CMY color model.
  */
 
 using System;
@@ -9,7 +9,7 @@ using System.Text;
 namespace Helper.ColorSpaces
 {
     /// <summary>
-    /// Represents a color with <see cref="float"/> representations
+    /// Represents a color with <see cref="Single"/> representations
     /// of alpha, cyan, magenta, yellow, and black channels ranging
     /// from 0 to 1, inclusive.
     /// </summary>
@@ -37,6 +37,7 @@ namespace Helper.ColorSpaces
             get;
             private set;
         }
+
         /// <summary>
         /// Gets the cyan channel of this <see cref="ColorCmy"/> structure.
         /// Valid values range from 0 to 1 inclusive.
@@ -46,6 +47,7 @@ namespace Helper.ColorSpaces
             get;
             private set;
         }
+
         /// <summary>
         /// Gets the magenta channel of this <see cref="ColorCmy"/> structure.
         /// Valid values range from 0 to 1 inclusive.
@@ -55,6 +57,7 @@ namespace Helper.ColorSpaces
             get;
             private set;
         }
+
         /// <summary>
         /// Gets the yellow channel of this <see cref="ColorCmy"/> structure.
         /// Valid values range from 0 to 1 inclusive.
@@ -64,6 +67,7 @@ namespace Helper.ColorSpaces
             get;
             private set;
         }
+
         /// <summary>
         /// Gets the black channel of this <see cref="ColorCmy"/> structure.
         /// Valid values range from 0 to 1 inclusive.
@@ -139,15 +143,29 @@ namespace Helper.ColorSpaces
         public ColorCmyk(float alpha, float cyan, float magenta, float yellow, float key)
         {
             if (Single.IsNaN(alpha))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(alpha)), nameof(alpha));
+            }
+
             if (Single.IsNaN(cyan))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(cyan)), nameof(cyan));
+            }
+
             if (Single.IsNaN(magenta))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(magenta)), nameof(magenta));
+            }
+
             if (Single.IsNaN(yellow))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(yellow)), nameof(yellow));
+            }
+
             if (Single.IsNaN(key))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(key)), nameof(key));
+            }
 
             Alpha = MathHelper.Clamp(alpha, 0, 1, Tolerance);
             Cyan = MathHelper.Clamp(cyan, 0, 1, Tolerance);
@@ -170,6 +188,7 @@ namespace Helper.ColorSpaces
         {
             return (Color)color;
         }
+
         /// <summary>
         /// Converts a <see cref="Color"/> structure to a <see cref="ColorCmyk"/>
         /// structure.
@@ -199,7 +218,9 @@ namespace Helper.ColorSpaces
         {
             var white = color.Max;
             if (white == 0)
+            {
                 return new ColorCmyk(color.Alpha, 0, 0, 0, 1);
+            }
 
             return new ColorCmyk(
                 color.Alpha,
@@ -208,6 +229,7 @@ namespace Helper.ColorSpaces
                 (white - color.Blue) / white,
                 1 - white);
         }
+
         /// <summary>
         /// Converts a <see cref="ColorCmy"/> structure to a <see cref="ColorCmyk"/>
         /// structure.
@@ -222,6 +244,7 @@ namespace Helper.ColorSpaces
         {
             return color;
         }
+
         /// <summary>
         /// Converts a <see cref="ColorHcy"/> structure to a <see cref="ColorCmyk"/>
         /// structure.
@@ -236,6 +259,7 @@ namespace Helper.ColorSpaces
         {
             return color;
         }
+
         /// <summary>
         /// Converts a <see cref="ColorHsl"/> structure to a <see cref="ColorCmyk"/>
         /// structure.
@@ -250,6 +274,7 @@ namespace Helper.ColorSpaces
         {
             return color;
         }
+
         /// <summary>
         /// Converts a <see cref="ColorHsv"/> structure to a <see cref="ColorCmyk"/>
         /// structure.
@@ -283,6 +308,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares two <see cref="ColorCmyk"/> objects. The result specifies whether
         /// they convert to unequal <see cref="ColorRgb"/> values.
@@ -321,6 +347,7 @@ namespace Helper.ColorSpaces
         {
             return (ColorRgb)left == right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorCmyk"/> object to a
         /// <see cref="Color"/> object. The result specifies whether
@@ -340,6 +367,7 @@ namespace Helper.ColorSpaces
         {
             return !(left == right);
         }
+
         /// <summary>
         /// Compares a <see cref="Color"/> object to a
         /// <see cref="ColorCmyk"/> object. The result specifies whether
@@ -359,6 +387,7 @@ namespace Helper.ColorSpaces
         {
             return right == left;
         }
+
         /// <summary>
         /// Compares a <see cref="Color"/> object to a
         /// <see cref="ColorCmyk"/> object. The result specifies whether
@@ -398,6 +427,7 @@ namespace Helper.ColorSpaces
         {
             return right == left;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorCmyk"/> object to a
         /// <see cref="ColorRgb"/> object. The result specifies whether
@@ -437,6 +467,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorCmyk"/> object to a
         /// <see cref="ColorCmy"/> object. The result specifies whether
@@ -476,6 +507,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorCmyk"/> object to a
         /// <see cref="ColorHcy"/> object. The result specifies whether
@@ -515,6 +547,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorCmyk"/> object to a
         /// <see cref="ColorHsl"/> object. The result specifies whether
@@ -554,6 +587,7 @@ namespace Helper.ColorSpaces
         {
             return left == (ColorRgb)right;
         }
+
         /// <summary>
         /// Compares a <see cref="ColorCmyk"/> object to a
         /// <see cref="ColorHsv"/> object. The result specifies whether
@@ -576,10 +610,10 @@ namespace Helper.ColorSpaces
 
         /// <summary>
         /// Specifies whether this <see cref="ColorCmyk"/> is the same color as
-        /// the specified <see cref="object"/>.
+        /// the specified <see cref="Object"/>.
         /// </summary>
         /// <param name="obj">
-        /// The <see cref="object"/> to test.
+        /// The <see cref="Object"/> to test.
         /// </param>
         /// <returns>
         /// true if <paramref name="obj"/> is the same color as this <see cref="ColorCmyk"/>.
@@ -587,10 +621,13 @@ namespace Helper.ColorSpaces
         public override bool Equals(object obj)
         {
             if (!(obj is ColorCmyk))
+            {
                 return false;
+            }
 
             return (ColorCmyk)obj == this;
         }
+
         /// <summary>
         /// Returns a hash code for this <see cref="ColorCmyk"/>.
         /// </summary>
@@ -605,11 +642,12 @@ namespace Helper.ColorSpaces
         {
             return ((ColorRgb)this).GetHashCode();
         }
+
         /// <summary>
-        /// Converts this <see cref="ColorCmyk"/> to a human-readable <see cref="string"/>.
+        /// Converts this <see cref="ColorCmyk"/> to a human-readable <see cref="String"/>.
         /// </summary>
         /// <returns>
-        /// A <see cref="string"/> the represent this <see cref="ColorCmyk"/>.
+        /// A <see cref="String"/> the represent this <see cref="ColorCmyk"/>.
         /// </returns>
         public override string ToString()
         {

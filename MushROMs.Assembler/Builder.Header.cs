@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MushROMs.SNES;
+﻿using MushROMs.SNES;
 
 namespace MushROMs.Assembler
 {
@@ -14,6 +9,7 @@ namespace MushROMs.Assembler
             get;
             set;
         }
+
         private bool AddressModeSet
         {
             get;
@@ -25,71 +21,85 @@ namespace MushROMs.Assembler
             get;
             set;
         }
+
         private bool GameCodeSet
         {
             get;
             set;
         }
+
         private bool ExpandedRAMSizeSet
         {
             get;
             set;
         }
+
         private bool SpecialVersionSet
         {
             get;
             set;
         }
+
         private bool CartTypeSet
         {
             get;
             set;
         }
+
         private bool NameSet
         {
             get;
             set;
         }
+
         private bool MapModeSet
         {
             get;
             set;
         }
+
         private bool TypeSet
         {
             get;
             set;
         }
+
         private bool PageSizeSet
         {
             get;
             set;
         }
+
         private bool SRAMSizeSet
         {
             get;
             set;
         }
+
         private bool DestCodeSet
         {
             get;
             set;
         }
+
         private bool FixedValueSet
         {
             get;
             set;
         }
+
         private bool VersionNumberSet
         {
             get;
             set;
         }
+
         private bool ComplementCheckSumSet
         {
             get;
             set;
         }
+
         private bool CheckSumSet
         {
             get;
@@ -101,26 +111,31 @@ namespace MushROMs.Assembler
             get;
             set;
         }
+
         private bool NativeBRKVectorSet
         {
             get;
             set;
         }
+
         private bool NativeAbortVectorSet
         {
             get;
             set;
         }
+
         private bool NativeNMIVectorSet
         {
             get;
             set;
         }
+
         private bool NativeResetVectorSet
         {
             get;
             set;
         }
+
         private bool NativeIRQVectorSet
         {
             get;
@@ -132,26 +147,31 @@ namespace MushROMs.Assembler
             get;
             set;
         }
+
         private bool EmuBRKVectorSet
         {
             get;
             set;
         }
+
         private bool EmuAbortVectorSet
         {
             get;
             set;
         }
+
         private bool EmuNMIVectorSet
         {
             get;
             set;
         }
+
         private bool EmuResetVectorSet
         {
             get;
             set;
         }
+
         private bool EmuIRQVectorSet
         {
             get;

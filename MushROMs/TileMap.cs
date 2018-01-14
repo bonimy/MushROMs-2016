@@ -12,17 +12,23 @@ namespace MushROMs
         private Range _tileSize;
         private Range _zoomSize;
         private Range _viewSize;
-        
+
         public event EventHandler GridSizeChanged;
+
         public event EventHandler ZeroTileChanged;
+
         public event EventHandler ActiveGridTileChanged;
 
         public event EventHandler TileSizeChanged;
+
         public event EventHandler ZoomSizeChanged;
+
         public event EventHandler ViewSizeChanged;
 
         public event EventHandler SelectionInitialized;
+
         public event EventHandler SelectionChanged;
+
         public event EventHandler SelectionCreated;
 
         public abstract Position ActiveViewTile
@@ -39,21 +45,29 @@ namespace MushROMs
 
         public Range TileSize
         {
-            get { return _tileSize; }
+            get
+            {
+                return _tileSize;
+            }
+
             set
             {
                 if (TileSize == value)
+                {
                     return;
+                }
 
                 _tileSize = value;
                 OnTileSizeChanged(EventArgs.Empty);
             }
         }
+
         public int TileWidth
         {
             get { return TileSize.Horizontal; }
             set { TileSize = new Range(value, TileHeight); }
         }
+
         public int TileHeight
         {
             get { return TileSize.Vertical; }
@@ -62,21 +76,29 @@ namespace MushROMs
 
         public Range ZoomSize
         {
-            get { return _zoomSize; }
+            get
+            {
+                return _zoomSize;
+            }
+
             set
             {
                 if (ZoomSize == value)
+                {
                     return;
+                }
 
                 _zoomSize = value;
                 OnZoomSizeChanged(EventArgs.Empty);
             }
         }
+
         public int ZoomWidth
         {
             get { return ZoomSize.Horizontal; }
             set { ZoomSize = new Range(value, ZoomHeight); }
         }
+
         public int ZoomHeight
         {
             get { return ZoomSize.Vertical; }
@@ -85,35 +107,45 @@ namespace MushROMs
 
         public Range ViewSize
         {
-            get { return _viewSize; }
+            get
+            {
+                return _viewSize;
+            }
+
             set
             {
                 if (ViewSize == value)
+                {
                     return;
+                }
 
                 _viewSize = value;
                 OnViewSizeChanged(EventArgs.Empty);
             }
         }
+
         public int ViewWidth
         {
             get { return ViewSize.Horizontal; }
             set { ViewSize = new Range(value, ViewHeight); }
         }
+
         public int ViewHeight
         {
             get { return ViewSize.Vertical; }
             set { ViewSize = new Range(ViewWidth, value); }
         }
-        
+
         public Range CellSize
         {
             get { return TileSize * ZoomSize; }
         }
+
         public int CellWidth
         {
             get { return CellSize.Horizontal; }
         }
+
         public int CellHeight
         {
             get { return CellSize.Vertical; }
@@ -123,10 +155,12 @@ namespace MushROMs
         {
             get { return CellSize * ViewSize; }
         }
+
         public int Width
         {
             get { return Size.Horizontal; }
         }
+
         public int Height
         {
             get { return Size.Vertical; }
@@ -158,23 +192,27 @@ namespace MushROMs
         {
             TileSizeChanged?.Invoke(this, e);
         }
+
         protected virtual void OnZoomSizeChanged(EventArgs e)
         {
             ZoomSizeChanged?.Invoke(this, e);
         }
+
         protected virtual void OnViewSizeChanged(EventArgs e)
         {
             ViewSizeChanged?.Invoke(this, e);
         }
-        
+
         protected virtual void OnGridSizeChanged(EventArgs e)
         {
             GridSizeChanged?.Invoke(this, e);
         }
+
         protected virtual void OnZeroTileChanged(EventArgs e)
         {
             ZeroTileChanged?.Invoke(this, e);
         }
+
         protected virtual void OnActiveGridTileChanged(EventArgs e)
         {
             ActiveGridTileChanged?.Invoke(this, e);
@@ -185,10 +223,12 @@ namespace MushROMs
             Selecting = true;
             SelectionInitialized?.Invoke(this, e);
         }
+
         protected virtual void OnSelectionChanged(EventArgs e)
         {
             SelectionChanged?.Invoke(this, e);
         }
+
         protected virtual void OnSelectionCreated(EventArgs e)
         {
             Selecting = false;

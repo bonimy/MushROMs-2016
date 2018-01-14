@@ -11,11 +11,13 @@ namespace MushROMs
             get;
             private set;
         }
+
         public ITileMapSelection2D Right
         {
             get;
             private set;
         }
+
         public GateMethod Rule
         {
             get;
@@ -30,36 +32,49 @@ namespace MushROMs
         public TileMapGateSelection2D(ITileMapSelection2D left, ITileMapSelection2D right, GateMethod rule)
         {
             if (left == null)
+            {
                 throw new ArgumentNullException(nameof(left));
+            }
+
             if (right == null)
+            {
                 throw new ArgumentNullException(nameof(right));
-            if (rule == null)
-                throw new ArgumentNullException(nameof(rule));
+            }
 
             if (left.StartIndex == Empty.StartIndex)
+            {
                 StartIndex = right.StartIndex;
+            }
             else if (right.StartIndex == Empty.StartIndex)
+            {
                 StartIndex = left.StartIndex;
+            }
             else
+            {
                 StartIndex = Position.TopLeft(left.StartIndex, right.StartIndex);
+            }
 
             Left = left;
             Right = right;
-            Rule = rule;
+            Rule = rule ?? throw new ArgumentNullException(nameof(rule));
         }
 
         public override void IterateIndexes(TileMethod2D method)
         {
             if (method == null)
+            {
                 throw new ArgumentNullException(nameof(method));
+            }
 
             var indexes = GetSelectedIndexes();
             unsafe
             {
                 fixed (Position* src = indexes)
                 {
-                    for (int i = indexes.Length; --i >= 0;)
+                    for (var i = indexes.Length; --i >= 0;)
+                    {
                         method(src[i]);
+                    }
                 }
             }
         }
@@ -83,18 +98,22 @@ namespace MushROMs
                 fixed (Position* lPtr = lIndexes)
                 fixed (Position* rPtr = rIndexes)
                 {
-                    for (int i = lIndexes.Length; --i >= 0;)
+                    for (var i = lIndexes.Length; --i >= 0;)
                     {
                         var lIndex = lPtr[i] + lDelta;
                         if (Rule(true, Right.ContainsIndex(lIndex)))
+                        {
                             indexes.Add(lIndex - StartIndex);
+                        }
                     }
 
-                    for (int i = rIndexes.Length; --i >= 0;)
+                    for (var i = rIndexes.Length; --i >= 0;)
                     {
                         var rIndex = rPtr[i] + rDelta;
                         if (Rule(Left.ContainsIndex(rIndex), true) && !indexes.Contains(rIndex - StartIndex))
+                        {
                             indexes.Add(rIndex - StartIndex);
+                        }
                     }
                 }
             }

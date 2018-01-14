@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MushROMs.Assembler
+﻿namespace MushROMs.Assembler
 {
     internal class FreeSpaceData
     {
@@ -27,8 +21,6 @@ namespace MushROMs.Assembler
                 get;
                 private set;
             }
-
-
         }
     }
 }

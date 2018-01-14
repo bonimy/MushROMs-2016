@@ -40,7 +40,7 @@
         {
             unsafe
             {
-                float* ptr = &value;
+                var ptr = &value;
                 return *(int*)ptr;
             }
         }

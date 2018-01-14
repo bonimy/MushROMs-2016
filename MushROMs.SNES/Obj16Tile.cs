@@ -19,16 +19,19 @@ namespace MushROMs.SNES
             get;
             set;
         }
+
         public ObjTile Tile01
         {
             get;
             set;
         }
+
         public ObjTile Tile10
         {
             get;
             set;
         }
+
         public ObjTile Tile11
         {
             get;
@@ -41,36 +44,45 @@ namespace MushROMs.SNES
             {
                 switch (index)
                 {
-                case Tile00Index:
-                    return Tile00;
-                case Tile01Index:
-                    return Tile01;
-                case Tile10Index:
-                    return Tile10;
-                case Tile11Index:
-                    return Tile11;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(index));
+                    case Tile00Index:
+                        return Tile00;
+
+                    case Tile01Index:
+                        return Tile01;
+
+                    case Tile10Index:
+                        return Tile10;
+
+                    case Tile11Index:
+                        return Tile11;
+
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(index));
                 }
             }
+
             set
             {
                 switch (index)
                 {
-                case Tile00Index:
-                    Tile00 = value;
-                    return;
-                case Tile01Index:
-                    Tile01 = value;
-                    return;
-                case Tile10Index:
-                    Tile10 = value;
-                    return;
-                case Tile11Index:
-                    Tile11 = value;
-                    return;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(index));
+                    case Tile00Index:
+                        Tile00 = value;
+                        return;
+
+                    case Tile01Index:
+                        Tile01 = value;
+                        return;
+
+                    case Tile10Index:
+                        Tile10 = value;
+                        return;
+
+                    case Tile11Index:
+                        Tile11 = value;
+                        return;
+
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(index));
                 }
             }
         }
@@ -113,6 +125,7 @@ namespace MushROMs.SNES
                 left.Tile10 == right.Tile10 &&
                 left.Tile11 == right.Tile11;
         }
+
         public static bool operator !=(Obj16Tile left, Obj16Tile right)
         {
             return !(left == right);
@@ -121,15 +134,19 @@ namespace MushROMs.SNES
         public override bool Equals(object obj)
         {
             if (!(obj is Obj16Tile))
+            {
                 return false;
+            }
 
             return (Obj16Tile)obj == this;
         }
+
         public override int GetHashCode()
         {
             return (Tile00.Value | (Tile01.Value << 0x10)) ^
                 (Tile10.Value | (Tile11.Value << 0x10));
         }
+
         public override string ToString()
         {
             return SR.GetString("{0} {1} {2} {3}",

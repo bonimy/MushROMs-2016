@@ -1,5 +1,5 @@
-﻿/* The extension comparer simply 
- * 
+﻿/* The extension comparer simply
+ *
  * */
 
 using System;
@@ -8,8 +8,8 @@ using System.IO;
 namespace Helper
 {
     /// <summary>
-    /// Represents a <see cref="string"/> comparison operation that performs a comparison of extensions
-    /// of path-based <see cref="string"/>s.
+    /// Represents a <see cref="String"/> comparison operation that performs a comparison of extensions
+    /// of path-based <see cref="String"/>s.
     /// </summary>
     public class ExtensionComparer : StringComparer
     {

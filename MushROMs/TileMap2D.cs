@@ -13,24 +13,35 @@ namespace MushROMs
 
         public Range GridSize
         {
-            get { return _gridSize; }
+            get
+            {
+                return _gridSize;
+            }
+
             set
             {
                 if (GridSize == value)
+                {
                     return;
+                }
+
                 if (GridSize.Horizontal < 0 || GridSize.Vertical < 0)
+                {
                     throw new ArgumentOutOfRangeException(nameof(value),
                         SR.ErrorInvalidClosedLowerBound(nameof(value), value, 0));
+                }
 
                 _gridSize = value;
                 OnGridSizeChanged(EventArgs.Empty);
             }
         }
+
         public int GridWidth
         {
             get { return GridSize.Horizontal; }
             set { GridSize = new Range(value, GridHeight); }
         }
+
         public int GridHeight
         {
             get { return GridSize.Vertical; }
@@ -39,21 +50,29 @@ namespace MushROMs
 
         public Position ZeroTile
         {
-            get { return _zeroTile; }
+            get
+            {
+                return _zeroTile;
+            }
+
             set
             {
                 if (ZeroTile == value)
+                {
                     return;
+                }
 
                 _zeroTile = value;
                 OnZeroTileChanged(EventArgs.Empty);
             }
         }
+
         public int ZeroTileX
         {
             get { return ZeroTile.X; }
             set { ZeroTile = new Position(value, ZeroTileY); }
         }
+
         public int ZeroTileY
         {
             get { return ZeroTile.Y; }
@@ -62,11 +81,17 @@ namespace MushROMs
 
         public Position ActiveGridTile
         {
-            get { return _activeGridTile; }
+            get
+            {
+                return _activeGridTile;
+            }
+
             set
             {
                 if (ActiveGridTile == value)
+                {
                     return;
+                }
 
                 _activeGridTile = value;
                 OnActiveGridTileChanged(EventArgs.Empty);
@@ -81,14 +106,22 @@ namespace MushROMs
 
         public ITileMapSelection2D Selection
         {
-            get { return _selection; }
+            get
+            {
+                return _selection;
+            }
+
             set
             {
                 if (value == null)
+                {
                     throw new ArgumentNullException(nameof(value));
+                }
 
                 if (Selection == value)
+                {
                     return;
+                }
 
                 _selection = value;
                 OnSelectionChanged(EventArgs.Empty);
@@ -107,18 +140,13 @@ namespace MushROMs
 
         public void InitializeSelection(ITileMapSelection2D selection)
         {
-            if (selection == null)
-                throw new ArgumentNullException(nameof(selection));
-
-            Selection = selection;
+            Selection = selection ?? throw new ArgumentNullException(nameof(selection));
             OnSelectionInitialized(EventArgs.Empty);
         }
+
         public void CreateSelection(ITileMapSelection2D selection)
         {
-            if (selection == null)
-                throw new ArgumentNullException(nameof(selection));
-
-            Selection = selection;
+            Selection = selection ?? throw new ArgumentNullException(nameof(selection));
             OnSelectionCreated(EventArgs.Empty);
         }
 
@@ -126,10 +154,12 @@ namespace MushROMs
         {
             return GetGridTileX(viewTileX, ZeroTileX);
         }
+
         public int GetGridTileY(int viewTileY)
         {
             return GetGridTileY(viewTileY, ZeroTileY);
         }
+
         public Position GetGridTile(Position viewTile)
         {
             return GetGridTile(viewTile, ZeroTile);
@@ -139,10 +169,12 @@ namespace MushROMs
         {
             return viewTileX + zeroTileX;
         }
+
         public static int GetGridTileY(int viewTileY, int zeroTileY)
         {
             return viewTileY + zeroTileY;
         }
+
         public static Position GetGridTile(Position viewTile, Position zeroTile)
         {
             return new Position(GetGridTileX(viewTile.X, zeroTile.X),
@@ -153,10 +185,12 @@ namespace MushROMs
         {
             return GetViewTileX(gridTileX, ZeroTileX);
         }
+
         public int GetViewTileY(int gridTileY)
         {
             return GetViewTileY(gridTileY, ZeroTileY);
         }
+
         public Position GetViewTile(Position gridTile)
         {
             return GetViewTile(gridTile, ZeroTile);
@@ -166,10 +200,12 @@ namespace MushROMs
         {
             return gridTileX - zeroTileX;
         }
+
         public static int GetViewTileY(int gridTileY, int zeroTileY)
         {
             return gridTileY - zeroTileY;
         }
+
         public static Position GetViewTile(Position gridTile, Position zeroTile)
         {
             return new Position(GetViewTileX(gridTile.X, zeroTile.X),

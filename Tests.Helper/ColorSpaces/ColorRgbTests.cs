@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Drawing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Helper;
 using Helper.ColorSpaces;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests.Helper.ColorSpaces
 {
@@ -31,7 +29,7 @@ namespace Tests.Helper.ColorSpaces
             Assert.AreEqual(color, new ColorRgb(0, 1, b));
 
             // Test color clamps extremes and snaps near to 0 or 1
-            color = new ColorRgb(Single.PositiveInfinity, Single.Epsilon, Single.MinValue, 1-1e-8f);
+            color = new ColorRgb(Single.PositiveInfinity, Single.Epsilon, Single.MinValue, 1 - 1e-8f);
             Assert.AreEqual(color, new ColorRgb(1, 0, 0, 1));
 
             // Ensure NaN values are not accepted and throw the proper message

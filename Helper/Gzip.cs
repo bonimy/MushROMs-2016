@@ -1,7 +1,7 @@
 ﻿using System;
-using SuppressMessage = System.Diagnostics.CodeAnalysis.SuppressMessageAttribute;
 using System.IO;
 using System.IO.Compression;
+using SuppressMessage = System.Diagnostics.CodeAnalysis.SuppressMessageAttribute;
 
 namespace Helper
 {
@@ -12,14 +12,22 @@ namespace Helper
         public static bool HasMagicNumber(byte[] data)
         {
             if (data == null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
 
             if (data.Length < MagicNumber.Length)
+            {
                 return false;
+            }
 
-            for (int i = MagicNumber.Length; --i >= 0;)
+            for (var i = MagicNumber.Length; --i >= 0;)
+            {
                 if (data[i] != MagicNumber[i])
+                {
                     return false;
+                }
+            }
 
             return true;
         }
@@ -29,7 +37,9 @@ namespace Helper
         public static byte[] Decompress(byte[] data)
         {
             if (data == null)
+            {
                 return null;
+            }
 
             // Return copy of data if no compression header exists.
             if (!HasMagicNumber(data))
@@ -43,12 +53,15 @@ namespace Helper
             const int BufferSize = 0x1000;
             var buffer = new byte[BufferSize];
 
-            using (MemoryStream memory = new MemoryStream())
-            using (MemoryStream decompress = new MemoryStream(data))
-            using (GZipStream gzip = new GZipStream(decompress, CompressionMode.Decompress, true))
+            using (var memory = new MemoryStream())
+            using (var decompress = new MemoryStream(data))
+            using (var gzip = new GZipStream(decompress, CompressionMode.Decompress, true))
             {
                 while ((count = gzip.Read(buffer, 0, BufferSize)) > 0)
+                {
                     memory.Write(buffer, 0, count);
+                }
+
                 return memory.ToArray();
             }
         }
@@ -58,10 +71,12 @@ namespace Helper
         public static byte[] Compress(byte[] data)
         {
             if (data == null)
+            {
                 return null;
+            }
 
-            using (MemoryStream memory = new MemoryStream())
-            using (GZipStream gzip = new GZipStream(memory, CompressionMode.Compress, true))
+            using (var memory = new MemoryStream())
+            using (var gzip = new GZipStream(memory, CompressionMode.Compress, true))
             {
                 gzip.Write(data, 0, data.Length);
                 return memory.ToArray();

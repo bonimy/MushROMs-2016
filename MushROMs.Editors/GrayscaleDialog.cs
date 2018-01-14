@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MushROMs.Editors
+﻿namespace MushROMs.Editors
 {
     public class GrayscaleDialog : RGBDialog
     {

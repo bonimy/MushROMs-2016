@@ -1,8 +1,4 @@
-﻿/*using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using Helper.PixelFormats;
 
 namespace MushROMs.SNES
@@ -25,20 +21,33 @@ namespace MushROMs.SNES
 
         protected PaletteSerializer(byte[] data)
         {
-            if (data == null)
-                throw new ArgumentNullException(nameof(data));
-
-            Data = data;
+            Data = data ?? throw new ArgumentNullException(nameof(data));
 
             if (!IsValidByteData)
+            {
                 throw new ArgumentException(nameof(data));
+            }
 
             Palette = new Palette(GetColors());
         }
 
         public abstract int GetNumColorsFromSize(int length);
+
         public abstract int GetSizeFromNumColors(int numColors);
+
         public abstract Color15BppBgr[] GetColors();
+
+        IEditorData IDataSerializer.EditorData
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        byte[] IDataSerializer.SerializeData()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
-*/

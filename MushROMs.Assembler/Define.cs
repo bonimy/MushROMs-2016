@@ -9,6 +9,7 @@ namespace MushROMs.Assembler
             get;
             private set;
         }
+
         public int LineNumber
         {
             get;

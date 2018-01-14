@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
 using Helper;
 using MushROMs.SNES;
@@ -84,7 +83,9 @@ namespace MushROMs.Assembler
 
             var compilerThreads = CompilerThreadDictionary.Values;
             foreach (var compilerThread in compilerThreads)
+            {
                 compilerThread.Thread.Start();
+            }
 
             WaitForCompletion();
 
@@ -97,7 +98,9 @@ namespace MushROMs.Assembler
         private void WaitForCompletion()
         {
             while (!IsComplete())
+            {
                 continue;
+            }
         }
 
         private bool IsComplete()
@@ -106,7 +109,9 @@ namespace MushROMs.Assembler
             foreach (var compilerThread in compilerThreads)
             {
                 if (compilerThread.Thread.IsAlive)
+                {
                     return false;
+                }
             }
 
             return true;
@@ -207,9 +212,13 @@ namespace MushROMs.Assembler
             }
 
             if (InputROM != null)
+            {
                 ROMInfo = new ROMInfo(InputROM);
+            }
             else
+            {
                 ROMInfo = new ROMInfo();
+            }
 
             OutputROM = new ROM(ROMInfo);
         }
@@ -222,12 +231,16 @@ namespace MushROMs.Assembler
         private static string GetTruePath(List<string> dirs, string path)
         {
             if (File.Exists(path))
+            {
                 return path;
+            }
 
             foreach (var dir in dirs)
             {
                 if (File.Exists(dir + path))
+                {
                     return dir + path;
+                }
             }
 
             return String.Empty;

@@ -13,6 +13,7 @@
                 CHRFile.FileAssociation
                };
         }
+
         public ITypeInfo[] GetEditorInfoList()
         {
             return new ITypeInfo[]

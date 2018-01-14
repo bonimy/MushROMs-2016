@@ -22,7 +22,7 @@ namespace MushROMs.GenericEditor
             get;
             set;
         }
-        
+
         private Dictionary<Type, CreateEditorFormMethod> CreateFormDictionary
         {
             get;
@@ -47,16 +47,18 @@ namespace MushROMs.GenericEditor
 
         public MasterForm()
         {
-            InitializeComponent();   
+            InitializeComponent();
             InitializeMasterEditor();
-                     
+
             masterMenu.MasterForm = this;
 
             EditorFormDictionary = new Dictionary<IEditor, Form>();
 
-            CreateFormDictionary = new Dictionary<Type, CreateEditorFormMethod>();
-            CreateFormDictionary.Add(typeof(PaletteEditor), editor => new PaletteForm((PaletteEditor)editor));
-            CreateFormDictionary.Add(typeof(GFXEditor), editor => new GFXForm((GFXEditor)editor));
+            CreateFormDictionary = new Dictionary<Type, CreateEditorFormMethod>
+            {
+                { typeof(PaletteEditor), editor => new PaletteForm((PaletteEditor)editor) },
+                { typeof(GFXEditor), editor => new GFXForm((GFXEditor)editor) }
+            };
         }
 
         private void InitializeMasterEditor()
@@ -72,10 +74,12 @@ namespace MushROMs.GenericEditor
 
         public void CreateNewFile()
         {
-            using (CreateEditorDialog dlg = new CreateEditorDialog())
+            using (var dlg = new CreateEditorDialog())
             {
                 if (dlg.ShowDialog(this) == DialogResult.OK)
+                {
                     MasterEditor.AddEditor(dlg.CreateEditor());
+                }
             }
         }
 
@@ -85,22 +89,28 @@ namespace MushROMs.GenericEditor
              * Example output:
              * "Palette Files (*.rpf;*.tpl)|*.rpf;*.tpl|All Files (*.*)|*.*"
              */
-            
+
             // The extensions associated with each editor.
             var editorAssociations = new Dictionary<Type, List<string>>();
             var fileAssociations = PluginManager.GetFileAssociations();
             foreach (var fileAssociation in fileAssociations)
             {
                 if ((fileAssociation.Filter & filter) == FileVisibilityFilters.None)
-                   continue;
+                {
+                    continue;
+                }
 
                 var type = fileAssociation.InitializeEditorMethod.Method.ReturnType;
                 if (!editorAssociations.ContainsKey(type))
+                {
                     editorAssociations.Add(type, new List<string>());
+                }
 
                 var list = editorAssociations[type];
                 if (!list.Contains(fileAssociation.Extension))
+                {
                     list.Add(fileAssociation.Extension);
+                }
             }
 
             // The editor names associated with each editor, and the extensions that go with it.
@@ -109,7 +119,9 @@ namespace MushROMs.GenericEditor
             foreach (var info in infoList)
             {
                 if (!editorAssociations.ContainsKey(info.Type))
+                {
                     continue;
+                }
 
                 var extensions = editorAssociations[info.Type];
                 fileFilters.Add(new FileFilter(info.DisplayName, extensions));
@@ -127,7 +139,10 @@ namespace MushROMs.GenericEditor
             if (fileFilters.Count > 0)
             {
                 if (allFiles)
+                {
                     sb.Append(FileFilter.FilterSeparator);
+                }
+
                 foreach (var fileFilter in fileFilters)
                 {
                     sb.Append(fileFilter.Filter);
@@ -141,17 +156,19 @@ namespace MushROMs.GenericEditor
         private int GetFilterIndex(string filter, string extension)
         {
             var sets = filter.Split(FileFilter.FilterSeparator);
-            for (int i = 1; i < sets.Length; i += 2)
+            for (var i = 1; i < sets.Length; i += 2)
             {
                 if (sets[i].Contains(extension))
+                {
                     return ((i - 1) >> 2);
+                }
             }
             return -1;
         }
-        
+
         public void OpenFile()
         {
-            using (OpenFileDialog dlg = new OpenFileDialog())
+            using (var dlg = new OpenFileDialog())
             {
                 dlg.Filter = GenerateFileFilter(true, FileVisibilityFilters.OpenFile);
                 dlg.Multiselect = true;
@@ -171,11 +188,17 @@ namespace MushROMs.GenericEditor
                                 this, ex.Message, Text, MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error);
 
                             if (DialogResult == DialogResult.Abort)
+                            {
                                 break;
+                            }
                             else if (DialogResult == DialogResult.Retry)
+                            {
                                 goto loop;
+                            }
                             else if (DialogResult == DialogResult.OK)
+                            {
                                 continue;
+                            }
                         }
                     }
                 }
@@ -197,8 +220,10 @@ namespace MushROMs.GenericEditor
         public void AddEditorForm(IEditor editor)
         {
             if (editor == null)
-                throw new  ArgumentNullException(nameof(editor));
-            
+            {
+                throw new ArgumentNullException(nameof(editor));
+            }
+
             if (EditorFormDictionary.ContainsKey(editor))
             {
                 EditorFormDictionary[editor].Activate();
@@ -206,7 +231,9 @@ namespace MushROMs.GenericEditor
             }
             var type = editor.GetType();
             if (!CreateFormDictionary.ContainsKey(type))
+            {
                 return;
+            }
 
             var form = CreateFormDictionary[type](editor);
             form.MdiParent = this;
@@ -218,16 +245,19 @@ namespace MushROMs.GenericEditor
 
         private void MasterForm_ShowContextMenu(object sender, EventArgs e)
         {
-
         }
 
         public void RemoveEditorForm(IEditor editor)
         {
             if (editor == null)
+            {
                 throw new ArgumentNullException(nameof(editor));
+            }
 
             if (EditorFormDictionary.ContainsKey(editor))
+            {
                 ((IEditorForm)EditorFormDictionary[editor]).ShowContextMenu -= MasterForm_ShowContextMenu;
+            }
 
             EditorFormDictionary.Remove(editor);
             MasterEditor.RemoveEditor(editor);
@@ -236,7 +266,9 @@ namespace MushROMs.GenericEditor
         public void SaveFile()
         {
             if (ActiveEditor == null)
+            {
                 return;
+            }
 
             SaveFile(ActiveEditor.FullPath);
         }
@@ -244,15 +276,19 @@ namespace MushROMs.GenericEditor
         public void SaveFileAs()
         {
             if (ActiveEditor == null)
+            {
                 return;
+            }
 
-            using (SaveFileDialog dlg = new SaveFileDialog())
+            using (var dlg = new SaveFileDialog())
             {
                 dlg.DefaultExt = ActiveEditor.Extension;
                 dlg.Filter = GenerateFileFilter(true, FileVisibilityFilters.SaveFile);
                 dlg.Title = Resources.SaveFileTitle;
                 if (dlg.ShowDialog() == DialogResult.OK)
+                {
                     SaveFile(dlg.FileName);
+                }
             }
         }
 
@@ -264,7 +300,9 @@ namespace MushROMs.GenericEditor
         public void SaveFile(string path)
         {
             if (ActiveEditor == null)
+            {
                 return;
+            }
 
             ActiveEditor.Save(path);
         }
@@ -272,19 +310,26 @@ namespace MushROMs.GenericEditor
         public void Undo()
         {
             if (ActiveEditor != null && ActiveEditor.CanUndo)
+            {
                 ActiveEditor.Undo();
+            }
         }
 
         public void Redo()
         {
             if (ActiveEditor != null && ActiveEditor.CanRedo)
+            {
                 ActiveEditor.Redo();
+            }
         }
 
         private void MasterEditor_EditorAdded(object sender, EditorEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
+
             AddEditorForm(e.Editor);
         }
 
@@ -296,11 +341,12 @@ namespace MushROMs.GenericEditor
 
         private void MasterForm_MdiChildActivate(object sender, EventArgs e)
         {
-            if (ActiveMdiChild is IEditorForm)
+            if (ActiveMdiChild is IEditorForm form)
             {
-                var form = (IEditorForm)ActiveMdiChild;
                 if (form.Editor != null)
+                {
                     MasterEditor.ActivateEditor(form.Editor);
+                }
             }
         }
     }

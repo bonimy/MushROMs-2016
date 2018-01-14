@@ -26,11 +26,17 @@ namespace MushROMs.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TileMap TileMap
         {
-            get { return _tileMap; }
+            get
+            {
+                return _tileMap;
+            }
+
             protected set
             {
                 if (TileMap == value)
+                {
                     return;
+                }
 
                 if (TileMap != null)
                 {
@@ -58,11 +64,17 @@ namespace MushROMs.Controls
 
         public ScrollBar VerticalScrollBar
         {
-            get { return _vScrollBar; }
+            get
+            {
+                return _vScrollBar;
+            }
+
             set
             {
                 if (VerticalScrollBar == value)
+                {
                     return;
+                }
 
                 if (VerticalScrollBar != null)
                 {
@@ -84,11 +96,17 @@ namespace MushROMs.Controls
 
         public ScrollBar HorizontalScrollBar
         {
-            get { return _hScrollBar; }
+            get
+            {
+                return _hScrollBar;
+            }
+
             set
             {
                 if (HorizontalScrollBar == value)
+                {
                     return;
+                }
 
                 if (HorizontalScrollBar != null)
                 {
@@ -111,15 +129,21 @@ namespace MushROMs.Controls
         protected override void SetClientSizeCore(int x, int y)
         {
             if (TileMapResizeMode == TileMapResizeMode.ControlResize)
+            {
                 return;
+            }
 
             if (TileMapResizeMode == TileMapResizeMode.None)
+            {
                 TileMapResizeMode = TileMapResizeMode.ControlResize;
+            }
 
             base.SetClientSizeCore(x, y);
 
             if (TileMapResizeMode == TileMapResizeMode.ControlResize)
+            {
                 TileMapResizeMode = TileMapResizeMode.None;
+            }
         }
 
         public void ResetScrollBars()
@@ -127,33 +151,48 @@ namespace MushROMs.Controls
             ResetVerticalScrollBar();
             ResetHorizontalScrollBar();
         }
+
         protected abstract void ResetHorizontalScrollBar();
+
         protected abstract void ResetVerticalScrollBar();
+
         protected abstract void AdjustScrollBarPositions();
 
         protected abstract void ScrollTileMapVertical(int value);
+
         protected abstract void ScrollTileMapHorizontal(int value);
 
         private void SetClientSizeFromTileMap()
         {
             if ((Size)TileMap.Size == ClientSize || TileMapResizeMode == TileMapResizeMode.TileMapCellResize)
+            {
                 return;
+            }
 
             if (TileMapResizeMode == TileMapResizeMode.None)
+            {
                 TileMapResizeMode = TileMapResizeMode.TileMapCellResize;
-            
+            }
+
             SetClientSizeCore(TileMap.Width, TileMap.Height);
 
             if (TileMapResizeMode == TileMapResizeMode.TileMapCellResize)
+            {
                 TileMapResizeMode = TileMapResizeMode.None;
+            }
         }
 
         public void DrawViewTilePath(GraphicsPath path, Position tile, Padding padding)
         {
             if (TileMap == null)
+            {
                 return;
+            }
+
             if (path == null)
+            {
                 throw new ArgumentNullException(nameof(path));
+            }
 
             path.Reset();
 
@@ -170,52 +209,71 @@ namespace MushROMs.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (TileMap != null)
+            {
                 GetActiveTileFromMouse(e);
+            }
+
             base.OnMouseMove(e);
         }
 
         protected virtual void GetActiveTileFromMouse(MouseEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
             if (!ClientRectangle.Contains(e.Location))
+            {
                 return;
+            }
 
             if (!MouseHovering)
+            {
                 TileMap.ActiveViewTile = (Position)e.Location / TileMap.CellSize;
+            }
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (TileMap != null)
+            {
                 GetActiveTileFromKeys(e);
+            }
+
             base.OnKeyDown(e);
         }
 
         protected virtual void GetActiveTileFromKeys(KeyEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
             var active = TileMap.ActiveViewTile;
             switch (e.KeyCode)
             {
-            case Keys.Left:
-                active.X--;
-                break;
-            case Keys.Right:
-                active.X++;
-                break;
-            case Keys.Up:
-                active.Y--;
-                break;
-            case Keys.Down:
-                active.Y++;
-                break;
+                case Keys.Left:
+                    active.X--;
+                    break;
+
+                case Keys.Right:
+                    active.X++;
+                    break;
+
+                case Keys.Up:
+                    active.Y--;
+                    break;
+
+                case Keys.Down:
+                    active.Y++;
+                    break;
             }
             if (TileMap.ActiveViewTile != active)
+            {
                 TileMap.ActiveViewTile = active;
+            }
         }
 
         private void TileMap_CellSizeChanged(object sender, EventArgs e)
@@ -242,13 +300,17 @@ namespace MushROMs.Controls
         private void HorizontalScrollBar_Scroll(object sender, ScrollEventArgs e)
         {
             if (e.NewValue != e.OldValue)
+            {
                 ScrollTileMapHorizontal(e.NewValue);
+            }
         }
 
         private void VerticalScrollBar_Scroll(object sender, ScrollEventArgs e)
         {
             if (e.NewValue != e.OldValue)
+            {
                 ScrollTileMapVertical(e.NewValue);
+            }
         }
 
         private void VerticalScrollBar_ValueChanged(object sender, EventArgs e)

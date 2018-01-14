@@ -11,19 +11,29 @@ namespace MushROMs.Editors
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new PaletteEditor Editor
         {
-            get { return (PaletteEditor)base.Editor; }
+            get
+            {
+                return (PaletteEditor)base.Editor;
+            }
+
             set
             {
                 if (Editor == value)
+                {
                     return;
+                }
 
                 if (Editor != null)
+                {
                     Editor.Palette.StartAddressChanged -= Editor_Redraw;
+                }
 
                 base.Editor = value;
 
                 if (Editor != null)
+                {
                     Editor.Palette.StartAddressChanged += Editor_Redraw;
+                }
             }
         }
 

@@ -45,27 +45,33 @@ namespace MushROMs.SNES
             get;
             set;
         }
+
         public byte[] GetData()
         {
             return Data;
         }
+
         public int HeaderSize
         {
             get { return GetHeaderSize(Length); }
         }
+
         public HeaderType Header
         {
             get { return (HeaderType)HeaderSize; }
         }
+
         public AddressMode AddressMode
         {
             get;
             private set;
         }
+
         public int Length
         {
             get { return Data.Length; }
         }
+
         public int HeaderlessLength
         {
             get { return Length - (int)Header; }
@@ -76,21 +82,25 @@ namespace MushROMs.SNES
             get { return GetInt16(MakerCodeAddress); }
             set { SetInt16(MakerCodeAddress, value); }
         }
+
         public int GameCode
         {
             get { return GetInt32(GameCodeAddress); }
             set { SetInt32(GameCodeAddress, value); }
         }
+
         public int ExpandedRAMSize
         {
             get { return GetInt8(ExpandedRAMSizeAddress); }
             set { SetInt8(ExpandedRAMSizeAddress, value); }
         }
+
         public int SpecialVersion
         {
             get { return GetInt8(SpecialVersionAddress); }
             set { SetInt8(SpecialVersionAddress, value); }
         }
+
         public int CartType
         {
             get { return GetInt8(CartTypeAddress); }
@@ -107,57 +117,69 @@ namespace MushROMs.SNES
                         return new string((sbyte*)ptr, NameAddress, MaxNameLength);
                 }
             }
+
             set
             {
                 unsafe
                 {
                     fixed (byte* ptr = &Data[NameAddress])
                     fixed (char* str = value)
-                        for (int i = Math.Min(value.Length, MaxNameLength); --i >= 0;)
+                        for (var i = Math.Min(value.Length, MaxNameLength); --i >= 0;)
+                        {
                             ptr[i] = (byte)str[i];
+                        }
                 }
             }
         }
+
         public int MapMode
         {
             get { return GetInt8(MapModeAddress); }
             set { SetInt8(MapModeAddress, value); }
         }
+
         public int Type
         {
             get { return GetInt8(TypeAddress); }
             set { SetInt8(TypeAddress, value); }
         }
+
         public int PageSize
         {
             get { return GetInt8(PageSizeAddress); }
             set { SetInt8(PageSizeAddress, value); }
         }
+
         public int SRAMSize
         {
             get { return GetInt8(SRAMSizeAddress); }
             set { SetInt8(SRAMSizeAddress, value); }
         }
+
         public int DestCode
         {
             get { return GetInt8(DestCodeAddress); }
             set { SetInt8(DestCodeAddress, value); }
         }
+
         public int FixedValue
         {
             get { return GetInt8(FixedValueAddress); }
             set { SetInt8(FixedValueAddress, value); }
         }
+
         public int VersionNumber
         {
             get { return GetInt8(VersionNumberAddress); }
             set { SetInt8(VersionNumberAddress, value); }
         }
+
         public int ComplementChecksum
         {
             get { return GetInt16(ComplementCheckSumAddress); }
             set { SetInt16(ComplementCheckSumAddress, value); }
         }
+
         public int Checksum
         {
             get { return GetInt16(CheckSumAddress); }
@@ -169,26 +191,31 @@ namespace MushROMs.SNES
             get { return GetInt16(NativeCOPVectorAddress); }
             set { SetInt16(NativeCOPVectorAddress, value); }
         }
+
         public int NativeBRKVector
         {
             get { return GetInt16(NativeBRKVectorAddress); }
             set { SetInt16(NativeBRKVectorAddress, value); }
         }
+
         public int NativeAbortVector
         {
             get { return GetInt16(NativeAbortVectorAddress); }
             set { SetInt16(NativeAbortVectorAddress, value); }
         }
+
         public int NativeNMIVector
         {
             get { return GetInt16(NativeNMIVectorAddress); }
             set { SetInt16(NativeNMIVectorAddress, value); }
         }
+
         public int NativeResetVector
         {
             get { return GetInt16(NativeResetVectorAddress); }
             set { SetInt16(NativeResetVectorAddress, value); }
         }
+
         public int NativeIRQVector
         {
             get { return GetInt16(NativeIRQVectorAddress); }
@@ -200,26 +227,31 @@ namespace MushROMs.SNES
             get { return GetInt16(EmuCOPVectorAddress); }
             set { SetInt16(EmuCOPVectorAddress, value); }
         }
+
         public int EmuBRKVector
         {
             get { return GetInt16(EmuBRKVectorAddress); }
             set { SetInt16(EmuBRKVectorAddress, value); }
         }
+
         public int EmuAbortVector
         {
             get { return GetInt16(EmuAbortVectorAddress); }
             set { SetInt16(EmuAbortVectorAddress, value); }
         }
+
         public int EmuNMIVector
         {
             get { return GetInt16(EmuNMIVectorAddress); }
             set { SetInt16(EmuNMIVectorAddress, value); }
         }
+
         public int EmuResetVector
         {
             get { return GetInt16(EmuResetVectorAddress); }
             set { SetInt16(EmuResetVectorAddress, value); }
         }
+
         public int EmuIRQVector
         {
             get { return GetInt16(EmuIRQVectorAddress); }
@@ -228,24 +260,41 @@ namespace MushROMs.SNES
 
         public bool IsFastROM
         {
-            get { return (MapMode & 0x30) == 0x30; }
+            get
+            {
+                return (MapMode & 0x30) == 0x30;
+            }
+
             set
             {
                 if (value)
+                {
                     MapMode |= 0x30;
+                }
                 else
+                {
                     MapMode &= ~0x30;
+                }
             }
         }
+
         public bool IsHiROM
         {
-            get { return (MapMode & 1) != 0; }
+            get
+            {
+                return (MapMode & 1) != 0;
+            }
+
             set
             {
                 if (value)
+                {
                     MapMode |= 1;
+                }
                 else
+                {
                     MapMode &= ~1;
+                }
             }
         }
 
@@ -261,7 +310,9 @@ namespace MushROMs.SNES
         public ROM(ROMInfo info)
         {
             if (info == null)
+            {
                 throw new ArgumentNullException(nameof(info));
+            }
 
             if (info.PageSize < MinPageSize || info.PageSize > MaxPageSize)
             {
@@ -271,103 +322,117 @@ namespace MushROMs.SNES
 
             switch (info.Header)
             {
-            case HeaderType.Header:
-            case HeaderType.NoHeader:
-                break;
-            default:
-                throw new ArgumentException("ROM Info's header value is invalid.", nameof(info));
+                case HeaderType.Header:
+                case HeaderType.NoHeader:
+                    break;
+
+                default:
+                    throw new ArgumentException("ROM Info's header value is invalid.", nameof(info));
             }
 
             switch (info.AddressMode)
             {
-            case AddressMode.HiROM2:
-                info.AddressMode = AddressMode.HiROM;
-                break;
-            case AddressMode.LoROM2:
-                info.AddressMode = AddressMode.LoROM;
-                break;
+                case AddressMode.HiROM2:
+                    info.AddressMode = AddressMode.HiROM;
+                    break;
+
+                case AddressMode.LoROM2:
+                    info.AddressMode = AddressMode.LoROM;
+                    break;
             }
 
             switch (info.AddressMode)
             {
-            case AddressMode.HiROM:
-            case AddressMode.ExHiROM:
-                if (!info.IsHiROM)
-                    throw new ArgumentException("ROM Info's HiROM bit does not match given Address mode.",
+                case AddressMode.HiROM:
+                case AddressMode.ExHiROM:
+                    if (!info.IsHiROM)
+                    {
+                        throw new ArgumentException("ROM Info's HiROM bit does not match given Address mode.",
                         nameof(info));
-                break;
-            case AddressMode.LoROM:
-            case AddressMode.ExLoROM:
-                if (info.IsHiROM)
-                    throw new ArgumentException("ROM Info's HiROM bit does not match given Address mode.",
+                    }
+
+                    break;
+
+                case AddressMode.LoROM:
+                case AddressMode.ExLoROM:
+                    if (info.IsHiROM)
+                    {
+                        throw new ArgumentException("ROM Info's HiROM bit does not match given Address mode.",
                         nameof(info));
-                break;
-            default:
-                throw new ArgumentException("ROM Info's address mode is invalid.", nameof(info));
+                    }
+
+                    break;
+
+                default:
+                    throw new ArgumentException("ROM Info's address mode is invalid.", nameof(info));
             }
 
-            var minSize = new int[] {0, 0x8000, 0x10000, 0x410000, 0x408000 };
+            var minSize = new int[] { 0, 0x8000, 0x10000, 0x410000, 0x408000 };
             var size = CalculatePageSize(info.PageSize);
             if (size < minSize[(int)info.AddressMode])
-                throw new ArgumentException("ROM Info's page size does not specify a size that fits the address mode.", 
+            {
+                throw new ArgumentException("ROM Info's page size does not specify a size that fits the address mode.",
                     nameof(info));
+            }
 
             Data = new byte[size + (int)info.Header];
 
-            AddressMode       = info.AddressMode;
-            MakerCode         = info.MakerCode;
-            GameCode          = info.GameCode;
-            ExpandedRAMSize   = info.ExpandedRAMSize;
-            SpecialVersion    = info.SpecialVersion;
-            CartType          = info.CartType;
-            Name              = info.Name;
-            MapMode           = info.MapMode;
-            Type              = info.Type;
-            PageSize          = info.PageSize;
-            SRAMSize          = info.SRAMSize;
-            DestCode          = info.DestCode;
-            FixedValue        = info.FixedValue;
-            VersionNumber     = info.VersionNumber;
+            AddressMode = info.AddressMode;
+            MakerCode = info.MakerCode;
+            GameCode = info.GameCode;
+            ExpandedRAMSize = info.ExpandedRAMSize;
+            SpecialVersion = info.SpecialVersion;
+            CartType = info.CartType;
+            Name = info.Name;
+            MapMode = info.MapMode;
+            Type = info.Type;
+            PageSize = info.PageSize;
+            SRAMSize = info.SRAMSize;
+            DestCode = info.DestCode;
+            FixedValue = info.FixedValue;
+            VersionNumber = info.VersionNumber;
 
-            NativeCOPVector   = info.NativeCOPVector;
-            NativeBRKVector   = info.NativeBRKVector;
+            NativeCOPVector = info.NativeCOPVector;
+            NativeBRKVector = info.NativeBRKVector;
             NativeAbortVector = info.NativeAbortVector;
-            NativeNMIVector   = info.NativeNMIVector;
+            NativeNMIVector = info.NativeNMIVector;
             NativeResetVector = info.NativeResetVector;
-            NativeIRQVector   = info.NativeIRQVector;
+            NativeIRQVector = info.NativeIRQVector;
 
-            EmuCOPVector      = info.EmuCOPVector;
-            EmuBRKVector      = info.EmuBRKVector;
-            EmuAbortVector    = info.EmuAbortVector;
-            EmuNMIVector      = info.EmuNMIVector;
-            EmuResetVector    = info.EmuResetVector;
-            EmuIRQVector      = info.EmuIRQVector;
+            EmuCOPVector = info.EmuCOPVector;
+            EmuBRKVector = info.EmuBRKVector;
+            EmuAbortVector = info.EmuAbortVector;
+            EmuNMIVector = info.EmuNMIVector;
+            EmuResetVector = info.EmuResetVector;
+            EmuIRQVector = info.EmuIRQVector;
 
-            IsFastROM         = info.IsFastROM;
-            IsHiROM           = info.IsFastROM;
+            IsFastROM = info.IsFastROM;
+            IsHiROM = info.IsFastROM;
         }
 
         public static ROM CreateFromData(byte[] data)
         {
-            if (data == null)
-                throw new ArgumentNullException(nameof(data));
-
-            var rom = new ROM();
-            rom.Data = data;
+            var rom = new ROM
+            {
+                Data = data ?? throw new ArgumentNullException(nameof(data))
+            };
 
             // The header is automatically calculated based on the Data length remainder.
             switch (rom.Header)
             {
-            case HeaderType.NoHeader:
-            case HeaderType.Header:
-                break;
-            default:
-                throw new Exception("Invalid header size.");
+                case HeaderType.NoHeader:
+                case HeaderType.Header:
+                    break;
+
+                default:
+                    throw new Exception("Invalid header size.");
             }
 
             rom.VerifyAddressMode();
             if (rom.AddressMode == AddressMode.NoBank)
+            {
                 throw new Exception("Could not verify address mode of data.");
+            }
 
             return rom;
         }
@@ -383,11 +448,13 @@ namespace MushROMs.SNES
                 AddressMode.LoROM};
             var minSize = new int[] { 0x410000, 0x408000, 0x10000, 0x8000 };
 
-            for (int i = 0; i < modes.Length; i++)
+            for (var i = 0; i < modes.Length; i++)
             {
                 // If the ROM data is less than a required size, we know it cannot be that address mode
                 if (HeaderlessLength < minSize[i])
+                {
                     continue;
+                }
 
                 // We need to set the address mode to properly use address conversions
                 AddressMode = modes[i];
@@ -398,37 +465,63 @@ namespace MushROMs.SNES
                     // Now we check that the address mode is matching.
                     switch (AddressMode)
                     {
-                    case AddressMode.HiROM:
-                        if (IsFastROM)
-                            AddressMode = AddressMode.HiROM2;
-                        if (!IsHiROM)
+                        case AddressMode.HiROM:
+                            if (IsFastROM)
+                            {
+                                AddressMode = AddressMode.HiROM2;
+                            }
+
+                            if (!IsHiROM)
+                            {
+                                continue;
+                            }
+
+                            break;
+
+                        case AddressMode.LoROM:
+                            if (IsFastROM)
+                            {
+                                AddressMode = AddressMode.LoROM2;
+                            }
+
+                            if (IsHiROM)
+                            {
+                                continue;
+                            }
+
+                            break;
+
+                        case AddressMode.ExHiROM:
+                            if (!IsHiROM)
+                            {
+                                continue;
+                            }
+
+                            break;
+
+                        case AddressMode.ExLoROM:
+                            if (IsHiROM)
+                            {
+                                continue;
+                            }
+
+                            break;
+
+                        default:
                             continue;
-                        break;
-                    case AddressMode.LoROM:
-                        if (IsFastROM)
-                            AddressMode = AddressMode.LoROM2;
-                        if (IsHiROM)
-                            continue;
-                        break;
-                    case AddressMode.ExHiROM:
-                        if (!IsHiROM)
-                            continue;
-                        break;
-                    case AddressMode.ExLoROM:
-                        if (IsHiROM)
-                            continue;
-                        break;
-                    default:
-                        continue;
                     }
 
                     // Finally we check the internal size
                     if (PageSize < MinPageSize || PageSize > MaxPageSize)
+                    {
                         continue;
+                    }
 
                     var length = CalculatePageSize(PageSize);
                     if (HeaderlessLength > length || HeaderlessLength <= (length >> 1))
+                    {
                         continue;
+                    }
 
                     // Everything in the header is valid.
                     return;
@@ -450,8 +543,10 @@ namespace MushROMs.SNES
             unsafe
             {
                 fixed (byte* ptr = &Data[(int)Header])
-                    for (int i = HeaderlessLength; --i >= 0;)
-                    sum += ptr[i];
+                    for (var i = HeaderlessLength; --i >= 0;)
+                    {
+                        sum += ptr[i];
+                    }
             }
             return sum & UInt16.MaxValue;
         }
@@ -460,6 +555,7 @@ namespace MushROMs.SNES
         {
             return SNESToPC(pointer, AddressMode, Header);
         }
+
         public int PCToSNES(int pointer)
         {
             return PCToSNES(pointer, AddressMode, Header);
@@ -469,15 +565,18 @@ namespace MushROMs.SNES
         {
             return this[SNESToPC(pointer)];
         }
+
         public int GetInt16(int pointer)
         {
             return this[SNESToPC(pointer)] | (this[SNESToPC(pointer + 1)] << 8);
         }
+
         public int GetInt24(int pointer)
         {
             return this[SNESToPC(pointer)] | (this[SNESToPC(pointer + 1)] << 8) |
                 (this[SNESToPC(pointer + 2)] << 0x10);
         }
+
         public int GetInt32(int pointer)
         {
             return this[SNESToPC(pointer)] | (this[SNESToPC(pointer + 1)] << 8) |
@@ -488,17 +587,20 @@ namespace MushROMs.SNES
         {
             this[SNESToPC(pointer)] = (byte)value;
         }
+
         public void SetInt16(int pointer, int value)
         {
             this[SNESToPC(pointer)] = (byte)value;
             this[SNESToPC(pointer + 1)] = (byte)(value >> 8);
         }
+
         public void SetInt24(int pointer, int value)
         {
             this[SNESToPC(pointer)] = (byte)value;
             this[SNESToPC(pointer + 1)] = (byte)(value >> 8);
             this[SNESToPC(pointer + 2)] = (byte)(value >> 0x10);
         }
+
         public void SetInt32(int pointer, int value)
         {
             this[SNESToPC(pointer)] = (byte)value;
@@ -516,22 +618,32 @@ namespace MushROMs.SNES
         {
             switch (mode)
             {
-            case AddressMode.LoROM:
-            case AddressMode.LoROM2:
-                return (((pointer & 0x7F0000) >> 1) | (pointer & 0x7FFF)) + (int)header;
-            case AddressMode.HiROM:
-            case AddressMode.HiROM2:
-                return (pointer & 0x3FFFFF) + (int)header;
-            case AddressMode.ExHiROM:
-                if (pointer >= 0xC00000)
-                    return (pointer & 0x3FFFFF) + (int)header;
-                return (0x400000 | (pointer & 0x3FFFFF)) + (int)header;
-            case AddressMode.ExLoROM:
-                if (pointer >= 0x800000)
+                case AddressMode.LoROM:
+                case AddressMode.LoROM2:
                     return (((pointer & 0x7F0000) >> 1) | (pointer & 0x7FFF)) + (int)header;
-                return (0x400000 | (((pointer & 0x7F0000) >> 1) | (pointer & 0x7FFF))) + (int)header;
-            default:
-                return 0;
+
+                case AddressMode.HiROM:
+                case AddressMode.HiROM2:
+                    return (pointer & 0x3FFFFF) + (int)header;
+
+                case AddressMode.ExHiROM:
+                    if (pointer >= 0xC00000)
+                    {
+                        return (pointer & 0x3FFFFF) + (int)header;
+                    }
+
+                    return (0x400000 | (pointer & 0x3FFFFF)) + (int)header;
+
+                case AddressMode.ExLoROM:
+                    if (pointer >= 0x800000)
+                    {
+                        return (((pointer & 0x7F0000) >> 1) | (pointer & 0x7FFF)) + (int)header;
+                    }
+
+                    return (0x400000 | (((pointer & 0x7F0000) >> 1) | (pointer & 0x7FFF))) + (int)header;
+
+                default:
+                    return 0;
             }
         }
 
@@ -539,30 +651,51 @@ namespace MushROMs.SNES
         {
             switch (mode)
             {
-            case AddressMode.LoROM:
-                if (pointer >= 0x380000)
-                    return (0x800000 | (((pointer << 1) & 0x7F0000) | 0x8000 | (pointer & 0x7FFF))) + (int)header;
-                return (((pointer << 1) & 0x7F0000) | 0x8000 | (pointer & 0x7FFF)) + (int)header;
-            case AddressMode.HiROM:
-                return (pointer | 0xC00000) + (int)header;
-            case AddressMode.ExHiROM:
-                if (pointer >= 0x7E0000)
-                    return (pointer & ~0x400000) + (int)header;
-                if (pointer >= 0x4000000)
-                    return pointer + (int)header;
-                return (0xC00000 | pointer) + (int)header;
-            case AddressMode.ExLoROM:
-                if (pointer >= 0x400000)
-                    return (0x80000 | (((pointer << 1) & 0x7F0000) | 0x8000 | (pointer & 0x7FFF))) + (int)header;
-                return (((pointer << 1) & 0x7F0000) | 0x8000 | (pointer & 0x7FFF)) + (int)header;
-            case AddressMode.LoROM2:
-                return (0x800000 | (((pointer << 1) & 0x7F0000) | 0x8000 | (pointer & 0x7FFF))) + (int)header;
-            case AddressMode.HiROM2:
-                if (pointer >= 0x300000)
+                case AddressMode.LoROM:
+                    if (pointer >= 0x380000)
+                    {
+                        return (0x800000 | (((pointer << 1) & 0x7F0000) | 0x8000 | (pointer & 0x7FFF))) + (int)header;
+                    }
+
+                    return (((pointer << 1) & 0x7F0000) | 0x8000 | (pointer & 0x7FFF)) + (int)header;
+
+                case AddressMode.HiROM:
+                    return (pointer | 0xC00000) + (int)header;
+
+                case AddressMode.ExHiROM:
+                    if (pointer >= 0x7E0000)
+                    {
+                        return (pointer & ~0x400000) + (int)header;
+                    }
+
+                    if (pointer >= 0x4000000)
+                    {
+                        return pointer + (int)header;
+                    }
+
                     return (0xC00000 | pointer) + (int)header;
-                return (0x400000 | pointer) + (int)header;
-            default:
-                return 0;
+
+                case AddressMode.ExLoROM:
+                    if (pointer >= 0x400000)
+                    {
+                        return (0x80000 | (((pointer << 1) & 0x7F0000) | 0x8000 | (pointer & 0x7FFF))) + (int)header;
+                    }
+
+                    return (((pointer << 1) & 0x7F0000) | 0x8000 | (pointer & 0x7FFF)) + (int)header;
+
+                case AddressMode.LoROM2:
+                    return (0x800000 | (((pointer << 1) & 0x7F0000) | 0x8000 | (pointer & 0x7FFF))) + (int)header;
+
+                case AddressMode.HiROM2:
+                    if (pointer >= 0x300000)
+                    {
+                        return (0xC00000 | pointer) + (int)header;
+                    }
+
+                    return (0x400000 | pointer) + (int)header;
+
+                default:
+                    return 0;
             }
         }
     }

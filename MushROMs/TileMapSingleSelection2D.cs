@@ -13,15 +13,20 @@ namespace MushROMs
         public TileMapSingleSelection2D(Position index)
         {
             if (index.X < 0 || index.Y < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(index),
                     SR.ErrorInvalidClosedLowerBound(nameof(index), index, Position.Empty));
+            }
+
             StartIndex = index;
         }
 
         public override void IterateIndexes(TileMethod2D method)
         {
             if (method == null)
+            {
                 throw new ArgumentNullException(nameof(method));
+            }
 
             method(StartIndex);
         }

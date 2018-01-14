@@ -20,11 +20,11 @@ namespace MushROMs.SNES
         public PaletteData(Palette palette, PaletteSelection selection)
         {
             if (palette == null)
+            {
                 throw new ArgumentNullException(nameof(palette));
-            if (selection == null)
-                throw new ArgumentNullException(nameof(selection));
+            }
 
-            Selection = selection;
+            Selection = selection ?? throw new ArgumentNullException(nameof(selection));
             Data = new Color15BppBgr[Selection.NumTiles];
             var startIndex = Selection.StartIndex;
             var data = palette.GetData();
@@ -37,9 +37,13 @@ namespace MushROMs.SNES
                 fixed (Color15BppBgr* dest = Data)
                 {
                     var src = (Color15BppBgr*)ptr + startIndex;
-                    for (int i = Selection.NumTiles; --i >= 0;)
+                    for (var i = Selection.NumTiles; --i >= 0;)
+                    {
                         if (indexes[i] + startIndex < length)
+                        {
                             dest[i] = src[indexes[i]];
+                        }
+                    }
                 }
             }
         }
@@ -66,7 +70,9 @@ namespace MushROMs.SNES
         public void WriteToEditor(PaletteEditor editor)
         {
             if (editor == null)
+            {
                 throw new ArgumentNullException(nameof(editor));
+            }
 
             var startIndex = Selection.StartIndex;
             var length = Palette.GetIndexFromAddress(editor.Palette.GetData().Length);
@@ -78,9 +84,13 @@ namespace MushROMs.SNES
                 fixed (Color15BppBgr* src = Data)
                 {
                     var dest = (Color15BppBgr*)ptr + startIndex;
-                    for (int i = Selection.NumTiles; --i >= 0;)
+                    for (var i = Selection.NumTiles; --i >= 0;)
+                    {
                         if (indexes[i] + startIndex < length)
+                        {
                             dest[indexes[i]] = src[i];
+                        }
+                    }
                 }
             }
         }

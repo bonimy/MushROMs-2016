@@ -1,5 +1,5 @@
-﻿using Helper;
-using System;
+﻿using System;
+using Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests.Helper
@@ -73,9 +73,13 @@ namespace Tests.Helper
         private void AssertSnapToLimit(float value, float limit, float tolerance, float result)
         {
             if (Single.IsNaN(result))
+            {
                 Assert.IsTrue(Single.IsNaN(MathHelper.SnapToLimit(value, limit, tolerance)));
+            }
             else
+            {
                 Assert.AreEqual(MathHelper.SnapToLimit(value, limit, tolerance), result);
+            }
         }
 
         [TestMethod]
@@ -111,9 +115,13 @@ namespace Tests.Helper
         private void AssertClamp(float value, float min, float max, float tolerance, float result)
         {
             if (Single.IsNaN(result))
+            {
                 Assert.IsTrue(Single.IsNaN(MathHelper.Clamp(value, min, max, tolerance)));
+            }
             else
+            {
                 Assert.AreEqual(MathHelper.Clamp(value, min, max, tolerance), result);
+            }
         }
 
         [TestMethod]
@@ -138,7 +146,7 @@ namespace Tests.Helper
 
             try
             {
-                float nan = MathHelper.Max(null);
+                var nan = MathHelper.Max(null);
                 Assert.Fail();
             }
             catch (ArgumentNullException ex)
@@ -148,7 +156,7 @@ namespace Tests.Helper
 
             try
             {
-                float nan = MathHelper.Max(new float[] { });
+                var nan = MathHelper.Max(new float[] { });
                 Assert.Fail();
             }
             catch (ArgumentException ex)
@@ -160,17 +168,25 @@ namespace Tests.Helper
         private void AssertMax(float result, float left, float right, params float[] values)
         {
             if (Single.IsNaN(result))
+            {
                 Assert.IsTrue(Single.IsNaN(MathHelper.Max(left, right, values)));
+            }
             else
+            {
                 Assert.AreEqual(result, MathHelper.Max(left, right, values));
+            }
         }
 
         private void AssertMax(float result, float[] values)
         {
             if (Single.IsNaN(result))
+            {
                 Assert.IsTrue(Single.IsNaN(MathHelper.Max(values)));
+            }
             else
+            {
                 Assert.AreEqual(result, MathHelper.Max(values));
+            }
         }
 
         [TestMethod]
@@ -195,7 +211,7 @@ namespace Tests.Helper
 
             try
             {
-                float nan = MathHelper.Min(null);
+                var nan = MathHelper.Min(null);
                 Assert.Fail();
             }
             catch (ArgumentNullException ex)
@@ -205,7 +221,7 @@ namespace Tests.Helper
 
             try
             {
-                float nan = MathHelper.Min(new float[] { });
+                var nan = MathHelper.Min(new float[] { });
                 Assert.Fail();
             }
             catch (ArgumentException ex)
@@ -217,17 +233,25 @@ namespace Tests.Helper
         private void AssertMin(float result, float left, float right, params float[] values)
         {
             if (Single.IsNaN(result))
+            {
                 Assert.IsTrue(Single.IsNaN(MathHelper.Min(left, right, values)));
+            }
             else
+            {
                 Assert.AreEqual(result, MathHelper.Min(left, right, values));
+            }
         }
 
         private void AssertMin(float result, float[] values)
         {
             if (Single.IsNaN(result))
+            {
                 Assert.IsTrue(Single.IsNaN(MathHelper.Min(values)));
+            }
             else
+            {
                 Assert.AreEqual(result, MathHelper.Min(values));
+            }
         }
     }
 }

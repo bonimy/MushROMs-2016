@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using MushROMs.SNES;
 using MushROMs.Controls;
-using MushROMs.Editors.Properties;
 
 namespace MushROMs.GenericEditor
 {
@@ -40,8 +38,10 @@ namespace MushROMs.GenericEditor
                 */
             };
 
-            for (int i = 0; i < GridItems.Length; i++)
-                Rows.Add(GridItems[i].Icon, GridItems[i].FileType, string.Empty);
+            for (var i = 0; i < GridItems.Length; i++)
+            {
+                Rows.Add(GridItems[i].Icon, GridItems[i].FileType, String.Empty);
+            }
         }
 
         public Editor CreateEditor()
@@ -101,10 +101,13 @@ namespace MushROMs.GenericEditor
         {
             public Image Icon
             { get; set; }
+
             public string FileType
             { get; set; }
+
             public string FileDescription
             { get; set; }
+
             public UserControl Options
             { get; set; }
 

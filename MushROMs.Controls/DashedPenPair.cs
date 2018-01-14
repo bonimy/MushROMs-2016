@@ -15,6 +15,7 @@ namespace MushROMs.Controls
             get;
             set;
         }
+
         public Color Color2
         {
             get;
@@ -26,6 +27,7 @@ namespace MushROMs.Controls
             get;
             set;
         }
+
         public int Length2
         {
             get;
@@ -35,11 +37,16 @@ namespace MushROMs.Controls
         public DashedPenPair(Color color1, Color color2, int length1, int length2)
         {
             if (length1 <= 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(length1),
                     SR.ErrorInvalidOpenLowerBound(nameof(length1), length1, 0));
+            }
+
             if (length2 <= 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(length2),
                     SR.ErrorInvalidOpenLowerBound(nameof(length2), length2, 0));
+            }
 
             Color1 = color1;
             Color2 = color2;
@@ -74,6 +81,7 @@ namespace MushROMs.Controls
                 left.Length1 == right.Length1 &&
                 left.Length2 == right.Length2;
         }
+
         public static bool operator !=(DashedPenPair left, DashedPenPair right)
         {
             return !(left == right);
@@ -82,14 +90,18 @@ namespace MushROMs.Controls
         public override bool Equals(object obj)
         {
             if (!(obj is DashedPenPair))
+            {
                 return false;
+            }
 
             return (DashedPenPair)obj == this;
         }
+
         public override int GetHashCode()
         {
             return Hash.Generate(Color1.GetHashCode(), Color2.GetHashCode(), Length1, Length2);
         }
+
         public override string ToString()
         {
             var sb = new StringBuilder();

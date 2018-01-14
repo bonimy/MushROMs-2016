@@ -1,10 +1,7 @@
-﻿using MushROMs.GenericEditor.Properties;
-using System;
+﻿using System;
 using System.Collections.Specialized;
-using System.IO;
-using System.Text;
 using System.Windows.Forms;
-using MushROMs.Assembler;
+using MushROMs.GenericEditor.Properties;
 
 namespace MushROMs.GenericEditor
 {
@@ -13,6 +10,7 @@ namespace MushROMs.GenericEditor
         private static readonly string[] FallbackPluginAssemblies = new string[] {
                 @"Plugins\MushROMs.SNES.dll"
             };
+
         private const int FallbackMaxRecentFiles = 10;
 
         private static MasterForm MasterForm;
@@ -26,7 +24,7 @@ namespace MushROMs.GenericEditor
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -53,7 +51,10 @@ namespace MushROMs.GenericEditor
             }
 
             foreach (var pluginPath in Settings.PluginAssemblies)
+            {
                 PluginManager.LoadPlugin(pluginPath);
+            }
+
             PluginManager.LoadPlugins(MasterForm);
 
             Application.Run(MasterForm);

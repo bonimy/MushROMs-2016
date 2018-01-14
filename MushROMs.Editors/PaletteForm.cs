@@ -2,9 +2,9 @@
 using System.Drawing;
 using System.Windows.Forms;
 using Helper.ColorSpaces;
+using Helper.PixelFormats;
 using MushROMs.Controls;
 using MushROMs.SNES;
-using Helper.PixelFormats;
 
 namespace MushROMs.Editors
 {
@@ -50,23 +50,25 @@ namespace MushROMs.Editors
 
         public PaletteForm(PaletteEditor editor)
         {
-            if (editor == null)
-                throw new ArgumentNullException(nameof(editor));
-
             InitializeComponent();
 
             BindFormSize();
-            TileMapControl.Editor = editor;
+            TileMapControl.Editor = editor ?? throw new ArgumentNullException(nameof(editor));
             ZoomedViewSizes = new Size[estMain.ZoomScaleCount];
-            for (int i = ZoomedViewSizes.Length; --i >= 0;)
+            for (var i = ZoomedViewSizes.Length; --i >= 0;)
+            {
                 ZoomedViewSizes[i] = TileMap.ViewSize;
+            }
         }
 
         private void SetFormTitle()
         {
             var title = Editor.Name + Editor.Extension;
             if (!Editor.Saved)
+            {
                 title += '*';
+            }
+
             Text = title;
         }
 
@@ -122,29 +124,35 @@ namespace MushROMs.Editors
         private void plcMain_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (Palette.Selection?.TileMapSelection is TileMapSingleSelection1D)
+            {
                 EditColor();
+            }
         }
 
         private void plcMain_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Modifiers == Keys.None && e.KeyCode == Keys.Space)
+            {
                 EditColor();
+            }
         }
 
         private void EditColor()
         {
-            using (ColorDialog dlg = new ColorDialog())
+            using (var dlg = new ColorDialog())
             {
                 dlg.FullOpen = true;
                 dlg.Color = Palette.GetSelectionData().GetData()[0];
                 if (dlg.ShowDialog() == DialogResult.OK)
+                {
                     Palette.EditColor((Color15BppBgr)dlg.Color);
+                }
             }
         }
 
         public void Blend()
         {
-            using (BlendDialog dlg = new BlendDialog())
+            using (var dlg = new BlendDialog())
             {
                 Palette.EnablePreviewMode();
                 dlg.ValueChanged += BlendDialog_ValueChanged;
@@ -154,7 +162,9 @@ namespace MushROMs.Editors
                     Palette.Blend(dlg.BlendMode, dlg.Color);
                 }
                 else
+                {
                     Palette.DisablePreviewMode();
+                }
             }
         }
 
@@ -167,12 +177,14 @@ namespace MushROMs.Editors
                 Palette.Blend(dlg.BlendMode, dlg.Color);
             }
             else
+            {
                 Palette.DisablePreviewMode();
+            }
         }
 
         public void Colorize()
         {
-            using (ColorizeDialog dlg = new ColorizeDialog())
+            using (var dlg = new ColorizeDialog())
             {
                 Palette.EnablePreviewMode();
                 dlg.ValueChanged += ColorizeDialog_ValueChanged;
@@ -180,12 +192,18 @@ namespace MushROMs.Editors
                 {
                     Palette.DisablePreviewMode();
                     if (dlg.ColorizerMode == ColorizerMode.Colorize)
+                    {
                         Palette.Colorize(dlg.Hue, dlg.Saturation, dlg.Lightness, dlg.Luma, dlg.Weight);
+                    }
                     else
+                    {
                         Palette.Adjust(dlg.Hue, dlg.Saturation, dlg.Lightness, dlg.Luma, dlg.Weight);
+                    }
                 }
                 else
+                {
                     Palette.DisablePreviewMode();
+                }
             }
         }
 
@@ -196,17 +214,23 @@ namespace MushROMs.Editors
             {
                 Palette.EnablePreviewMode();
                 if (dlg.ColorizerMode == ColorizerMode.Colorize)
+                {
                     Palette.Colorize(dlg.Hue, dlg.Saturation, dlg.Lightness, dlg.Luma, dlg.Weight);
+                }
                 else
+                {
                     Palette.Adjust(dlg.Hue, dlg.Saturation, dlg.Lightness, dlg.Luma, dlg.Weight);
+                }
             }
             else
+            {
                 Palette.DisablePreviewMode();
+            }
         }
 
         public void Grayscale()
         {
-            using (GrayscaleDialog dlg = new GrayscaleDialog())
+            using (var dlg = new GrayscaleDialog())
             {
                 Palette.EnablePreviewMode();
                 dlg.ValueChanged += GrayscaleDialog_ValueChanged;
@@ -216,7 +240,9 @@ namespace MushROMs.Editors
                     Palette.Grayscale((ColorWeight)dlg.Color);
                 }
                 else
+                {
                     Palette.DisablePreviewMode();
+                }
             }
         }
 
@@ -229,7 +255,9 @@ namespace MushROMs.Editors
                 Palette.Grayscale((ColorWeight)dlg.Color);
             }
             else
+            {
                 Palette.DisablePreviewMode();
+            }
         }
 
         private void TileMap_ActiveViewPointChanged(object sender, EventArgs e)
@@ -237,9 +265,11 @@ namespace MushROMs.Editors
             TileMapControl.Invalidate();
 
             var view = TileMap.ActiveViewTile;
-            int index = TileMap.GetGridTile(view);
+            var index = TileMap.GetGridTile(view);
             if (index >= TileMap.GridSize || index < 0)
+            {
                 return;
+            }
 
             var address = Palette.Palette.GetAddressFromIndex(index);
             var color = Palette.Palette.GetColorAtAddress(address);
@@ -265,16 +295,22 @@ namespace MushROMs.Editors
         private void PaletteForm_ResizeEnd(object sender, EventArgs e)
         {
             if (TileMap == null)
+            {
                 return;
+            }
 
-            for (int i = ZoomedViewSizes.Length; --i >= 0;)
+            for (var i = ZoomedViewSizes.Length; --i >= 0;)
+            {
                 ZoomedViewSizes[i] = TileMap.ViewSize;
+            }
         }
 
         private void plcMain_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
+            {
                 OnShowContextMenu(EventArgs.Empty);
+            }
         }
 
         protected virtual void OnShowContextMenu(EventArgs e)

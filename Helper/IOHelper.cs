@@ -19,11 +19,18 @@ namespace Helper
         public static bool IsValidPathName(string name)
         {
             if (String.IsNullOrEmpty(name))
+            {
                 return false;
+            }
 
-            for (int i = name.Length; --i >= 0;)
+            for (var i = name.Length; --i >= 0;)
+            {
                 if (!IsValidPathChar(name[i]))
+                {
                     return false;
+                }
+            }
+
             return true;
         }
 
@@ -35,27 +42,40 @@ namespace Helper
         public static bool IsValidFileName(string name)
         {
             if (String.IsNullOrEmpty(name))
+            {
                 return false;
+            }
 
-            for (int i = name.Length; --i >= 0;)
+            for (var i = name.Length; --i >= 0;)
+            {
                 if (!IsValidFileNameChar(name[i]))
+                {
                     return false;
+                }
+            }
+
             return true;
         }
 
         public static bool IsValidExtension(string extension)
         {
             if (String.IsNullOrEmpty(extension))
+            {
                 return true;
+            }
 
             if (extension[0] != ExtensionPredicate)
+            {
                 return false;
+            }
 
-            for (int i = extension.Length; --i >= 1;)
+            for (var i = extension.Length; --i >= 1;)
             {
                 var c = extension[i];
                 if (!IsValidFileNameChar(c) || c == ExtensionPredicate)
+                {
                     return false;
+                }
             }
             return true;
         }

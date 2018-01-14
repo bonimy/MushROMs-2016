@@ -1,10 +1,10 @@
 ﻿/* A suffix tree based on Ukkonen's algorithm for byte values. I followed the ideas based
  * in this helpful article:
  * http://stackoverflow.com/questions/9452701/ukkonens-suffix-tree-algorithm-in-plain-english/9513423#9513423
- * 
+ *
  * The code written here is based on a C++ implementation given here:
  * http://pastie.org/5925809
- * 
+ *
  * A note on memory management:
  * Try creating as few new suffix tree classes as possible. Every time a new node is created, it has to
  * initialize an array of child nodes of size equal to the alphabet size (257). For large sets of data, this
@@ -12,7 +12,7 @@
  * can be reused. The class keeps a list of every used node. When the class is reset to implement a new tree
  * structure, it simply erases all of the nodes information and reference data without letting the class itself
  * be erased from memory. This way, the next tree creation (if another one will be made) does not lose time
- * on allocating new memory. The performance gains are very significant. 
+ * on allocating new memory. The performance gains are very significant.
  */
 
 using System;
@@ -22,7 +22,7 @@ using System.Diagnostics;
 namespace Helper
 {
     /// <summary>
-    /// Specifies a generalized suffix tree for <see cref="byte"/> arrays. 
+    /// Specifies a generalized suffix tree for <see cref="Byte"/> arrays.
     /// </summary>
     /// <remarks>
     /// The suffix tree is generated using Ukkonen's algorithm.
@@ -30,16 +30,18 @@ namespace Helper
     public class SuffixTree
     {
         /// <summary>
-        /// A value that is outside of the standard <see cref="byte"/> alphabet that signifies
+        /// A value that is outside of the standard <see cref="Byte"/> alphabet that signifies
         /// the end of a suffix branch.
         /// This field is constant.
         /// </summary>
         public const int TerminationValue = AlbhabetSize;
+
         /// <summary>
         /// The total size of the alphapebet, including <see cref="TerminationValue"/>.
         /// This field is constant.
         /// </summary>
         public const int AlbhabetSize = Byte.MaxValue + 1;
+
         /// <summary>
         /// Specifies an index that extends to <see cref="Position"/>.
         /// This field is constant.
@@ -67,7 +69,7 @@ namespace Helper
             get;
             set;
         }
-        
+
         /// <summary>
         /// Container for every <see cref="Node"/> created in <see cref="SuffixTree"/>.
         /// Used for recycling purposes.
@@ -166,7 +168,7 @@ namespace Helper
             get;
             private set;
         }
-        
+
         /// <summary>
         /// Initialize a new instance of the <see cref="SuffixTree"/> class.
         /// </summary>
@@ -191,8 +193,10 @@ namespace Helper
         private void Initialize(int size)
         {
             if (size < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(size),
                     SR.ErrorInvalidClosedLowerBound(nameof(size), size, 0));
+            }
 
             Nodes.Clear();
 
@@ -204,7 +208,7 @@ namespace Helper
             Remainder = 0;
             ActiveLength = 0;
             ActivePosition = 0;
-            
+
             Root.Reset();
             ActiveNode = Root;
         }
@@ -213,7 +217,7 @@ namespace Helper
         /// Creates a suffix tree of <paramref name="data"/>.
         /// </summary>
         /// <param name="data">
-        /// An array of <see cref="byte"/>s to create a suffix tree of.
+        /// An array of <see cref="Byte"/>s to create a suffix tree of.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="data"/> is null.
@@ -221,7 +225,9 @@ namespace Helper
         public void CreateTree(byte[] data)
         {
             if (data == null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
 
             CreateTree(data, 0, data.Length);
         }
@@ -231,7 +237,7 @@ namespace Helper
         /// with range specified by <paramref name="size"/>.
         /// </summary>
         /// <param name="data">
-        /// An array of <see cref="byte"/>s to create a suffix tree of.
+        /// An array of <see cref="Byte"/>s to create a suffix tree of.
         /// </param>
         /// <param name="start">
         /// The starting index to read data from.
@@ -250,7 +256,9 @@ namespace Helper
         public void CreateTree(byte[] data, int start, int size)
         {
             if (data == null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
 
             unsafe
             {
@@ -263,7 +271,7 @@ namespace Helper
         /// Creates a suffix tree of <paramref name="data"/>.
         /// </summary>
         /// <param name="data">
-        /// An array of <see cref="byte"/>s to create a suffix tree of.
+        /// An array of <see cref="Byte"/>s to create a suffix tree of.
         /// </param>
         /// <param name="length">
         /// The size, in bytes, of <paramref name="data"/>.
@@ -287,7 +295,7 @@ namespace Helper
         /// with range specified by <paramref name="size"/>.
         /// </summary>
         /// <param name="data">
-        /// An array of <see cref="byte"/>s to create a suffix tree of.
+        /// An array of <see cref="Byte"/>s to create a suffix tree of.
         /// </param>
         /// <param name="length">
         /// The size, in bytes, of <paramref name="data"/>.
@@ -318,7 +326,7 @@ namespace Helper
         /// with range specified by <paramref name="size"/>.
         /// </summary>
         /// <param name="data">
-        /// An array of <see cref="byte"/>s to create a suffix tree of.
+        /// An array of <see cref="Byte"/>s to create a suffix tree of.
         /// </param>
         /// <param name="length">
         /// The size, in bytes, of <paramref name="data"/>.
@@ -339,19 +347,30 @@ namespace Helper
         private unsafe void CreateTree(byte* data, int length, int start, int size)
         {
             if (data == null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
+
             if (start < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(start),
                     SR.ErrorInvalidClosedLowerBound(nameof(start), start, 0));
+            }
+
             if (start + size > length)
-                throw new ArgumentOutOfRangeException(nameof(size), 
+            {
+                throw new ArgumentOutOfRangeException(nameof(size),
                     SR.ErrorArrayRange(nameof(size), size, nameof(data), length, start));
+            }
 
             Initialize(size);
 
             data += start;
-            for (int i = 0; i < size; i++)
+            for (var i = 0; i < size; i++)
+            {
                 Add(data[i]);
+            }
+
             Add(TerminationValue);
             Position++;
         }
@@ -376,7 +395,9 @@ namespace Helper
             {
                 // [?] Why do we do this?
                 if (ActiveLength == 0)
+                {
                     ActivePosition = Position;
+                }
 
                 // Get the active child node.
                 var activeValue = Data[ActivePosition];
@@ -423,14 +444,16 @@ namespace Helper
                 }
 
                 Remainder--;
-                
+
                 if (ActiveNode == Root && ActiveLength > 0)
                 {
                     ActiveLength--;
                     ActivePosition = Position - Remainder + 1;
                 }
                 else
-                    ActiveNode = ActiveNode.Link != null ? ActiveNode.Link : Root;
+                {
+                    ActiveNode = ActiveNode.Link ?? Root;
+                }
             } while (Remainder > 0);
         }
 
@@ -443,7 +466,9 @@ namespace Helper
         private void AddLink(Node node)
         {
             if (ActiveLinkNode != null)
+            {
                 ActiveLinkNode.Link = node;
+            }
 
             ActiveLinkNode = node;
         }
@@ -471,8 +496,10 @@ namespace Helper
         public SubstringPointer GetLongestInternalSubstring(int index)
         {
             if (index < 0 || index >= Size)
+            {
                 throw new ArgumentOutOfRangeException(nameof(index),
                     SR.ErrorArrayBounds(nameof(index), index, Size));
+            }
 
             unsafe
             {
@@ -481,19 +508,23 @@ namespace Helper
                     var node = (Node)Root;
                     var result = SubstringPointer.Empty;
 
-                    for (int i = index, length = 0; i < Size; )
+                    for (int i = index, length = 0; i < Size;)
                     {
                         // update to current node.
-                        int value = ptr[i];
+                        var value = ptr[i];
                         node = node[value];
 
                         // If no node specifies the current value, then our substring has reached max.
                         if (node == null)
+                        {
                             return result;
+                        }
 
                         // if node goes to end of data, then this is the longest match.
                         if (node.End > index + length || node.End == -1)
+                        {
                             return result;
+                        }
 
                         // update status to current node's position.
                         i += node.Length;
@@ -505,7 +536,7 @@ namespace Helper
                 }
             }
         }
-        
+
         /// <summary>
         /// A class that contains the substring information of each node in a <see cref="SuffixTree"/>.
         /// </summary>
@@ -533,7 +564,7 @@ namespace Helper
             {
                 get { return Tree.Root; }
             }
-            
+
             /// <summary>
             /// Gets or sets the start index of the substring that describes this <see cref="Node"/>.
             /// </summary>
@@ -542,6 +573,7 @@ namespace Helper
                 get;
                 set;
             }
+
             /// <summary>
             /// Gets or sets the end index of the substring that describes this <see cref="Node"/>.
             /// </summary>
@@ -550,6 +582,7 @@ namespace Helper
                 get;
                 set;
             }
+
             /// <summary>
             /// Gets the length of the substring that describes this <see cref="Node"/>.
             /// </summary>
@@ -557,6 +590,7 @@ namespace Helper
             {
                 get { return (End == -1 ? Tree.Position : End) - Start; }
             }
+
             /// <summary>
             /// Gets the <see cref="SubstringPointer"/> that describes this <see cref="Node"/>.
             /// </summary>
@@ -637,7 +671,11 @@ namespace Helper
             /// </returns>
             public Node this[int key]
             {
-                get { return Children[key]; }
+                get
+                {
+                    return Children[key];
+                }
+
                 set
                 {
                     // If we are setting a non-null node to a child index that is currently
@@ -646,12 +684,14 @@ namespace Helper
                     {
                         value.Parent = this;
                         if (this[key] == null)
+                        {
                             Active[ActiveSize++] = key;
+                        }
                     }
                     Children[key] = value;
                 }
             }
-            
+
             /// <summary>
             /// Initializes a new instance of the <see cref="Node"/> class with
             /// <paramref name="tree"/> as its owner.
@@ -710,21 +750,24 @@ namespace Helper
                 Start = start;
                 End = end;
                 Link = null;
-                
+
                 // Dereference every child node that we have set. A much smarter alternative
                 // than iterating through every single child and seeing if null.
-                for (int i = ActiveSize; --i >= 0;)
+                for (var i = ActiveSize; --i >= 0;)
+                {
                     this[Active[i]] = null;
+                }
+
                 ActiveSize = 0;
 
                 return this;
             }
 
             /// <summary>
-            /// Converts this <see cref="Node"/> to a human-readable <see cref="string"/>.
+            /// Converts this <see cref="Node"/> to a human-readable <see cref="String"/>.
             /// </summary>
             /// <returns>
-            /// A <see cref="string"/> the represent this <see cref="Node"/>.
+            /// A <see cref="String"/> the represent this <see cref="Node"/>.
             /// </returns>
             public override string ToString()
             {
@@ -763,10 +806,10 @@ namespace Helper
             }
 
             /// <summary>
-            /// Converts this <see cref="RootNode"/> to a human-readable <see cref="string"/>.
+            /// Converts this <see cref="RootNode"/> to a human-readable <see cref="String"/>.
             /// </summary>
             /// <returns>
-            /// A <see cref="string"/> the represent this <see cref="RootNode"/>.
+            /// A <see cref="String"/> the represent this <see cref="RootNode"/>.
             /// </returns>
             public override string ToString()
             {
@@ -780,7 +823,7 @@ namespace Helper
         /// </summary>
         /// <remarks>
         /// <see cref="Node"/>s added to <see cref="NodeCollection"/> are not removed when calling
-        /// <see cref="Clear"/>(). This way, if <see cref="Add(int)"/> or <see cref="Add(int, int)"/>
+        /// <see cref="Clear"/>(). This way, if <see cref="Add(Int32)"/> or <see cref="Add(Int32, Int32)"/>
         /// is called, a previously "cleared" <see cref="Node"/> is reset with the specified parameters.
         /// This saves time against instantiating a new <see cref="Node"/> due to its large alphabet size.
         /// </remarks>
@@ -839,8 +882,11 @@ namespace Helper
             {
                 Tree = tree;
 
-                for (int i = capacity; --i >= 0;)
+                for (var i = capacity; --i >= 0;)
+                {
                     Add(-1);
+                }
+
                 Clear();
             }
 
@@ -886,7 +932,9 @@ namespace Helper
             {
                 // If a node already exists in the list, then we simply reset its value.
                 if (Count++ < base.Count)
+                {
                     return this[Count - 1].Reset(start, end);
+                }
 
                 // Otherwise, we create a new node and add it to the list.
                 var node = new Node(Tree, start, end);

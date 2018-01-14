@@ -34,29 +34,35 @@ namespace MushROMs.SNES.SMAS.SMB1
             get;
             private set;
         }
+
         public int MapNumber
         {
             get;
             private set;
         }
+
         public int MapIndex
         {
             get { return MapNumber & 0x1F; }
         }
+
         public AreaType AreaType
         {
             get { return (AreaType)((MapNumber >> 5) & 3); }
         }
+
         public int LevelObjectIndex
         {
             get;
             private set;
         }
+
         public int EnemyObjectIndex
         {
             get;
             private set;
         }
+
         public LevelHeader LevelHeader
         {
             get;
@@ -68,15 +74,18 @@ namespace MushROMs.SNES.SMAS.SMB1
             get;
             set;
         }
+
         public LevelObject[] GetLevelObjects()
         {
             return LevelObjects;
         }
+
         private EnemyObject[] EnemyObjects
         {
             get;
             set;
         }
+
         public EnemyObject[] GetEnemyObjects()
         {
             return EnemyObjects;
@@ -88,20 +97,28 @@ namespace MushROMs.SNES.SMAS.SMB1
             {
                 var size = 3; // two byte header and one byte termination value.
                 foreach (var obj in LevelObjects)
+                {
                     size += obj.Size;
+                }
+
                 return size;
             }
         }
+
         public int EnemiesSize
         {
             get
             {
                 var size = 1; // one byte termination value.
                 foreach (var spr in EnemyObjects)
+                {
                     size += spr.Size;
+                }
+
                 return size;
             }
         }
+
         public int TotalSize
         {
             get
@@ -112,10 +129,7 @@ namespace MushROMs.SNES.SMAS.SMB1
 
         public LevelData(ROM src, int mapNumber)
         {
-            if (src == null)
-                throw new ArgumentNullException(nameof(ROM));
-
-            ROM = src;
+            ROM = src ?? throw new ArgumentNullException(nameof(ROM));
 
             var maps = ROM.SNESToPC(MapListPointer);
             var world = ROM.SNESToPC(LevelsPerWorldPointer);
@@ -163,7 +177,9 @@ namespace MushROMs.SNES.SMAS.SMB1
         public LevelData(NES.SMB1.LevelData nes)
         {
             if (nes == null)
+            {
                 throw new ArgumentNullException(nameof(nes));
+            }
 
             MapNumber = nes.MapNumber;
             LevelHeader = nes.LevelHeader;
@@ -178,7 +194,7 @@ namespace MushROMs.SNES.SMAS.SMB1
             var CastleLedge = AreaType == AreaType.Castle;
             var level = nes.GetLevelObjects();
 
-            for (int i = 0; i < level.Length; i++)
+            for (var i = 0; i < level.Length; i++)
             {
                 var obj = (LevelObject)level[i];
                 var type = (ObjectType)obj.ObjectType;
@@ -191,18 +207,27 @@ namespace MushROMs.SNES.SMAS.SMB1
                         obj = new LevelObject(obj.X, obj.Y, obj.PageFlag, 3, obj.Parameter, 2);
                     }
                     else
+                    {
                         CastleLedge = false;
+                    }
                 }
 
                 // Empty tiles are worthless and crash SMAS too.
                 if (obj.IsEmpty)
+                {
                     continue;
+                }
 
                 if (type == ObjectType.BackgroundChange)
+                {
                     continue;
+                }
 
                 if (obj.PageFlag)
+                {
                     page++;
+                }
+
                 if (!flagPole && (type == ObjectType.FlagPole || type == ObjectType.AltFlagPole))
                 {
                     flagPole = true;
@@ -241,7 +266,7 @@ namespace MushROMs.SNES.SMAS.SMB1
 
                 if (type == ObjectType.BrickAndSceneryChange && AreaType == AreaType.Castle)
                 {
-                    TerrainMode current = (TerrainMode)(obj.Parameter & 0x0F);
+                    var current = (TerrainMode)(obj.Parameter & 0x0F);
                     InsertCastleTiles(objects, current, lastTerrain);
                     lastTerrain = current;
                 }
@@ -259,16 +284,16 @@ namespace MushROMs.SNES.SMAS.SMB1
         {
             var data = new byte[0x200];
 
-            int xIndex = ROM.SNESToPC(PaletteRowPointers);
-            int yIndex = ROM.SNESToPC(PaletteRowIndex);
+            var xIndex = ROM.SNESToPC(PaletteRowPointers);
+            var yIndex = ROM.SNESToPC(PaletteRowIndex);
 
             var index = LevelObjectIndex << 4;
-            for (int j = 0; j < 0x200; j += 0x20, index++)
+            for (var j = 0; j < 0x200; j += 0x20, index++)
             {
                 var x = ROM[xIndex + index] << 1;
                 var y = ROM[yIndex + x] | (ROM[yIndex + x + 1] << 8);
-                int address = ROM.SNESToPC(PaletteColors) + y;
-                for (int i = 0; i < 0x20; i++)
+                var address = ROM.SNESToPC(PaletteColors) + y;
+                for (var i = 0; i < 0x20; i++)
                 {
                     data[j + i] = ROM[address + i];
                 }
@@ -281,9 +306,11 @@ namespace MushROMs.SNES.SMAS.SMB1
         {
             var data = new byte[0x4000];
 
-            int address = ROM.SNESToPC(0x068000);
-            for (int i = data.Length; --i >= 0;)
+            var address = ROM.SNESToPC(0x068000);
+            for (var i = data.Length; --i >= 0;)
+            {
                 data[i] = ROM[address + i];
+            }
 
             return CHRFile.InitializeEditor(data);
         }
@@ -292,9 +319,11 @@ namespace MushROMs.SNES.SMAS.SMB1
         {
             var data = new byte[0x800];
 
-            int address = ROM.SNESToPC(0x0CF800);
-            for (int i = data.Length; --i >= 0;)
+            var address = ROM.SNESToPC(0x0CF800);
+            for (var i = data.Length; --i >= 0;)
+            {
                 data[i] = ROM[address + i];
+            }
 
             return CHRFile.InitializeEditor(data);
         }
@@ -303,9 +332,11 @@ namespace MushROMs.SNES.SMAS.SMB1
         {
             var data = new byte[0x4000];
 
-            int address = ROM.SNESToPC(0x078000);
-            for (int i = data.Length; --i >= 0;)
+            var address = ROM.SNESToPC(0x078000);
+            for (var i = data.Length; --i >= 0;)
+            {
                 data[i] = ROM[address + i];
+            }
 
             return CHRFile.InitializeEditor(data);
         }
@@ -314,15 +345,15 @@ namespace MushROMs.SNES.SMAS.SMB1
         {
             var data = new byte[0x100 * 8];
 
-            int loPointer = ROM.SNESToPC(Map16ChunkAddressLow);
-            int hiPointer = ROM.SNESToPC(Map16ChunkAddressHigh);
+            var loPointer = ROM.SNESToPC(Map16ChunkAddressLow);
+            var hiPointer = ROM.SNESToPC(Map16ChunkAddressHigh);
 
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
-                int x = i * 0x40 * 8;
-                int address = 0x030000 | ROM[loPointer + i] | (ROM[hiPointer + i] << 8);
+                var x = i * 0x40 * 8;
+                var address = 0x030000 | ROM[loPointer + i] | (ROM[hiPointer + i] << 8);
                 address = ROM.SNESToPC(address);
-                for (int j = 0; j < 0x40 * 8; j++)
+                for (var j = 0; j < 0x40 * 8; j++)
                 {
                     data[x + j] = ROM[address + j];
                 }
@@ -335,30 +366,36 @@ namespace MushROMs.SNES.SMAS.SMB1
         {
             switch (terrain)
             {
-            case TerrainMode.None:
-            case TerrainMode.Ceiling0Floor2:
-                return 0;
-            case TerrainMode.Ceiling1Floor2:
-            case TerrainMode.Ceiling1Floor5:
-            case TerrainMode.Ceiling1Floor6:
-            case TerrainMode.Ceiling1Floor0:
-            case TerrainMode.Ceiling1Floor9:
-            case TerrainMode.Ceiling1Middle5Floor2:
-            case TerrainMode.Ceiling1Middle4Floor2:
-                return 1;
-            case TerrainMode.Ceiling3Floor2:
-            case TerrainMode.Ceiling3Floor5:
-                return 3;
-            case TerrainMode.Ceiling4Floor2:
-            case TerrainMode.Ceiling4Floor5:
-            case TerrainMode.Ceiling4Floor6:
-                return 4;
-            case TerrainMode.Ceiling8Floor2:
-                return 8;
-            case TerrainMode.Solid:
-                return 0x10;
-            default:
-                return -1;
+                case TerrainMode.None:
+                case TerrainMode.Ceiling0Floor2:
+                    return 0;
+
+                case TerrainMode.Ceiling1Floor2:
+                case TerrainMode.Ceiling1Floor5:
+                case TerrainMode.Ceiling1Floor6:
+                case TerrainMode.Ceiling1Floor0:
+                case TerrainMode.Ceiling1Floor9:
+                case TerrainMode.Ceiling1Middle5Floor2:
+                case TerrainMode.Ceiling1Middle4Floor2:
+                    return 1;
+
+                case TerrainMode.Ceiling3Floor2:
+                case TerrainMode.Ceiling3Floor5:
+                    return 3;
+
+                case TerrainMode.Ceiling4Floor2:
+                case TerrainMode.Ceiling4Floor5:
+                case TerrainMode.Ceiling4Floor6:
+                    return 4;
+
+                case TerrainMode.Ceiling8Floor2:
+                    return 8;
+
+                case TerrainMode.Solid:
+                    return 0x10;
+
+                default:
+                    return -1;
             }
         }
 
@@ -366,38 +403,53 @@ namespace MushROMs.SNES.SMAS.SMB1
         {
             switch (terrain)
             {
-            case TerrainMode.None:
-                return;
-            case TerrainMode.Ceiling0Floor2:
-                return;
-            case TerrainMode.Ceiling1Floor2:
-                return;
-            case TerrainMode.Ceiling3Floor2:
-                return;
-            case TerrainMode.Ceiling4Floor2:
-                return;
-            case TerrainMode.Ceiling8Floor2:
-                return;
-            case TerrainMode.Ceiling1Floor5:
-                return;
-            case TerrainMode.Ceiling3Floor5:
-                return;
-            case TerrainMode.Ceiling4Floor5:
-                return;
-            case TerrainMode.Ceiling1Floor6:
-                return;
-            case TerrainMode.Ceiling1Floor0:
-                return;
-            case TerrainMode.Ceiling4Floor6:
-                return;
-            case TerrainMode.Ceiling1Floor9:
-                return;
-            case TerrainMode.Ceiling1Middle5Floor2:
-                return;
-            case TerrainMode.Ceiling1Middle4Floor2:
-                return;
-            case TerrainMode.Solid:
-                return;
+                case TerrainMode.None:
+                    return;
+
+                case TerrainMode.Ceiling0Floor2:
+                    return;
+
+                case TerrainMode.Ceiling1Floor2:
+                    return;
+
+                case TerrainMode.Ceiling3Floor2:
+                    return;
+
+                case TerrainMode.Ceiling4Floor2:
+                    return;
+
+                case TerrainMode.Ceiling8Floor2:
+                    return;
+
+                case TerrainMode.Ceiling1Floor5:
+                    return;
+
+                case TerrainMode.Ceiling3Floor5:
+                    return;
+
+                case TerrainMode.Ceiling4Floor5:
+                    return;
+
+                case TerrainMode.Ceiling1Floor6:
+                    return;
+
+                case TerrainMode.Ceiling1Floor0:
+                    return;
+
+                case TerrainMode.Ceiling4Floor6:
+                    return;
+
+                case TerrainMode.Ceiling1Floor9:
+                    return;
+
+                case TerrainMode.Ceiling1Middle5Floor2:
+                    return;
+
+                case TerrainMode.Ceiling1Middle4Floor2:
+                    return;
+
+                case TerrainMode.Solid:
+                    return;
             }
         }
 
@@ -427,13 +479,13 @@ namespace MushROMs.SNES.SMAS.SMB1
                 new AreaIndex(gs, AreaType.Grassland),
                 new AreaIndex(us, AreaType.Underground),
                 new AreaIndex(cs, AreaType.Castle),
-                new AreaIndex(int.MaxValue, 0)});
+                new AreaIndex(Int32.MaxValue, 0)});
             list.Sort((x, y) => x.Index - y.Index);
 
-            for (int i = 0; i < NumberOfMaps; i++)
+            for (var i = 0; i < NumberOfMaps; i++)
             {
-                int map = i;
-                for (int j = 0; j < 4; j++)
+                var map = i;
+                for (var j = 0; j < 4; j++)
                 {
                     if (i >= list[j].Index && i < list[j + 1].Index)
                     {
@@ -465,34 +517,44 @@ namespace MushROMs.SNES.SMAS.SMB1
                     var slevels = new LevelData[NumberOfMaps];
 
                     var size = 0;
-                    for (int i = 0; i < NumberOfMaps; i++)
+                    for (var i = 0; i < NumberOfMaps; i++)
                     {
                         slevels[i] = new LevelData(nlevels[i]);
                         size += slevels[i].TotalSize;
                     }
 
                     if (size >= range)
+                    {
                         return false;
+                    }
 
                     var msrc = AddressConverter.NesToPc(NES.SMB1.LevelData.MapListPointer);
                     var mdest = dest.SNESToPC(MapListPointer);
-                    for (int i = 0; i < NumberOfMaps; i++)
+                    for (var i = 0; i < NumberOfMaps; i++)
+                    {
                         ptr[mdest + i] = src[msrc + i];
+                    }
 
                     var wsrc = AddressConverter.NesToPc(NES.SMB1.LevelData.LevelsPerWorldPointer);
                     var wdest = dest.SNESToPC(LevelsPerWorldPointer);
-                    for (int i = 0; i < 8; i++)
+                    for (var i = 0; i < 8; i++)
+                    {
                         ptr[wdest + i] = src[wsrc + i];
+                    }
 
                     var atesrc = AddressConverter.NesToPc(NES.SMB1.LevelData.AreaTypeEnemyOffsetPointer);
                     var atedest = dest.SNESToPC(AreaTypeEnemyOffsetPointer);
-                    for (int i = 0; i < 4; i++)
+                    for (var i = 0; i < 4; i++)
+                    {
                         ptr[atedest + i] = src[atesrc + i];
+                    }
 
                     var atlsrc = AddressConverter.NesToPc(NES.SMB1.LevelData.AreaTypeLevelOffsetPointer);
                     var atldest = dest.SNESToPC(AreaTypeLevelOffsetPointer);
-                    for (int i = 0; i < 4; i++)
+                    for (var i = 0; i < 4; i++)
+                    {
                         ptr[atldest + i] = src[atlsrc + i];
+                    }
 
                     var lldest = dest.SNESToPC(LevelAddressLowBytePointer);
                     var hldest = dest.SNESToPC(LevelAddressHighBytePointer);
@@ -501,7 +563,7 @@ namespace MushROMs.SNES.SMAS.SMB1
                     var hedest = dest.SNESToPC(EnemyAddressHighBytePointer);
 
                     var address = first;
-                    for (int i = 0; i < NumberOfMaps; i++)
+                    for (var i = 0; i < NumberOfMaps; i++)
                     {
                         var level = slevels[i];
                         var map = level.MapNumber;
@@ -515,13 +577,15 @@ namespace MushROMs.SNES.SMAS.SMB1
 
                         ptr[address++] = level.LevelHeader.Value1;
                         ptr[address++] = level.LevelHeader.Value2;
-                        for (int j = 0; j < level.LevelObjects.Length; j++)
+                        for (var j = 0; j < level.LevelObjects.Length; j++)
                         {
                             var obj = level.LevelObjects[j];
                             ptr[address++] = obj.Value1;
                             ptr[address++] = obj.Value2;
                             if (obj.Size == 3)
+                            {
                                 ptr[address++] = obj.Value3;
+                            }
                         }
                         ptr[address++] = 0xFD;
 
@@ -530,13 +594,15 @@ namespace MushROMs.SNES.SMAS.SMB1
                         ptr[ledest + index] = (byte)snes;
                         ptr[hedest + index] = (byte)(snes >> 8);
 
-                        for (int j = 0; j < level.EnemyObjects.Length; j++)
+                        for (var j = 0; j < level.EnemyObjects.Length; j++)
                         {
                             var obj = level.EnemyObjects[j];
                             ptr[address++] = obj.Value1;
                             ptr[address++] = obj.Value2;
                             if (obj.Size == 3)
+                            {
                                 ptr[address++] = obj.Value3;
+                            }
                         }
                         ptr[address++] = 0xFF;
                     }

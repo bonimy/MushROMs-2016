@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using MushROMs.SNES;
 using MushROMs.Controls;
 using MushROMs.Editors.Properties;
+using MushROMs.SNES;
 
 namespace MushROMs.Editors
 {
@@ -41,8 +41,10 @@ namespace MushROMs.Editors
                 new GridItem(null, Resources.TileMapFileType, Resources.TileMapFileDescription, null),
             };
 
-            for (int i = 0; i < GridItems.Length; i++)
-                Rows.Add(GridItems[i].Icon, GridItems[i].FileType, string.Empty);
+            for (var i = 0; i < GridItems.Length; i++)
+            {
+                Rows.Add(GridItems[i].Icon, GridItems[i].FileType, String.Empty);
+            }
         }
 
         public Editor CreateEditor()

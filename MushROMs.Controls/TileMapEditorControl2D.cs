@@ -3,8 +3,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Windows.Forms;
 using System.Timers;
+using System.Windows.Forms;
 using Timer = System.Timers.Timer;
 
 namespace MushROMs.Controls
@@ -18,6 +18,7 @@ namespace MushROMs.Controls
 
         private static readonly DashedPenPair FallbackSelectionPens =
             new DashedPenPair(SystemColors.Highlight, SystemColors.HighlightText, 4, 4);
+
         private static readonly DashedPenPair FallbackActiveTilePens =
             new DashedPenPair(SystemColors.Highlight, SystemColors.HighlightText, 2, 2);
 
@@ -42,11 +43,17 @@ namespace MushROMs.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ITileMapEditor2D Editor
         {
-            get { return _editor; }
+            get
+            {
+                return _editor;
+            }
+
             set
             {
                 if (Editor == value)
+                {
                     return;
+                }
 
                 if (Editor != null)
                 {
@@ -68,11 +75,17 @@ namespace MushROMs.Controls
 
         public new TileMap2D TileMap
         {
-            get { return base.TileMap; }
+            get
+            {
+                return base.TileMap;
+            }
+
             protected set
             {
                 if (TileMap == value)
+                {
                     return;
+                }
 
                 if (TileMap != null)
                 {
@@ -94,18 +107,27 @@ namespace MushROMs.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DashedPenPair SelectionPens
         {
-            get { return _selectionPens; }
+            get
+            {
+                return _selectionPens;
+            }
+
             set
             {
                 _selectionPens = value;
                 Invalidate();
             }
         }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DashedPenPair ActiveTilePens
         {
-            get { return _activeTilePens; }
+            get
+            {
+                return _activeTilePens;
+            }
+
             set
             {
                 _activeTilePens = value;
@@ -115,7 +137,11 @@ namespace MushROMs.Controls
 
         private int DashOffset
         {
-            get { return _dashOffset; }
+            get
+            {
+                return _dashOffset;
+            }
+
             set
             {
                 _dashOffset = value;
@@ -130,8 +156,10 @@ namespace MushROMs.Controls
 
             Components = new Container();
 
-            Timer = new Timer();
-            Timer.Interval = FallbackAnimationTime;
+            Timer = new Timer
+            {
+                Interval = FallbackAnimationTime
+            };
             Timer.Elapsed += Timer_Elapsed;
             Timer.Start();
 
@@ -145,7 +173,9 @@ namespace MushROMs.Controls
                 DrawEditorData(e);
                 DrawActiveTileBorder(e);
                 if (Editor.Selection != null)
+                {
                     DrawSelection(e);
+                }
             }
             base.OnPaint(e);
         }
@@ -153,9 +183,11 @@ namespace MushROMs.Controls
         protected virtual void DrawEditorData(PaintEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
-            using (Bitmap bmp = new Bitmap(
+            using (var bmp = new Bitmap(
                 TileMap.Width, TileMap.Height, PixelFormat.Format32bppArgb))
             {
                 var data = bmp.LockBits(
@@ -173,15 +205,16 @@ namespace MushROMs.Controls
 
         protected virtual void DrawDataAsTileMap(IntPtr scan0, int length)
         {
-
         }
 
         protected virtual void DrawActiveTileBorder(PaintEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
-            using (GraphicsPath path = new GraphicsPath())
+            using (var path = new GraphicsPath())
             {
                 using (Pen pen1 = new Pen(Color.Empty, 1),
                            pen2 = new Pen(Color.Empty, 1))
@@ -202,9 +235,11 @@ namespace MushROMs.Controls
         protected virtual void DrawSelection(PaintEventArgs e)
         {
             if (e == null)
+            {
                 throw new ArgumentNullException(nameof(e));
+            }
 
-            using (GraphicsPath path = new GraphicsPath())
+            using (var path = new GraphicsPath())
             {
                 using (Pen pen1 = new Pen(Color.Empty, 1),
                            pen2 = new Pen(Color.Empty, 1))
@@ -224,14 +259,19 @@ namespace MushROMs.Controls
         protected override void Dispose(bool disposing)
         {
             if (disposing && Components != null)
+            {
                 Components.Dispose();
+            }
+
             base.Dispose(disposing);
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (Enabled && Visible)
+            {
                 DashOffset++;
+            }
         }
 
         private void Editor_Redraw(object sender, EventArgs e)

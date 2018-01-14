@@ -3,6 +3,7 @@
     public interface ILibraryPlugin
     {
         ITypeInfo[] GetEditorInfoList();
+
         IFileAssociation[] GetFileAssociations();
     }
 }

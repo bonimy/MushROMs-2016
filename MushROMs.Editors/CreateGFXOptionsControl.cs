@@ -33,12 +33,18 @@ namespace MushROMs.Editors
 
         public GraphicsFormat GraphicsFormat
         {
-            get { return Formats[cbxGraphicsFormat.SelectedIndex]; }
+            get
+            {
+                return Formats[cbxGraphicsFormat.SelectedIndex];
+            }
+
             set
             {
                 var index = Formats.IndexOf(value);
                 if (index == -1)
+                {
                     throw new InvalidEnumArgumentException(nameof(value));
+                }
 
                 cbxGraphicsFormat.SelectedIndex = index;
             }

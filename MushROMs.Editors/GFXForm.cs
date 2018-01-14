@@ -2,8 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 using MushROMs.Controls;
-using MushROMs.SNES;
 using MushROMs.Editors.Properties;
+using MushROMs.SNES;
 
 namespace MushROMs.Editors
 {
@@ -83,16 +83,15 @@ namespace MushROMs.Editors
 
         public GFXForm(GFXEditor editor)
         {
-            if (editor == null)
-                throw new ArgumentNullException(nameof(editor));
-
             InitializeComponent();
 
             BindFormSize();
-            TileMapControl.Editor = editor;
+            TileMapControl.Editor = editor ?? throw new ArgumentNullException(nameof(editor));
             ZoomedViewSizes = new Size[estMain.ZoomScaleCount];
-            for (int i = ZoomedViewSizes.Length; --i >= 0;)
+            for (var i = ZoomedViewSizes.Length; --i >= 0;)
+            {
                 ZoomedViewSizes[i] = TileMap.ViewSize;
+            }
         }
 
         private void BindFormSize()
@@ -152,7 +151,10 @@ namespace MushROMs.Editors
         {
             var title = Editor.Name + Editor.Extension;
             if (!Editor.Saved)
+            {
                 title += '*';
+            }
+
             Text = title;
         }
 
@@ -170,10 +172,14 @@ namespace MushROMs.Editors
         private void GFXForm_ResizeEnd(object sender, EventArgs e)
         {
             if (TileMap == null)
+            {
                 return;
+            }
 
-            for (int i = ZoomedViewSizes.Length; --i >= 0;)
+            for (var i = ZoomedViewSizes.Length; --i >= 0;)
+            {
                 ZoomedViewSizes[i] = TileMap.ViewSize;
+            }
         }
 
         private void GFXStatus_GraphicsFormatChanged(object sender, EventArgs e)

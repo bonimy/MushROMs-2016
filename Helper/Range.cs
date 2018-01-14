@@ -14,6 +14,7 @@ namespace Helper
             get;
             private set;
         }
+
         public int Vertical
         {
             get;
@@ -27,6 +28,7 @@ namespace Helper
 
         public Range(int value) : this(value, value)
         { }
+
         public Range(int horizontal, int vertical)
         {
             Horizontal = horizontal;
@@ -43,18 +45,22 @@ namespace Helper
         {
             return this + value;
         }
+
         public Range Subtract(Range value)
         {
             return this - value;
         }
+
         public Range Negate()
         {
             return -this;
         }
+
         public Range Multiply(Range value)
         {
             return this * value;
         }
+
         public Range Divide(Range value)
         {
             return this / value;
@@ -65,16 +71,19 @@ namespace Helper
             return new Range(Math.Min(value1.Horizontal, value2.Horizontal),
                 Math.Min(value1.Vertical, value2.Vertical));
         }
+
         public static Range TopRight(Range value1, Range value2)
         {
             return new Range(Math.Max(value1.Horizontal, value2.Horizontal),
                 Math.Min(value1.Vertical, value2.Vertical));
         }
+
         public static Range BottomLeft(Range value1, Range value2)
         {
             return new Range(Math.Min(value1.Horizontal, value2.Horizontal),
                 Math.Max(value1.Vertical, value2.Vertical));
         }
+
         public static Range BottomRight(Range value1, Range value2)
         {
             return new Range(Math.Max(value1.Horizontal, value2.Horizontal),
@@ -84,14 +93,18 @@ namespace Helper
         public override bool Equals(object obj)
         {
             if (!(obj is Range))
+            {
                 return false;
+            }
 
             return (Range)obj == this;
         }
+
         public override int GetHashCode()
         {
             return ((Size)this).GetHashCode();
         }
+
         public override string ToString()
         {
             return ((Size)this).ToString();
@@ -102,6 +115,7 @@ namespace Helper
             return left.Horizontal == right.Horizontal &&
                 left.Vertical == right.Vertical;
         }
+
         public static bool operator !=(Range left, Range right)
         {
             return !(left == right);
@@ -111,18 +125,22 @@ namespace Helper
         {
             return new Range(left.Horizontal + right.Horizontal, left.Vertical + right.Vertical);
         }
+
         public static Range operator -(Range left, Range right)
         {
             return new Range(left.Horizontal - right.Horizontal, left.Vertical - right.Vertical);
         }
+
         public static Range operator -(Range right)
         {
             return new Range(-right.Horizontal, -right.Vertical);
         }
+
         public static Range operator *(Range left, Range right)
         {
             return new Range(left.Horizontal * right.Horizontal, left.Vertical * right.Vertical);
         }
+
         public static Range operator /(Range left, Range right)
         {
             return new Range(left.Horizontal / right.Horizontal, left.Vertical / right.Vertical);
@@ -137,6 +155,7 @@ namespace Helper
         {
             return new Size(range.Horizontal, range.Vertical);
         }
+
         public static implicit operator Range(Size size)
         {
             return new Range(size.Width, size.Height);

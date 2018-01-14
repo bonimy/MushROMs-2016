@@ -11,12 +11,15 @@ namespace Helper
         public PathDictionary() :
             base(new PathComparer())
         { }
+
         public PathDictionary(PathDictionary<T> dictionary) :
             base(dictionary, new PathComparer())
         { }
+
         public PathDictionary(int capacity) :
             base(capacity, new PathComparer())
         { }
+
         protected PathDictionary(SerializationInfo info, StreamingContext context) :
             base(info, context)
         { }
@@ -28,6 +31,7 @@ namespace Helper
                 Assert(key);
                 return base[key];
             }
+
             set
             {
                 Assert(key);
@@ -40,16 +44,19 @@ namespace Helper
             Assert(key);
             base.Add(key, value);
         }
+
         public new bool ContainsKey(string key)
         {
             Assert(key);
             return base.ContainsKey(key);
         }
+
         public new bool Remove(string key)
         {
             Assert(key);
             return base.Remove(key);
         }
+
         public new bool TryGetValue(string key, out T value)
         {
             Assert(key);

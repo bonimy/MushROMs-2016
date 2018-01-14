@@ -17,11 +17,17 @@ namespace MushROMs.Editors
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new Obj16Editor Editor
         {
-            get { return (Obj16Editor)base.Editor; }
+            get
+            {
+                return (Obj16Editor)base.Editor;
+            }
+
             set
             {
                 if (Editor == value)
+                {
                     return;
+                }
 
                 if (Editor != null)
                 {
@@ -51,6 +57,7 @@ namespace MushROMs.Editors
                 }
                 return _palette;
             }
+
             set
             {
                 if (Palette != null)
@@ -77,10 +84,14 @@ namespace MushROMs.Editors
             get
             {
                 if (_colorSelection == null)
+                {
                     _colorSelection = new GFXColorSelection(
                         Palette.Palette.StartAddress, Palette.TileMap.ZeroTile, GFXData.GraphicsFormat);
+                }
+
                 return _colorSelection;
             }
+
             set
             {
                 _colorSelection = value;
@@ -95,9 +106,13 @@ namespace MushROMs.Editors
             get
             {
                 if (_paletteData == null)
+                {
                     _paletteData = new PaletteData(Palette.Palette, ColorSelection);
+                }
+
                 return _paletteData;
             }
+
             set
             {
                 _paletteData = value;
@@ -109,7 +124,11 @@ namespace MushROMs.Editors
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public GFXData GFXData
         {
-            get { return _gfxData; }
+            get
+            {
+                return _gfxData;
+            }
+
             set
             {
                 _gfxData = value;

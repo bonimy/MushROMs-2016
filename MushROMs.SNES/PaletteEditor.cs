@@ -1,10 +1,10 @@
 ﻿using System;
-using Debug = System.Diagnostics.Debug;
 using System.Threading.Tasks;
 using Helper;
 using Helper.ColorSpaces;
 using Helper.PixelFormats;
 using MushROMs.SNES.Properties;
+using Debug = System.Diagnostics.Debug;
 
 namespace MushROMs.SNES
 {
@@ -38,15 +38,15 @@ namespace MushROMs.SNES
 
         public PaletteEditor(Palette palette)
         {
-            if (palette == null)
-                throw new ArgumentNullException(nameof(palette));
-            Palette = palette;
+            Palette = palette ?? throw new ArgumentNullException(nameof(palette));
 
-            TileMap = new TileMap1D();
-            TileMap.TileSize = 1;
-            TileMap.ViewSize = 0x10;
-            TileMap.ZoomSize = 0x10;
-            TileMap.GridSize = Palette.Length / Color15BppBgr.SizeOf;
+            TileMap = new TileMap1D
+            {
+                TileSize = 1,
+                ViewSize = 0x10,
+                ZoomSize = 0x10,
+                GridSize = Palette.Length / Color15BppBgr.SizeOf
+            };
             TileMap.SelectionChanged += TileMap_SelectionChanged;
             TileMap.Selection = new TileMapSingleSelection1D(TileMap.ZeroTile);
         }
@@ -66,7 +66,9 @@ namespace MushROMs.SNES
             var ext = System.IO.Path.GetExtension(path).ToLowerInvariant();
             var fileAssociations = MasterEditor.GetFileAssociations();
             if (!fileAssociations.ContainsKey(ext))
+            {
                 throw new FileFormatException(path);
+            }
 
             var fileAssociation = fileAssociations[ext];
 
@@ -82,9 +84,14 @@ namespace MushROMs.SNES
         public void EditColor(PaletteSelection selection, Color15BppBgr color)
         {
             if (selection == null)
+            {
                 throw new ArgumentNullException(nameof(selection));
+            }
+
             if (!(selection.TileMapSelection is TileMapSingleSelection1D))
+            {
                 throw new ArgumentException(nameof(selection), Resources.ErrorNotSingleSelection);
+            }
 
             var data = GetEditorData(selection);
             data.GetData()[0] = color;
@@ -99,12 +106,17 @@ namespace MushROMs.SNES
         public void InvertColors(PaletteSelection selection)
         {
             if (selection == null)
+            {
                 throw new ArgumentNullException(nameof(selection));
+            }
 
             var data = GetEditorData(selection);
             var src = data.GetData();
-            for (int i = src.Length; --i >= 0;)
+            for (var i = src.Length; --i >= 0;)
+            {
                 src[i] ^= 0x7FFF;
+            }
+
             WriteData(data);
         }
 
@@ -116,11 +128,13 @@ namespace MushROMs.SNES
         public void Blend(PaletteSelection selection, BlendMode blendMode, ColorRgb color)
         {
             if (selection == null)
+            {
                 throw new ArgumentNullException(nameof(selection));
+            }
 
             var data = GetEditorData(selection);
             var src = data.GetData();
-            for (int i = src.Length; --i >= 0;)
+            for (var i = src.Length; --i >= 0;)
             {
                 var rgb = (ColorRgb)src[i];
                 src[i] = (Color15BppBgr)rgb.BlendWith(color, blendMode);
@@ -136,11 +150,13 @@ namespace MushROMs.SNES
         public void Colorize(PaletteSelection selection, float hue, float saturation, float lightness, bool luma, float weight)
         {
             if (selection == null)
+            {
                 throw new ArgumentNullException(nameof(selection));
+            }
 
             var data = GetEditorData(selection);
             var src = data.GetData();
-            for (int i = src.Length; --i >= 0;)
+            for (var i = src.Length; --i >= 0;)
             {
                 if (luma)
                 {
@@ -164,11 +180,13 @@ namespace MushROMs.SNES
         public void Grayscale(PaletteSelection selection, ColorWeight color)
         {
             if (selection == null)
+            {
                 throw new ArgumentNullException(nameof(selection));
+            }
 
             var data = GetEditorData(selection);
             var src = data.GetData();
-            for (int i = src.Length; --i >= 0;)
+            for (var i = src.Length; --i >= 0;)
             {
                 var rgb = (ColorRgb)src[i];
                 src[i] = (Color15BppBgr)rgb.Grayscale(color);
@@ -184,11 +202,13 @@ namespace MushROMs.SNES
         public void Adjust(PaletteSelection selection, float hue, float saturation, float lightness, bool luma, float weight)
         {
             if (selection == null)
+            {
                 throw new ArgumentNullException(nameof(selection));
+            }
 
             var data = GetEditorData(selection);
             var src = data.GetData();
-            for (int i = src.Length; --i >= 0;)
+            for (var i = src.Length; --i >= 0;)
             {
                 if (luma)
                 {
@@ -212,23 +232,27 @@ namespace MushROMs.SNES
         public void HorizontalGradient(PaletteSelection selection)
         {
             if (selection == null)
+            {
                 throw new ArgumentNullException(nameof(selection));
+            }
 
             var data = GetEditorData(selection);
             if (!(data.Selection.TileMapSelection is TileMapBoxSelection1D))
+            {
                 throw new ArgumentException(nameof(selection));
+            }
 
             var src = data.GetData();
             var tileMap = (TileMapBoxSelection1D)data.Selection.TileMapSelection;
             var width = tileMap.Range.Horizontal;
             var last = width - 1;
 
-            for (int y = tileMap.Range.Vertical; --y >= 0;)
+            for (var y = tileMap.Range.Vertical; --y >= 0;)
             {
                 var c1 = (ColorRgb)src[y * width];
                 var c2 = (ColorRgb)src[y * width + last];
 
-                for (int x = width; --x >= 0;)
+                for (var x = width; --x >= 0;)
                 {
                     var weight = (float)x / last;
                     src[y * width + x] = (Color15BppBgr)c1.AverageWith(c2, weight);
@@ -245,11 +269,15 @@ namespace MushROMs.SNES
         public void VerticalGradient(PaletteSelection selection)
         {
             if (selection == null)
+            {
                 throw new ArgumentNullException(nameof(selection));
+            }
 
             var data = GetEditorData(selection);
             if (!(data.Selection.TileMapSelection is TileMapBoxSelection1D))
+            {
                 throw new ArgumentException(nameof(selection));
+            }
 
             var src = data.GetData();
             var tileMap = (TileMapBoxSelection1D)data.Selection.TileMapSelection;
@@ -257,12 +285,12 @@ namespace MushROMs.SNES
             var height = tileMap.Range.Vertical;
             var last = height - 1;
 
-            for (int x = width; --x >= 0;)
+            for (var x = width; --x >= 0;)
             {
                 var c1 = (ColorRgb)src[x];
                 var c2 = (ColorRgb)src[(last * width) + x];
 
-                for (int y = height; --y >= 0;)
+                for (var y = height; --y >= 0;)
                 {
                     var weight = (float)y / last;
                     src[y * width + x] = (Color15BppBgr)c1.AverageWith(c2, weight);
@@ -280,8 +308,11 @@ namespace MushROMs.SNES
         {
             var data = selection.GetPaletteData(this);
             var src = data.GetData();
-            for (int i = src.Length; --i >= 0;)
+            for (var i = src.Length; --i >= 0;)
+            {
                 src[i] = 0;
+            }
+
             WriteData(data);
         }
 
@@ -375,9 +406,13 @@ namespace MushROMs.SNES
                             ((i / vieww) * cellr);
 
                         // Draw the tile.
-                        for (int h = cellh; --h >= 0; dest += width)
-                            for (int w = cellw; --w >= 0;)
+                        for (var h = cellh; --h >= 0; dest += width)
+                        {
+                            for (var w = cellw; --w >= 0;)
+                            {
                                 dest[w] = color;
+                            }
+                        }
                     });
                 }
             }

@@ -51,10 +51,9 @@ keyword-letter:
 digit:
 	0-9
 
-
 What can each character be when parsing code?
 a-Z, A-Z, _ :	Keyword, parse until no a-Z, A_Z, 0-9, _ char.
-0-9			:	Number, Must come after 
+0-9			:	Number, Must come after
 {			:	Opening brace. Group code in brace until closing brace.
 }			:	Closing brace, must be matched with earlier opening brace.
 [			:	For opcodes. Only valid with defined opcodes.

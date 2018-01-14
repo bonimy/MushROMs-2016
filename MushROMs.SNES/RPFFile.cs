@@ -14,7 +14,9 @@ namespace MushROMs.SNES
         public static PaletteEditor InitializeEditor(byte[] data)
         {
             if (!IsValidData(data))
+            {
                 return null;
+            }
 
             return new PaletteEditor(new Palette(GetColors(data)));
         }
@@ -32,7 +34,9 @@ namespace MushROMs.SNES
         public static bool IsValidExtension(string ext)
         {
             if (String.IsNullOrEmpty(ext))
+            {
                 return false;
+            }
 
             return IOHelper.CompareExtensions(ext, DefaultExtension) == 0;
         }
@@ -45,17 +49,26 @@ namespace MushROMs.SNES
         public static bool IsValidData(byte[] data)
         {
             if (data == null)
+            {
                 return false;
+            }
+
             if (!IsValidSize(data.Length))
+            {
                 return false;
+            }
 
             unsafe
             {
                 fixed (byte* ptr = data)
                 {
-                    for (int i = GetNumColorsFromSize(data.Length); --i >= 0;)
+                    for (var i = GetNumColorsFromSize(data.Length); --i >= 0;)
+                    {
                         if ((((Color15BppBgr*)ptr)[i] & 0x8000) != 0)
+                        {
                             return false;
+                        }
+                    }
                 }
             }
             return true;
@@ -79,8 +92,10 @@ namespace MushROMs.SNES
                 fixed (byte* src = data)
                 fixed (Color15BppBgr* dest = colors)
                 {
-                    for (int i = data.Length; --i >= 0;)
+                    for (var i = data.Length; --i >= 0;)
+                    {
                         ((byte*)dest)[i] = src[i];
+                    }
                 }
             }
             return colors;
@@ -89,7 +104,9 @@ namespace MushROMs.SNES
         public static byte[] GetData(Color15BppBgr[] colors)
         {
             if (colors == null)
+            {
                 return null;
+            }
 
             var data = new byte[GetSizeFromNumColors(colors.Length)];
             unsafe
@@ -97,8 +114,10 @@ namespace MushROMs.SNES
                 fixed (byte* dest = data)
                 fixed (Color15BppBgr* src = colors)
                 {
-                    for (int i = data.Length; --i >= 0;)
+                    for (var i = data.Length; --i >= 0;)
+                    {
                         dest[i] = ((byte*)src)[i];
+                    }
                 }
             }
             return data;

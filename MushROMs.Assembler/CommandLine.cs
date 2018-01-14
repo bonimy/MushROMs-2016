@@ -10,7 +10,7 @@
         public const string PrintMessages = "/pm";
         public const string PrintWarnings = "/pw";
         public const string PrintErrors = "/pe";
-        
+
         public const string MessageFormat = "/mf:";
         public const string WarningFormat = "/wf:";
         public const string ErrorFormat = "/ef:";
@@ -29,6 +29,5 @@
 
         public const string Print = "/print:";
         public const string StringEscapeCodes = "/stresc:";
-
     }
 }

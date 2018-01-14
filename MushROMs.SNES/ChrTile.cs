@@ -27,7 +27,11 @@ namespace MushROMs.SNES
 
         public int TileIndex
         {
-            get { return Value & TileIndexMask; }
+            get
+            {
+                return Value & TileIndexMask;
+            }
+
             set
             {
                 Value &= ~TileIndexMask;
@@ -37,7 +41,11 @@ namespace MushROMs.SNES
 
         public int PaletteNumber
         {
-            get { return (Value >> PaletteNumberBitShift) & PaletteNumberMask; }
+            get
+            {
+                return (Value >> PaletteNumberBitShift) & PaletteNumberMask;
+            }
+
             set
             {
                 Value &= ~(PaletteNumberMask << PaletteNumberBitShift);
@@ -47,7 +55,11 @@ namespace MushROMs.SNES
 
         public LayerPriority Priority
         {
-            get { return (LayerPriority)((Value >> PriorityBitShift) & PriorityMask); }
+            get
+            {
+                return (LayerPriority)((Value >> PriorityBitShift) & PriorityMask);
+            }
+
             set
             {
                 Value &= ~(PriorityMask << PriorityBitShift);
@@ -57,7 +69,11 @@ namespace MushROMs.SNES
 
         public TileFlipModes TileFlipMode
         {
-            get { return (TileFlipModes)((Value >> FlipBitShift) & FlipMask); }
+            get
+            {
+                return (TileFlipModes)((Value >> FlipBitShift) & FlipMask);
+            }
+
             set
             {
                 Value &= ~(FlipMask << FlipBitShift);
@@ -70,10 +86,11 @@ namespace MushROMs.SNES
             _value = (ushort)value;
         }
 
-        public static implicit operator int (ChrTile tile)
+        public static implicit operator int(ChrTile tile)
         {
             return tile.Value;
         }
+
         public static implicit operator ChrTile(int value)
         {
             return new ChrTile(value);
@@ -83,6 +100,7 @@ namespace MushROMs.SNES
         {
             return left.Value == right.Value;
         }
+
         public static bool operator !=(ChrTile left, ChrTile right)
         {
             return !(left == right);
@@ -91,16 +109,23 @@ namespace MushROMs.SNES
         public override bool Equals(object obj)
         {
             if (obj == null)
+            {
                 return false;
+            }
+
             if (!(obj is ChrTile))
+            {
                 return false;
+            }
 
             return (ChrTile)obj == this;
         }
+
         public override int GetHashCode()
         {
             return Value;
         }
+
         public override string ToString()
         {
             return SR.GetString(Value, "X4");

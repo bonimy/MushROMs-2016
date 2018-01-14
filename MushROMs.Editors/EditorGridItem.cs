@@ -7,10 +7,13 @@ namespace MushROMs.Editors
     {
         public Image Icon
         { get; set; }
+
         public string FileType
         { get; set; }
+
         public string FileDescription
         { get; set; }
+
         public UserControl Options
         { get; set; }
 

@@ -13,9 +13,11 @@ namespace MushROMs.SNES
         public static GFXEditor InitializeEditor(byte[] data)
         {
             if (!IsValidData(data))
+            {
                 return null;
+            }
 
-            GFXEditor gfx = new GFXEditor();
+            var gfx = new GFXEditor();
             gfx.InitializeData(data);
             return gfx;
         }
@@ -33,7 +35,9 @@ namespace MushROMs.SNES
         public static bool IsValidExtension(string ext)
         {
             if (String.IsNullOrEmpty(ext))
+            {
                 return false;
+            }
 
             return IOHelper.CompareExtensions(ext, DefaultExtension) == 0;
         }
@@ -46,7 +50,10 @@ namespace MushROMs.SNES
         public static bool IsValidData(byte[] data)
         {
             if (data == null)
+            {
                 return false;
+            }
+
             return IsValidSize(data.Length);
         }
     }

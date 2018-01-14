@@ -1,20 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Helper;
-using MushROMs;
-using MushROMs.Controls;
 using MushROMs.Editors;
 using MushROMs.SNES;
 using MushROMs.SNES.SMAS.SMB1;
-using MushROMs.SMAS;
 
 namespace MushROMs.SMAS.Controls
 {
@@ -58,7 +47,11 @@ namespace MushROMs.SMAS.Controls
 
         public int CurrentMap
         {
-            get { return _currentMap; }
+            get
+            {
+                return _currentMap;
+            }
+
             set
             {
                 _currentMap = value;
@@ -81,13 +74,15 @@ namespace MushROMs.SMAS.Controls
                 dlg.Multiselect = false;
                 dlg.Title = "Select ROM";
                 if (dlg.ShowDialog() == DialogResult.OK)
+                {
                     OpenFile(dlg.FileName);
+                }
             }
         }
 
         public void OpenFile(string path)
         {
-            byte[] data = File.ReadAllBytes(path);
+            var data = File.ReadAllBytes(path);
             SMAS = ROM.CreateFromData(data);
 
             CurrentMap = 0;
@@ -95,7 +90,7 @@ namespace MushROMs.SMAS.Controls
             CreateGFXForm();
         }
 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        private void Open_Click(object sender, EventArgs e)
         {
             OpenFile();
         }
@@ -103,8 +98,10 @@ namespace MushROMs.SMAS.Controls
         private void CreatePaletteForm()
         {
             Palette = LevelData.LoadPalette();
-            var form = new PaletteForm(Palette);
-            form.MdiParent = this;
+            var form = new PaletteForm(Palette)
+            {
+                MdiParent = this
+            };
             form.Show();
         }
 

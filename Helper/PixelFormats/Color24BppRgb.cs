@@ -20,10 +20,13 @@ namespace Helper.PixelFormats
 
         [FieldOffset(0)]
         private fixed byte _components[SizeOf];
+
         [FieldOffset(RedFieldOffset)]
         private byte _red;
+
         [FieldOffset(GreenFieldOffset)]
         private byte _green;
+
         [FieldOffset(BlueFieldOffset)]
         private byte _blue;
 
@@ -32,11 +35,13 @@ namespace Helper.PixelFormats
             get { return _red; }
             set { _red = value; }
         }
+
         public byte Green
         {
             get { return _green; }
             set { _green = value; }
         }
+
         public byte Blue
         {
             get { return _blue; }
@@ -48,15 +53,20 @@ namespace Helper.PixelFormats
             get
             {
                 if (index < 0 || index >= SizeOf)
+                {
                     SR.ErrorArrayBounds(nameof(index), index, SizeOf);
+                }
 
                 fixed (byte* components = _components)
                     return components[index];
             }
+
             set
             {
                 if (index < 0 || index >= SizeOf)
+                {
                     SR.ErrorArrayBounds(nameof(index), index, SizeOf);
+                }
 
                 fixed (byte* components = _components)
                     components[index] = value;
@@ -72,7 +82,11 @@ namespace Helper.PixelFormats
                     (Green << (BitArray.BitsPerByte * GreenFieldOffset)) |
                     (Blue << (BitArray.BitsPerByte * BlueFieldOffset));
             }
-            set { this = new Color24BppRgb(value); }
+
+            set
+            {
+                this = new Color24BppRgb(value);
+            }
         }
 
         [Browsable(false)]
@@ -103,7 +117,8 @@ namespace Helper.PixelFormats
         {
             return new Color24BppRgb(value);
         }
-        public static implicit operator int (Color24BppRgb color24)
+
+        public static implicit operator int(Color24BppRgb color24)
         {
             return color24.Value;
         }
@@ -112,6 +127,7 @@ namespace Helper.PixelFormats
         {
             return new Color24BppRgb(color);
         }
+
         public static implicit operator Color(Color24BppRgb color24)
         {
             return color24.Color;
@@ -121,6 +137,7 @@ namespace Helper.PixelFormats
         {
             return new Color24BppRgb(color32.Value);
         }
+
         public static implicit operator Color32BppArgb(Color24BppRgb color24)
         {
             return color24.Value;
@@ -146,6 +163,7 @@ namespace Helper.PixelFormats
         {
             return left.Value == right.Value;
         }
+
         public static bool operator !=(Color24BppRgb left, Color24BppRgb right)
         {
             return !(left.Value == right.Value);
@@ -154,16 +172,23 @@ namespace Helper.PixelFormats
         public override bool Equals(object obj)
         {
             if (obj == null)
+            {
                 return false;
+            }
+
             if (!(obj is Color24BppRgb))
+            {
                 return false;
+            }
 
             return (Color24BppRgb)obj == this;
         }
+
         public override int GetHashCode()
         {
             return Value;
         }
+
         public override string ToString()
         {
             return Color.ToString();

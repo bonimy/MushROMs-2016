@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Helper.ColorSpaces
@@ -29,6 +27,7 @@ namespace Helper.ColorSpaces
             get;
             private set;
         }
+
         /// <summary>
         /// Gets the hue colorization of this <see cref="ColorizeParameters"/> structure.
         /// Valid values range from 0 to 1 inclusive.
@@ -38,6 +37,7 @@ namespace Helper.ColorSpaces
             get;
             private set;
         }
+
         /// <summary>
         /// Gets the saturation colorization of this <see cref="ColorizeParameters"/> structure.
         /// Valid values range from 0 to 1 inclusive.
@@ -47,6 +47,7 @@ namespace Helper.ColorSpaces
             get;
             private set;
         }
+
         /// <summary>
         /// Gets the lightness colorization of this <see cref="ColorizeParameters"/> structure.
         /// Valid values range from 0 to 1 inclusive.
@@ -83,6 +84,7 @@ namespace Helper.ColorSpaces
         public ColorizeParameters(float hue, float saturation, float lightness)
             : this(1, hue, saturation, lightness)
         { }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ColorizeParameters"/> structure using the given
         /// colorization value.
@@ -113,13 +115,24 @@ namespace Helper.ColorSpaces
         public ColorizeParameters(float alpha, float hue, float saturation, float lightness)
         {
             if (Single.IsNaN(alpha))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(alpha)), nameof(alpha));
+            }
+
             if (Single.IsNaN(hue))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(hue)), nameof(hue));
+            }
+
             if (Single.IsNaN(saturation))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(saturation)), nameof(saturation));
+            }
+
             if (Single.IsNaN(lightness))
+            {
                 throw new ArgumentException(SR.ErrorValueIsNaN(nameof(lightness)), nameof(lightness));
+            }
 
             Alpha = MathHelper.Clamp(alpha, 0, 1, Tolerance);
             Hue = MathHelper.Clamp(hue, 0, 1, Tolerance);
@@ -152,6 +165,7 @@ namespace Helper.ColorSpaces
                 MathHelper.NearlyEquals(left.Saturation, right.Saturation, Tolerance) &&
                 MathHelper.NearlyEquals(left.Lightness, right.Lightness, Tolerance);
         }
+
         /// <summary>
         /// Compares two <see cref="ColorizeParameters"/> objects. The result specifies whether
         /// their <see cref="Alpha"/>, <see cref="Hue"/>, <see cref="Saturation"/>, or
@@ -176,10 +190,10 @@ namespace Helper.ColorSpaces
 
         /// <summary>
         /// Specifies whether this <see cref="ColorizeParameters"/> is the same value as
-        /// the specified <see cref="object"/>.
+        /// the specified <see cref="Object"/>.
         /// </summary>
         /// <param name="obj">
-        /// The <see cref="object"/> to test.
+        /// The <see cref="Object"/> to test.
         /// </param>
         /// <returns>
         /// true if <paramref name="obj"/> is the same value as this <see cref="ColorizeParameters"/>.
@@ -187,10 +201,13 @@ namespace Helper.ColorSpaces
         public override bool Equals(object obj)
         {
             if (!(obj is ColorizeParameters))
+            {
                 return false;
+            }
 
             return (ColorizeParameters)obj == this;
         }
+
         /// <summary>
         /// Returns a hash code for this <see cref="ColorizeParameters"/>.
         /// </summary>
@@ -205,11 +222,12 @@ namespace Helper.ColorSpaces
         {
             return Hash.Generate(Alpha, Hue, Saturation, Lightness);
         }
+
         /// <summary>
-        /// Converts this <see cref="ColorizeParameters"/> to a human-readable <see cref="string"/>.
+        /// Converts this <see cref="ColorizeParameters"/> to a human-readable <see cref="String"/>.
         /// </summary>
         /// <returns>
-        /// A <see cref="string"/> the represent this <see cref="ColorizeParameters"/>.
+        /// A <see cref="String"/> the represent this <see cref="ColorizeParameters"/>.
         /// </returns>
         public override string ToString()
         {

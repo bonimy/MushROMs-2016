@@ -14,12 +14,13 @@ namespace MushROMs.Assembler
             get;
             set;
         }
-        
+
         private IDictionary<string, Define> Defines
         {
             get;
             set;
         }
+
         private IDictionary<string, Macro> Macros
         {
             get;
@@ -37,18 +38,19 @@ namespace MushROMs.Assembler
             get;
             set;
         }
-        
+
         private int CurrentIndex
         {
             get;
             set;
         }
+
         private int LineNumber
         {
             get;
             set;
         }
-        
+
         private int MacroCallCount
         {
             get;
@@ -60,16 +62,18 @@ namespace MushROMs.Assembler
             get;
             set;
         }
+
         private bool InMacro
         {
             get { return MacroArgDictionary != null; }
         }
+
         private IDictionary<string, string> MacroArgDictionary
         {
             get;
             set;
         }
-        
+
         private Token CurrentToken
         {
             get { return Tokens[CurrentIndex]; }
@@ -80,10 +84,12 @@ namespace MushROMs.Assembler
             get;
             set;
         }
+
         private Token FirstArgument
         {
             get { return Arguments[0]; }
         }
+
         private Token SecondArgument
         {
             get { return Arguments[1]; }
@@ -132,8 +138,10 @@ namespace MushROMs.Assembler
 
             var margs = macro.GetArgs();
             MacroArgDictionary = new Dictionary<string, string>(margs.Count);
-            for (int i = 0; i < margs.Count; i++)
+            for (var i = 0; i < margs.Count; i++)
+            {
                 MacroArgDictionary.Add(margs[i], args[i]);
+            }
 
             ResolveDefinesMacrosAndIncludes();
         }
@@ -143,12 +151,12 @@ namespace MushROMs.Assembler
             ResolvedTokens = new List<Token>();
             CurrentIndex = 0;
 
-            for (int depth = 0; CurrentToken != TokenType.EOF;)
+            for (var depth = 0; CurrentToken != TokenType.EOF;)
             {
                 GetArguments();
 
                 depth = 0;
-            _loop:
+                _loop:
                 TrimWhiteTokens(false);
 
                 if (FirstArgument == TokenType.Define)
@@ -163,12 +171,16 @@ namespace MushROMs.Assembler
                 if (ResolveDefines())
                 {
                     if (++depth < 0x1000)
+                    {
                         goto _loop;
+                    }
 
                     //Error: define recursion exceeded limit.
                 }
                 else
+                {
                     depth = 0;
+                }
 
                 var name = FirstArgument.Value;
 
@@ -211,7 +223,7 @@ namespace MushROMs.Assembler
         private bool ResolveDefines()
         {
             var result = false;
-            for (int i = 0; i < Arguments.Count;)
+            for (var i = 0; i < Arguments.Count;)
             {
                 if (Arguments[i] == TokenType.Define)
                 {
@@ -245,7 +257,7 @@ namespace MushROMs.Assembler
         private bool JoinKeywords()
         {
             var result = false;
-            for (int i = 0; Arguments[i] != TokenType.NewLine;)
+            for (var i = 0; Arguments[i] != TokenType.NewLine;)
             {
                 var first = Arguments[i];
                 var second = Arguments[i + 1];
@@ -279,8 +291,10 @@ namespace MushROMs.Assembler
             RemoveFirstToken();
 
             var sb = new StringBuilder();
-            for (int i = 0; Arguments[i] != TokenType.NewLine; i++)
+            for (var i = 0; Arguments[i] != TokenType.NewLine; i++)
+            {
                 sb.Append(Arguments[i]);
+            }
 
             var path = sb.ToString();
             if (File.Exists(path))
@@ -302,8 +316,10 @@ namespace MushROMs.Assembler
 
             var args = GetCommaSeparatedTokens();
             if (args == null)
+            {
                 return;
-            
+            }
+
             var tokens = new List<Token>();
             do
             {
@@ -314,7 +330,6 @@ namespace MushROMs.Assembler
                     return;
                 }
                 tokens.AddRange(Arguments);
-
             } while (FirstArgument != TokenType.EOF);
 
             //Error: macro not closed.
@@ -326,7 +341,9 @@ namespace MushROMs.Assembler
 
             var args = GetCommaSeparatedTokens();
             if (args == null)
+            {
                 return;
+            }
 
             if (args.Length != macro.GetArgs().Count)
             {
@@ -357,15 +374,16 @@ namespace MushROMs.Assembler
 
             var args = new List<string>();
             if (FirstArgument == TokenType.RightParenthesis)
+            {
                 return args.ToArray();
+            }
 
-            for (bool comma = false; FirstArgument != TokenType.NewLine; RemoveFirstToken())
+            for (var comma = false; FirstArgument != TokenType.NewLine; RemoveFirstToken())
             {
                 var token = FirstArgument;
 
                 if (!comma)
                 {
-
                     if (token != TokenType.Keyword &&
                         token != TokenType.MacroArg)
                     {
@@ -379,7 +397,9 @@ namespace MushROMs.Assembler
                 }
 
                 if (token == TokenType.RightParenthesis)
+                {
                     return args.ToArray();
+                }
 
                 if (token != TokenType.CommaSeparator)
                 {
@@ -397,7 +417,10 @@ namespace MushROMs.Assembler
         {
             Arguments.RemoveAt(0);
             while (FirstArgument == TokenType.WhiteSpace)
+            {
                 Arguments.RemoveAt(0);
+            }
+
             TrimWhiteTokens(true);
         }
 
@@ -415,16 +438,17 @@ namespace MushROMs.Assembler
 
         private void InitializeKeywordDictionary()
         {
-            KeywordDictionary = new Dictionary<string, KeywordAction>(StringComparer.InvariantCultureIgnoreCase);
-
-            KeywordDictionary.Add("incsrc", IncludeSourceFile);
-            KeywordDictionary.Add("incasm", IncludeSourceFile);
-            KeywordDictionary.Add("macro", AddMacro);
+            KeywordDictionary = new Dictionary<string, KeywordAction>(StringComparer.InvariantCultureIgnoreCase)
+            {
+                { "incsrc", IncludeSourceFile },
+                { "incasm", IncludeSourceFile },
+                { "macro", AddMacro }
+            };
         }
 
         private void TrimWhiteTokens(bool aggressive)
         {
-            for (int i = 0; Arguments[i] != TokenType.NewLine;)
+            for (var i = 0; Arguments[i] != TokenType.NewLine;)
             {
                 var value = Arguments[i];
 

@@ -15,7 +15,10 @@ namespace MushROMs.Editors
             get
             {
                 if (DialogForm != null)
+                {
                     return DialogForm;
+                }
+
                 return base.ProxySender;
             }
         }
@@ -46,7 +49,11 @@ namespace MushROMs.Editors
 
         public ColorRgb Color
         {
-            get { return new ColorRgb(Red, Green, Blue); }
+            get
+            {
+                return new ColorRgb(Red, Green, Blue);
+            }
+
             set
             {
                 RunEvent = false;
@@ -92,7 +99,9 @@ namespace MushROMs.Editors
         protected virtual void OnColorValueChanged(EventArgs e)
         {
             if (RunEvent)
+            {
                 ColorValueChanged?.Invoke(ProxySender, e);
+            }
         }
 
         private void RGB_ValueChanged(object sender, EventArgs e)

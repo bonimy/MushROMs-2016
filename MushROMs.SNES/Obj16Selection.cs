@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MushROMs.SNES
 {
@@ -19,10 +15,12 @@ namespace MushROMs.SNES
             get;
             private set;
         }
+
         public int StartIndex
         {
             get { return TileMapSelection.StartIndex; }
         }
+
         public int NumTiles
         {
             get { return TileMapSelection.NumTiles; }
@@ -30,11 +28,8 @@ namespace MushROMs.SNES
 
         public Obj16Selection(int startAddress, ITileMapSelection1D selection)
         {
-            if (selection == null)
-                throw new ArgumentNullException(nameof(selection));
-
             StartAddress = startAddress;
-            TileMapSelection = selection;
+            TileMapSelection = selection ?? throw new ArgumentNullException(nameof(selection));
         }
 
         public Obj16Data GetEditorData(Obj16Editor editor)

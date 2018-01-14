@@ -1,11 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
-using Debug = System.Diagnostics.Debug;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Security.Permissions;
 using System.Windows.Forms;
 using Helper.PixelFormats;
+using Debug = System.Diagnostics.Debug;
 
 namespace MushROMs.Controls
 {
@@ -47,6 +47,7 @@ namespace MushROMs.Controls
             get { return base.ClientSize; }
             set { base.ClientSize = value; }
         }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ClientWidth
@@ -54,6 +55,7 @@ namespace MushROMs.Controls
             get { return ClientSize.Width; }
             set { ClientSize = new Size(value, ClientHeight); }
         }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ClientHeight
@@ -73,7 +75,11 @@ namespace MushROMs.Controls
         // This property is overridden to attach an event to its assignment.
         public new BorderStyle BorderStyle
         {
-            get { return base.BorderStyle; }
+            get
+            {
+                return base.BorderStyle;
+            }
+
             set
             {
                 base.BorderStyle = value;
@@ -89,18 +95,18 @@ namespace MushROMs.Controls
             {
                 switch (BorderStyle)
                 {
-                case BorderStyle.None:
-                    return Size.Empty;
+                    case BorderStyle.None:
+                        return Size.Empty;
 
-                case BorderStyle.FixedSingle:
-                    return SystemInformation.BorderSize;
+                    case BorderStyle.FixedSingle:
+                        return SystemInformation.BorderSize;
 
-                case BorderStyle.Fixed3D:
-                    return SystemInformation.Border3DSize;
+                    case BorderStyle.Fixed3D:
+                        return SystemInformation.Border3DSize;
 
-                default:    //This should never occur.
-                    Debug.Assert(false, "Invalid BorderStyle enum was passed.");
-                    return Size.Empty;
+                    default:    //This should never occur.
+                        Debug.Assert(false, "Invalid BorderStyle enum was passed.");
+                        return Size.Empty;
                 }
             }
         }
@@ -114,7 +120,7 @@ namespace MushROMs.Controls
                 var sz = BorderSize;
                 return new Padding(sz.Width, sz.Height, sz.Width, sz.Height);
             }
-        } 
+        }
 
         public DesignControl()
         {
@@ -135,30 +141,30 @@ namespace MushROMs.Controls
         {
             switch (m.Msg)
             {
-            case WindowMessages.KeyDown:
-            case WindowMessages.SystemKeyDown:
-                PreviousKeys = CurrentKeys;
-                CurrentKeys = (Keys)m.WParam | ModifierKeys;
-                ActiveKeys = CurrentKeys & ~PreviousKeys;
-                break;
+                case WindowMessages.KeyDown:
+                case WindowMessages.SystemKeyDown:
+                    PreviousKeys = CurrentKeys;
+                    CurrentKeys = (Keys)m.WParam | ModifierKeys;
+                    ActiveKeys = CurrentKeys & ~PreviousKeys;
+                    break;
 
-            case WindowMessages.KeyUp:
-            case WindowMessages.SystemKeyUp:
-                PreviousKeys = CurrentKeys;
-                CurrentKeys &= ~((Keys)m.WParam | ModifierKeys);
-                ActiveKeys = Keys.None;
-                break;
+                case WindowMessages.KeyUp:
+                case WindowMessages.SystemKeyUp:
+                    PreviousKeys = CurrentKeys;
+                    CurrentKeys &= ~((Keys)m.WParam | ModifierKeys);
+                    ActiveKeys = Keys.None;
+                    break;
 
-            case WindowMessages.MouseLeave:
-                PreviousMousePosition = CurrentMousePosition;
-                CurrentMousePosition = MouseOutOfRange;
-                break;
+                case WindowMessages.MouseLeave:
+                    PreviousMousePosition = CurrentMousePosition;
+                    CurrentMousePosition = MouseOutOfRange;
+                    break;
 
-            case WindowMessages.MouseMove:
-                PreviousMousePosition = CurrentMousePosition;
-                CurrentMousePosition = new Point((int)m.LParam & 0xFFFF, (int)m.LParam >> 0x10);
-                MouseHovering = PreviousMousePosition == CurrentMousePosition;
-                break;
+                case WindowMessages.MouseMove:
+                    PreviousMousePosition = CurrentMousePosition;
+                    CurrentMousePosition = new Point((int)m.LParam & 0xFFFF, (int)m.LParam >> 0x10);
+                    MouseHovering = PreviousMousePosition == CurrentMousePosition;
+                    break;
             }
             base.DefWndProc(ref m);
         }
@@ -166,7 +172,9 @@ namespace MushROMs.Controls
         public void SetTiledBackground(CheckerPattern pattern)
         {
             if (pattern == CheckerPattern.Null)
+            {
                 throw new ArgumentNullException(nameof(pattern));
+            }
 
             var size = pattern.Size;
             var size2 = size + size;
@@ -184,9 +192,9 @@ namespace MushROMs.Controls
             {
                 var pixels = (Color32BppArgb*)data.Scan0;
 
-                for (int y = size.Height; --y >= 0;)
+                for (var y = size.Height; --y >= 0;)
                 {
-                    for (int x = size.Width; --x >= 0;)
+                    for (var x = size.Width; --x >= 0;)
                     {
                         pixels[(y * size2.Width) + x] = color1;
                         pixels[(y * size2.Width) + (x + size.Width)] = color2;

@@ -15,14 +15,17 @@ namespace MushROMs.SNES
             get;
             private set;
         }
+
         public int TileDataSize
         {
             get { return GFXTile.GetTileDataSize(GraphicsFormat); }
         }
+
         public int BitsPerPixel
         {
             get { return GFXTile.GetBitsPerPixel(GraphicsFormat); }
         }
+
         public int ColorsPerPixel
         {
             get { return GFXTile.GetColorsPerPixel(GraphicsFormat); }
@@ -37,11 +40,11 @@ namespace MushROMs.SNES
         public GFXData(GFXEditor editor, GFXSelection selection)
         {
             if (editor == null)
+            {
                 throw new ArgumentNullException(nameof(editor));
-            if (selection == null)
-                throw new ArgumentNullException(nameof(selection));
+            }
 
-            Selection = selection;
+            Selection = selection ?? throw new ArgumentNullException(nameof(selection));
             GraphicsFormat = editor.GraphicsFormat;
             Data = new GFXTile[Selection.NumTiles];
 
@@ -55,11 +58,13 @@ namespace MushROMs.SNES
                 fixed (byte* src = &editor.GetData()[Selection.StartAddress])
                 fixed (GFXTile* dest = Data)
                 {
-                    for (int i = Selection.NumTiles; --i >= 0;)
+                    for (var i = Selection.NumTiles; --i >= 0;)
                     {
                         var address = (indexes[i] + startIndex) * TileDataSize;
                         if (address + TileDataSize <= length)
-                                dest[i].GetTileData(src + address, GraphicsFormat);
+                        {
+                            dest[i].GetTileData(src + address, GraphicsFormat);
+                        }
                     }
                 }
             }
@@ -87,7 +92,9 @@ namespace MushROMs.SNES
         public void WriteToEditor(GFXEditor editor)
         {
             if (editor == null)
+            {
                 throw new ArgumentNullException(nameof(editor));
+            }
 
             var startIndex = Selection.StartIndex;
             var length = editor.GetData().Length;
@@ -98,10 +105,11 @@ namespace MushROMs.SNES
                 fixed (byte* dest = editor.GetData())
                 fixed (GFXTile* src = Data)
                 {
-                    for (int i = Selection.NumTiles; --i >= 0;)
+                    for (var i = Selection.NumTiles; --i >= 0;)
                     {
-                        int srcAddress = i * TileDataSize;
-                        int destAddress = GetAddress(indexes[i] + startIndex);
+                        var srcAddress = i * TileDataSize;
+                        var destAddress = GetAddress(indexes[i] + startIndex);
+
                         //FINISH
                     }
                 }

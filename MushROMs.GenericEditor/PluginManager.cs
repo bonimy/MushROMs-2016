@@ -22,9 +22,12 @@ namespace MushROMs.GenericEditor
         public static void LoadPlugins(MasterForm masterForm)
         {
             if (masterForm == null)
+            {
                 throw new ArgumentNullException(nameof(masterForm));
-            MasterEditor master = masterForm.MasterEditor;
-            
+            }
+
+            var master = masterForm.MasterEditor;
+
             foreach (var fileAssociation in FileAssociations)
             {
                 master.AddFileAssociation(fileAssociation);
@@ -43,13 +46,20 @@ namespace MushROMs.GenericEditor
             foreach (var assemblyType in assemblyTypes)
             {
                 if (assemblyType.GetInterface(pluginTypeName) == null)
+                {
                     continue;
+                }
+
                 if (assemblyType.IsAbstract || assemblyType.IsInterface)
+                {
                     continue;
+                }
 
                 var plugin = (ILibraryPlugin)Activator.CreateInstance(assemblyType);
                 if (plugin == null)
+                {
                     continue;
+                }
 
                 var fileAssociations = plugin.GetFileAssociations();
                 if (fileAssociations != null)
@@ -57,10 +67,14 @@ namespace MushROMs.GenericEditor
                     foreach (var fileAssociation in fileAssociations)
                     {
                         if (fileAssociation == null)
+                        {
                             continue;
+                        }
 
                         if (!FileAssociations.Contains(fileAssociation))
+                        {
                             FileAssociations.Add(fileAssociation);
+                        }
                     }
                 }
 
@@ -70,10 +84,14 @@ namespace MushROMs.GenericEditor
                     foreach (var editorInfo in editorInfoList)
                     {
                         if (editorInfo == null)
+                        {
                             continue;
+                        }
 
                         if (!EditorInfoList.Contains(editorInfo))
+                        {
                             EditorInfoList.Add(editorInfo);
+                        }
                     }
                 }
             }

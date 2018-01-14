@@ -14,7 +14,9 @@ namespace MushROMs.SNES
         public static PaletteEditor InitializeEditor(byte[] data)
         {
             if (!IsValidData(data))
+            {
                 return null;
+            }
 
             return new PaletteEditor(new Palette(GetColors(data)));
         }
@@ -33,7 +35,9 @@ namespace MushROMs.SNES
         public static bool IsValidExtension(string ext)
         {
             if (String.IsNullOrEmpty(ext))
+            {
                 return false;
+            }
 
             return IOHelper.CompareExtensions(ext, DefaultExtension) == 0;
         }
@@ -46,7 +50,10 @@ namespace MushROMs.SNES
         public static bool IsValidData(byte[] data)
         {
             if (data == null)
+            {
                 return false;
+            }
+
             return IsValidSize(data.Length);
         }
 
@@ -63,7 +70,9 @@ namespace MushROMs.SNES
         public static Color15BppBgr[] GetColors(byte[] data)
         {
             if (data == null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
 
             var colors = new Color15BppBgr[GetNumColorsFromSize(data.Length)];
             unsafe
@@ -72,8 +81,10 @@ namespace MushROMs.SNES
                 fixed (Color15BppBgr* dest = colors)
                 {
                     var src = (Color24BppRgb*)ptr;
-                    for (int i = colors.Length; --i >= 0;)
+                    for (var i = colors.Length; --i >= 0;)
+                    {
                         dest[i] = (Color15BppBgr)src[i];
+                    }
                 }
             }
 
@@ -82,17 +93,26 @@ namespace MushROMs.SNES
 
         public static ref int Find3(int[,] matrix, Func<int, bool> predicate)
         {
-            for (int i = 0; i < matrix.GetLength(0); i++)
-                for (int j = 0; j < matrix.GetLength(1); j++)
+            for (var i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (var j = 0; j < matrix.GetLength(1); j++)
+                {
                     if (predicate(matrix[i, j]))
+                    {
                         return ref matrix[i, j];
+                    }
+                }
+            }
+
             throw new InvalidOperationException("Not found");
         }
 
         public static byte[] GetData(Color15BppBgr[] colors)
         {
             if (colors == null)
+            {
                 throw new ArgumentNullException(nameof(colors));
+            }
 
             var data = new byte[GetSizeFromNumColors(colors.Length)];
             unsafe
@@ -101,8 +121,10 @@ namespace MushROMs.SNES
                 fixed (Color15BppBgr* src = colors)
                 {
                     var dest = (Color24BppRgb*)ptr;
-                    for (int i = colors.Length; --i >= 0;)
+                    for (var i = colors.Length; --i >= 0;)
+                    {
                         dest[i] = src[i];
+                    }
                 }
             }
             return data;

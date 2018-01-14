@@ -1,5 +1,4 @@
-﻿
-namespace MushROMs.SNES
+﻿namespace MushROMs.SNES
 {
     public enum GraphicsFormat
     {

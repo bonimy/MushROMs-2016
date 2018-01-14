@@ -8,10 +8,12 @@ namespace MushROMs
         {
             get;
         }
+
         string DisplayName
         {
             get;
         }
+
         string Description
         {
             get;
